@@ -7,6 +7,36 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: App
   },
+  {
+    path:'/labyrinthAlgorithm',
+    name: 'test',
+    component: App
+  },
+  {
+    path:'/clusteringAlgorithm',
+    name: 'test',
+    component: App
+  },
+  {
+    path:'/geneticAlgorithm',
+    name: 'test',
+    component: App
+  },
+  {
+    path:'/antAlgorithm',
+    name: 'test',
+    component: App
+  },
+  {
+    path:'/treeAlgorithm',
+    name: 'test',
+    component: App
+  },
+  {
+    path:'/neuralAlgorithm',
+    name: 'test',
+    component: App
+  }
   // {
   //   path: '/about',
   //   name: 'about',

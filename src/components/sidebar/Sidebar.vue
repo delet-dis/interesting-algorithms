@@ -1,9 +1,16 @@
 <template>
     <div class="sidebar" :style="{width: sidebarState.getSidebarWidth}">
         <h1 class="center">
-            <span class="center" v-if="sidebarState.getIsCollapsed">I<br>A</span>
-            <span class="center" v-else>Interesting<br>algorithms</span>
+            <transition name="fade" mode="out-in">
+                <span class="center" v-if="sidebarState.getIsCollapsed">I<br>A</span>
+                <span class="center" v-else>Interesting<br>algorithms</span>
+            </transition>
         </h1>
+
+        <div v-for="destination in sidebarDestinations" :key="destination.id" class="router-link">
+            <SidebarLink :sidebarLinkEntity="destination">{{ destination.name }}</SidebarLink>
+        </div>
+
         <span class="collapseIcon"
               :class="{'rotate-180': !sidebarState.getIsCollapsed}"
               @click="sidebarState.toggleSidebar">
@@ -16,24 +23,35 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import SidebarState from './SidebarState';
+import Destinations from "@/router/Destinations";
+import SidebarLink from "@/components/sidebar/SidebarLink.vue";
 
 @Options({
-    components: {},
+    components: {SidebarLink},
 })
 export default class Sidebar extends Vue {
     readonly sidebarState = SidebarState.getInstance()
+    readonly sidebarDestinations = Destinations.destinationsList
 }
 </script>
 
 <style>
 :root {
     --sidebar-bg-color: #FBFBFB;
-    --sidebar-item-hover: #EFEFEF;
-    --sidebar-item-active: #EFEFEF;
+    --sidebarItemHover: #EFEFEF;
+    --sidebarItemActive: #EFEFEF;
 }
 </style>
 
 <style scoped>
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.2s;
+}
+
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
 .sidebar {
     color: white;
     background: var(--sidebar-bg-color);
@@ -59,7 +77,7 @@ export default class Sidebar extends Vue {
     width: 100%;
     height: fit-content;
 
-    padding:0;
+    padding: 0;
     margin: 0;
 
     cursor: pointer;
@@ -80,11 +98,11 @@ export default class Sidebar extends Vue {
     justify-content: center;
 }
 
-.collapseInnerIcon{
+.collapseInnerIcon {
     vertical-align: middle;
     horiz-align: center;
     text-align: center;
-    padding: 3px;
+    padding: 0.5em;
 }
 
 .rotate-180 {
@@ -101,6 +119,10 @@ h1 {
     text-align: center;
     display: flex;
     justify-content: center;
+}
+
+.router-link {
+    padding-bottom: 10px;
 }
 
 </style>
