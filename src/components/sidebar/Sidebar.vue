@@ -7,7 +7,7 @@
         <span class="collapseIcon"
               :class="{'rotate-180': !sidebarState.getIsCollapsed}"
               @click="sidebarState.toggleSidebar">
-        <i class="fa-solid fa-arrow-right"/>
+        <i class="fa-solid fa-arrow-right collapseInnerIcon"/>
     </span>
     </div>
 
@@ -44,7 +44,7 @@ export default class Sidebar extends Vue {
     top: 0;
     left: 0;
     bottom: 0;
-    padding: 0.5em;
+    padding: 5px;
 
     transition: 0.3s ease-in-out;
 
@@ -53,19 +53,38 @@ export default class Sidebar extends Vue {
 }
 
 .collapseIcon {
-    cursor: pointer;
+    font-size: 20px;
 
+    text-align: center;
+    width: 100%;
+    height: fit-content;
+
+    padding:0;
+    margin: 0;
+
+    cursor: pointer;
     user-select: none;
 
     position: absolute;
     bottom: 0;
-    padding: 0.75em;
+    left: 0;
+    right: 0;
 
     color: #000000;
 
     z-index: 2;
 
     transition: 0.2s linear;
+
+    display: flex;
+    justify-content: center;
+}
+
+.collapseInnerIcon{
+    vertical-align: middle;
+    horiz-align: center;
+    text-align: center;
+    padding: 3px;
 }
 
 .rotate-180 {
