@@ -6,7 +6,11 @@
     <Sidebar/>
 
     <div class="app" :style="{marginLeft: sidebarState.getSidebarPadding + 'em'}">
-        <router-view/>
+        <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+                <component :is="Component" />
+            </transition>
+        </router-view>
     </div>
 </template>
 
@@ -34,5 +38,16 @@ export default class App extends Vue {
 <style>
  * {
      font-family: Montserrat, sans-serif;
+ }
+
+ .fade-enter-active,
+ .fade-leave-active {
+     transition: opacity 0.5s ease;
+ }
+
+
+ .fade-enter-from,
+ .fade-leave-to {
+     opacity: 0;
  }
 </style>
