@@ -10,11 +10,11 @@ class SidebarState {
     }
 
     private isCollapsed = true
-    private sidebarWidth = '2.4em'
+    private sidebarWidth = '2.6em'
 
     public toggleSidebar() {
         this.isCollapsed = !this.isCollapsed
-        this.sidebarWidth = this.isCollapsed ?  '2.4em' : '11.8em'
+        this.sidebarWidth = this.isCollapsed ?  '2.6em' : '11.8em'
     }
 
     get getSidebarWidth(){

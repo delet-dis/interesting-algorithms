@@ -45,7 +45,7 @@ export default class Sidebar extends Vue {
 
 <style scoped>
 .fade-enter-active, .fade-leave-active {
-    transition: opacity 0.2s;
+    transition: opacity 0.5s ease-out;
 }
 
 .fade-enter-from, .fade-leave-to {
@@ -59,10 +59,19 @@ export default class Sidebar extends Vue {
     float: left;
     position: fixed;
     z-index: 1;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    top: 0.5em;
+    left: 0.5em;
+    bottom: 0.5em;
     padding: 5px;
+
+    border-radius: 0.5em;
+
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07),
+    0 2px 4px rgba(0,0,0,0.07),
+    0 4px 8px rgba(0,0,0,0.07),
+    0 8px 16px rgba(0,0,0,0.07),
+    0 16px 32px rgba(0,0,0,0.07),
+    0 32px 64px rgba(0,0,0,0.07);
 
     transition: 0.3s ease-in-out;
 
