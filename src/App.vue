@@ -5,8 +5,8 @@
 
     <Sidebar/>
 
-    <div class="app" :style="{marginLeft: sidebarState.getSidebarWidth}">
-
+    <div class="app" :style="{marginLeft: sidebarState.getSidebarPadding + 'em'}">
+        <router-view/>
     </div>
 </template>
 

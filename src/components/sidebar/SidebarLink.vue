@@ -44,7 +44,7 @@ export default class SidebarLink extends Vue.with(Props) {
 <style scoped>
 
 .growCollapsed {
-    transition: all .3s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 
 .growCollapsed:hover {
