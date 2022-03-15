@@ -4,13 +4,13 @@ import App from "@/App.vue";
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        name: 'home',
-        component: App,
+        name: 'about',
+        component: () => import('../ui/views/AboutView.vue'),
     },
     {
         path: '/labyrinthAlgorithm',
         name: 'test',
-        component: App,
+        component: () => import('../ui/views/AboutView.vue'),
     },
     {
         path: '/clusteringAlgorithm',

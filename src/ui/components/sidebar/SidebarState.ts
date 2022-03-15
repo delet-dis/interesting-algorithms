@@ -10,11 +10,13 @@ class SidebarState {
     }
 
     private isCollapsed = true
-    private sidebarWidth = '2.6em'
+    private sidebarWidth = 2.6
+    private sidebarPadding = this.getSidebarWidth + 2
 
     public toggleSidebar() {
         this.isCollapsed = !this.isCollapsed
-        this.sidebarWidth = this.isCollapsed ?  '2.6em' : '11.8em'
+        this.sidebarWidth = this.isCollapsed ?  2.6 : 11.8
+        this.sidebarPadding = this.sidebarWidth + 2
     }
 
     get getSidebarWidth(){
@@ -23,6 +25,10 @@ class SidebarState {
 
     get getIsCollapsed(){
         return this.isCollapsed
+    }
+
+    get getSidebarPadding(){
+        return this.sidebarPadding
     }
 }
 

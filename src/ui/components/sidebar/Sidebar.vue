@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar" :style="{width: sidebarState.getSidebarWidth}">
+    <div class="sidebar" :style="{width: sidebarState.getSidebarWidth + 'em'}">
         <h1 class="center">
             <transition name="fade" mode="out-in">
                 <span class="center" v-if="sidebarState.getIsCollapsed">I<br>A</span>
@@ -24,7 +24,7 @@
 import {Options, Vue} from 'vue-class-component';
 import SidebarState from './SidebarState';
 import Destinations from "@/router/Destinations";
-import SidebarLink from "@/components/sidebar/SidebarLink.vue";
+import SidebarLink from "@/ui/components/sidebar/SidebarLink.vue";
 
 @Options({
     components: {SidebarLink},
@@ -62,7 +62,7 @@ export default class Sidebar extends Vue {
     top: 0.5em;
     left: 0.5em;
     bottom: 0.5em;
-    padding: 5px;
+    padding: 0.5em;
 
     border-radius: 0.5em;
 

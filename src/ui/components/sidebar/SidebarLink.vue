@@ -14,7 +14,7 @@
 import {Options, prop, Vue} from 'vue-class-component';
 import {useRoute} from "vue-router";
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
-import SidebarState from "@/components/sidebar/SidebarState";
+import SidebarState from "@/ui/components/sidebar/SidebarState";
 
 class Props {
     sidebarLinkEntity: SidebarLinkEntity = prop({
@@ -44,7 +44,7 @@ export default class SidebarLink extends Vue.with(Props) {
 <style scoped>
 
 .growCollapsed {
-    transition: all .3s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 
 .growCollapsed:hover {
