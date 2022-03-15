@@ -1,5 +1,6 @@
 <template>
-    <router-link :to="getSidebarLinkEntity.path" class="link" :class="{'active': getIsActive}">
+    <router-link :to="getSidebarLinkEntity.path" class="link"
+                 :class="{'active': getIsActive, 'growCollapsed': sidebarState.getIsCollapsed, 'grow':!sidebarState.getIsCollapsed}">
         <i class="icon" :class="getSidebarLinkEntity.icon"/>
         <transition name="fade" mode="in-out">
             <span v-if="!sidebarState.getIsCollapsed">
@@ -41,11 +42,28 @@ export default class SidebarLink extends Vue.with(Props) {
 </script>
 
 <style scoped>
+
+.growCollapsed {
+    transition: all .3s ease-in-out;
+}
+
+.growCollapsed:hover {
+    transform: scale(1.1);
+}
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+    transform: scale(1.06);
+}
+
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.3s;
 }
 
-.fade-enter-from, .fade-leave-to{
+.fade-enter-from, .fade-leave-to {
     opacity: 0;
 }
 
@@ -81,7 +99,7 @@ export default class SidebarLink extends Vue.with(Props) {
     margin-right: 10px;
 }
 
-span{
+span {
     font-family: Montserrat, sans-serif;
     padding-top: 0.1em;
 }
