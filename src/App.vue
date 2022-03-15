@@ -32,5 +32,7 @@ export default class App extends Vue {
 </script>
 
 <style>
-
+ * {
+     font-family: Montserrat, sans-serif;
+ }
 </style>

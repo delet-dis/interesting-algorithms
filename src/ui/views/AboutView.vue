@@ -1,13 +1,24 @@
 <template>
-    <Card>Test</Card>
+    <div class ="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-12">
+                <Card>Test</Card>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <Card>Test</Card>
+            </div>
+            <div class="col-lg-3 col-md-12">
+                <Card>Test</Card>
+            </div>
+        </div>
+
+    </div>
 </template>
 
 <script lang="ts">
 import {Options, setup, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import {useMeta} from "vue-meta";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
-import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 
 
 @Options({
@@ -25,4 +36,9 @@ export default class App extends Vue {
 
 <style scoped>
     @import "bootstrap/dist/css/bootstrap-grid.min.css";
+
+    .container{
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
 </style>

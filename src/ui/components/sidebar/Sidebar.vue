@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar" :style="{width: sidebarState.getSidebarWidth + 'em'}">
-        <h1 class="center">
+        <h1 class="center header">
             <transition name="fade" mode="out-in">
                 <span class="center" v-if="sidebarState.getIsCollapsed">I<br>A</span>
                 <span class="center" v-else>Interesting<br>algorithms</span>
@@ -10,13 +10,15 @@
         <div v-for="destination in sidebarDestinations" :key="destination.id" class="router-link">
             <SidebarLink :sidebarLinkEntity="destination">{{ destination.name }}</SidebarLink>
         </div>
-
-        <span class="collapseIcon"
-              :class="{'rotate-180': !sidebarState.getIsCollapsed}"
-              @click="sidebarState.toggleSidebar">
-        <i class="fa-solid fa-arrow-right collapseInnerIcon"/>
-    </span>
     </div>
+
+    <span class="collapseIcon"
+          :style="{left: sidebarState.getSidebarWidth -1.5 + 'em'}"
+          :class="{'rotate-180': !sidebarState.getIsCollapsed}"
+          @click="sidebarState.toggleSidebar">
+
+                 <i class="fa-solid fa-arrow-right collapseInnerIcon"/>
+    </span>
 
 </template>
 
@@ -66,24 +68,33 @@ export default class Sidebar extends Vue {
 
     border-radius: 0.5em;
 
-    box-shadow: 0 1px 2px rgba(0,0,0,0.07),
-    0 2px 4px rgba(0,0,0,0.07),
-    0 4px 8px rgba(0,0,0,0.07),
-    0 8px 16px rgba(0,0,0,0.07),
-    0 16px 32px rgba(0,0,0,0.07),
-    0 32px 64px rgba(0,0,0,0.07);
+    overflow-y: auto;
+
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07),
+    0 2px 4px rgba(0, 0, 0, 0.07),
+    0 4px 8px rgba(0, 0, 0, 0.07),
+    0 8px 16px rgba(0, 0, 0, 0.07),
+    0 16px 32px rgba(0, 0, 0, 0.07),
+    0 32px 64px rgba(0, 0, 0, 0.07);
 
     transition: 0.3s ease-in-out;
 
     display: flex;
     flex-direction: column;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 
 .collapseIcon {
     font-size: 20px;
 
     text-align: center;
-    width: 100%;
+    width: fit-content;
     height: fit-content;
 
     padding: 0;
@@ -93,8 +104,7 @@ export default class Sidebar extends Vue {
     user-select: none;
 
     position: absolute;
-    bottom: 0;
-    left: 0;
+    top: 0.7em;
     right: 0;
 
     color: #000000;
@@ -111,17 +121,19 @@ export default class Sidebar extends Vue {
     vertical-align: middle;
     horiz-align: center;
     text-align: center;
-    padding: 0.5em;
+    padding: 0.7em;
+
+    display: inline-block;
+    border-radius: 60px;
+    background-color: white;
+    box-shadow: 1px 0 34px 10px rgba(0, 0, 0, 0.07);
+
+    margin: 35px;
 }
 
 .rotate-180 {
     transform: rotate(180deg);
     transition: 0.2s linear;
-}
-
-h1 {
-    font-family: Montserrat, sans-serif;
-    color: #000000;
 }
 
 .center {
@@ -132,6 +144,11 @@ h1 {
 
 .router-link {
     padding-bottom: 10px;
+}
+
+.header {
+    font-weight: normal;
+    color: black;
 }
 
 </style>
