@@ -14,7 +14,7 @@
 import {Options, prop, Vue} from 'vue-class-component';
 import {useRoute} from "vue-router";
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
-import SidebarState from "@/components/sidebar/SidebarState";
+import SidebarState from "@/ui/components/sidebar/SidebarState";
 
 class Props {
     sidebarLinkEntity: SidebarLinkEntity = prop({

@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import {Options, setup, Vue} from 'vue-class-component';
-import Sidebar from "@/components/sidebar/Sidebar.vue";
-import SidebarState from "@/components/sidebar/SidebarState";
+import Sidebar from "@/ui/components/sidebar/Sidebar.vue";
+import SidebarState from "@/ui/components/sidebar/SidebarState";
 import {useMeta} from "vue-meta";
 
 

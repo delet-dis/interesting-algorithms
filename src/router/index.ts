@@ -5,12 +5,12 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'about',
-        component: () => import('../views/AboutView.vue'),
+        component: () => import('../ui/views/AboutView.vue'),
     },
     {
         path: '/labyrinthAlgorithm',
         name: 'test',
-        component: () => import('../views/AboutView.vue'),
+        component: () => import('../ui/views/AboutView.vue'),
     },
     {
         path: '/clusteringAlgorithm',

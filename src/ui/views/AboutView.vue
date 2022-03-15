@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import {Options, setup, Vue} from 'vue-class-component';
-import Card from "@/components/card/Card.vue";
+import Card from "@/ui/components/card/Card.vue";
 import {useMeta} from "vue-meta";
 
 
@@ -22,5 +22,5 @@ export default class App extends Vue {
 </script>
 
 <style scoped>
-
+    @import "bootstrap/dist/css/bootstrap-grid.min.css";
 </style>

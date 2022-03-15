@@ -24,7 +24,7 @@
 import {Options, Vue} from 'vue-class-component';
 import SidebarState from './SidebarState';
 import Destinations from "@/router/Destinations";
-import SidebarLink from "@/components/sidebar/SidebarLink.vue";
+import SidebarLink from "@/ui/components/sidebar/SidebarLink.vue";
 
 @Options({
     components: {SidebarLink},
