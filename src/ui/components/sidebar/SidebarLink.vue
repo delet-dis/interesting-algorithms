@@ -100,7 +100,6 @@ export default class SidebarLink extends Vue.with(Props) {
 }
 
 span {
-    font-family: Montserrat, sans-serif;
     padding-top: 0.1em;
 }
 </style>
