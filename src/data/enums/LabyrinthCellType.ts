@@ -1,6 +1,6 @@
 enum LabyrinthCellType {
-    EMPTY_CELL,
     BORDER_CELL,
+    EMPTY_CELL,
     START_CELL,
     FINISH_CELL,
     PATH_CELL
