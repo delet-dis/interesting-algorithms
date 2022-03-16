@@ -7,7 +7,7 @@
         Размерность поля
     </p>
 
-    <vue-slider v-model="labyrinthSizing" :dotSize = "20" :max="50" :silent="true"/>
+    <vue-slider v-model="labyrinthSizing" :dotSize = "20" :max="40" :min="5" :silent="true"/>
 </template>
 
 <script lang="ts">

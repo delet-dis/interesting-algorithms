@@ -1,9 +1,9 @@
 <template>
     <div class="sidebar" :style="{width: sidebarState.getSidebarWidth + 'em'}">
-        <h1 class="center header">
+        <h1 class="verticalCenter header">
             <transition name="fade" mode="out-in">
-                <span class="center" v-if="sidebarState.getIsCollapsed">I<br>A</span>
-                <span class="center" v-else>Interesting<br>algorithms</span>
+                <span class="verticalCenter" v-if="sidebarState.getIsCollapsed">I<br>A</span>
+                <span class="verticalCenter" v-else>Interesting<br>algorithms</span>
             </transition>
         </h1>
 
@@ -136,7 +136,7 @@ export default class Sidebar extends Vue {
     transition: 0.2s linear;
 }
 
-.center {
+.verticalCenter {
     text-align: center;
     display: flex;
     justify-content: center;

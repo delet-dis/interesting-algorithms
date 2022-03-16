@@ -1,8 +1,10 @@
 <template>
     <table class="table">
         <tbody>
-        <tr v-for="n in getLabyrinthSizingProp" :key="n">
-            <td v-for="n in getLabyrinthSizingProp" :key="n">z</td>
+        <tr v-for="firstIterator in getLabyrinthSizingProp" :key="firstIterator">
+            <td v-for="secondIterator in getLabyrinthSizingProp" :key="secondIterator"
+                :class="`table-cell-` + firstIterator + `x` + secondIterator" class="table-cell">&nbsp;
+            </td>
         </tr>
         </tbody>
     </table>
@@ -18,16 +20,26 @@ class Props {
 }
 
 @Options({
-    components: {
-    },
+    components: {},
 })
 export default class LabyrinthDescription extends Vue.with(Props) {
-    get getLabyrinthSizingProp(){
+    get getLabyrinthSizingProp() {
         return this.labyrinthSizingProp
     }
 }
 </script>
 
-<style scoped >
+<style scoped>
+.table {
+    width: 30vw;
+    height: 30vw;
+
+    border-spacing: 0px;
+}
+
+.table-cell {
+    border: 1px solid black;
+}
+
 
 </style>

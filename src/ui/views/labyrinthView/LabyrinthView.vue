@@ -7,8 +7,8 @@
                 </Card>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card>
-                    <LabyrinthTable :labyrinthSizingProp="this.getLabyrinthSizing"/>
+                <Card class = "cardCenter">
+                    <LabyrinthTable :labyrinthSizingProp="this.getLabyrinthSizing" class="cardCenterChild"/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -43,7 +43,7 @@ export default class LabyrinthView extends Vue {
         htmlAttrs: {lang: 'ru', amp: true}
     }))
 
-    labyrinthSizing = 25
+    labyrinthSizing = 10
 
     get getLabyrinthSizing(){
         return this.labyrinthSizing
