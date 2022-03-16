@@ -103,7 +103,7 @@ export default class Sidebar extends Vue {
     cursor: pointer;
     user-select: none;
 
-    position: absolute;
+    position: fixed;
     top: 0.7em;
     right: 0;
 

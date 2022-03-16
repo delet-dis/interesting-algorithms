@@ -5,7 +5,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'about',
-        component: () => import('../ui/views/AboutView.vue'),
+        component: () => import('../ui/views/aboutView/AboutView.vue'),
     },
     {
         path: '/labyrinthAlgorithm',

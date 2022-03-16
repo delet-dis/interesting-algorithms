@@ -1,6 +1,16 @@
 <template>
     <div class="container">
-        test
+        <div class="row">
+            <div class="col-lg-3 col-md-12">
+                <Card>Test</Card>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <Card>Test</Card>
+            </div>
+            <div class="col-lg-3 col-md-12">
+                <Card>Test</Card>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -17,7 +27,7 @@ import {useMeta} from "vue-meta";
 })
 export default class LabyrinthView extends Vue {
     meta = setup(() => useMeta({
-        title: '🏠',
+        title: '🗺',
         htmlAttrs: {lang: 'ru', amp: true}
     }))
 }

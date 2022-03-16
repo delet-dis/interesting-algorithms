@@ -54,4 +54,14 @@ export default class App extends Vue {
  .app{
      transition: margin 0.7s;
  }
+
+ .container{
+     margin-top: 0.5em;
+     margin-bottom: 0.5em;
+ }
+
+ .columnCentered{
+     float: none;
+     margin: 0 auto;
+ }
 </style>
