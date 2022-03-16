@@ -26,7 +26,7 @@ import {useMeta} from "vue-meta";
         Card
     },
 })
-export default class App extends Vue {
+export default class AboutView extends Vue {
     meta = setup(() => useMeta({
         title: '🏠',
         htmlAttrs: { lang: 'ru', amp: true }

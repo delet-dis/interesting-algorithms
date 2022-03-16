@@ -50,4 +50,8 @@ export default class App extends Vue {
  .fade-leave-to {
      opacity: 0;
  }
+
+ .app{
+     transition: margin 0.7s;
+ }
 </style>
