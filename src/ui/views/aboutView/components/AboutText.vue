@@ -31,7 +31,7 @@ import {Options, Vue} from 'vue-class-component';
     components: {
     },
 })
-export default class LabyrinthView extends Vue {
+export default class AboutText extends Vue {
 }
 </script>
 

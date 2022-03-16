@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/labyrinthAlgorithm',
         name: 'labyrinth',
-        component: () => import('../ui/views/LabyrinthView.vue'),
+        component: () => import('../ui/views/labyrinthView/LabyrinthView.vue'),
     },
     {
         path: '/clusteringAlgorithm',
