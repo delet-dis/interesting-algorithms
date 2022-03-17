@@ -1,3 +1,6 @@
-type Point = {x: number; y: number}
+type Point = {
+    x: number
+    y: number
+}
 
 export default Point
