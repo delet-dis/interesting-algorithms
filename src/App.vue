@@ -72,4 +72,9 @@ export default class App extends Vue {
 .cardCenterChild{
     flex: 1;
 }
+
+.columnCentered{
+    float: none;
+    margin: 0 auto;
+}
 </style>
