@@ -14,28 +14,14 @@ export default class Card extends Vue {
 }
 </script>
 
-<style>
-:root {
-    --cardBackroundColor: #FBFBFB;
-}
-</style>
-
 <style scoped>
 .card {
-    width: fit-content;
     height: fit-content;
 
-    padding: 2em;
-
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07),
-    0 2px 4px rgba(0, 0, 0, 0.07),
-    0 4px 8px rgba(0, 0, 0, 0.07),
-    0 8px 16px rgba(0, 0, 0, 0.07),
-    0 16px 32px rgba(0, 0, 0, 0.07),
-    0 32px 64px rgba(0, 0, 0, 0.07);
-
-    background-color: var(--cardBackroundColor);
+    padding: 1em 2em;
 
     border-radius: 0.5em;
+
+    box-shadow: 0 3px 11px -4px rgba(34, 60, 80, 0.6);
 }
 </style>

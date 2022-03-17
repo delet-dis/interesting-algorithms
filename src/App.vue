@@ -1,12 +1,18 @@
 <template>
     <metainfo>
-        <template v-slot:title="{ content }">{{ content ? `${content} | Interesting Algorithms` : `Interesting Algorithms` }}</template>
+        <template v-slot:title="{ content }">
+            {{ content ? `${content} | Interesting Algorithms` : `Interesting Algorithms` }}
+        </template>
     </metainfo>
 
     <Sidebar/>
 
     <div class="app" :style="{marginLeft: sidebarState.getSidebarPadding + 'em'}">
-        <router-view/>
+        <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+                <component :is="Component"/>
+            </transition>
+        </router-view>
     </div>
 </template>
 
@@ -26,11 +32,44 @@ export default class App extends Vue {
     sidebarState = SidebarState.getInstance()
     meta = setup(() => useMeta({
         title: '🏠',
-        htmlAttrs: { lang: 'ru', amp: true }
+        htmlAttrs: {lang: 'ru', amp: true}
     }))
 }
 </script>
 
 <style>
+* {
+    font-family: Montserrat, sans-serif;
+}
 
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.app {
+    transition: margin 0.7s;
+}
+
+.container {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.cardCenter{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
+
+.cardCenterChild{
+    flex: 1;
+}
 </style>

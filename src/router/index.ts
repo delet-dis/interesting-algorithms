@@ -5,12 +5,12 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'about',
-        component: () => import('../ui/views/AboutView.vue'),
+        component: () => import('../ui/views/aboutView/AboutView.vue'),
     },
     {
         path: '/labyrinthAlgorithm',
-        name: 'test',
-        component: () => import('../ui/views/AboutView.vue'),
+        name: 'labyrinth',
+        component: () => import('../ui/views/labyrinthView/LabyrinthView.vue'),
     },
     {
         path: '/clusteringAlgorithm',
@@ -37,14 +37,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'test',
         component: App
     }
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-    // }
 ]
 
 const router = createRouter({
