@@ -101,7 +101,6 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
     public generateLabyrinth(size: number): LabyrinthCell[][] {
 
         let Labyrinth: LabyrinthCell[][] = []
-        let list: number[] = []
 
         for (let i = 0; i < size; i++) {
             Labyrinth[i] = []
