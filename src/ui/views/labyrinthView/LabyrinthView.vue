@@ -7,13 +7,16 @@
                 </Card>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card class = "cardCenter">
-                    <LabyrinthTable :labyrinthSizingProp="this.getLabyrinthSizing" class="cardCenterChild"/>
+                <Card class="cardCenter">
+                    <LabyrinthTable :labyrinthSizingProp="getLabyrinthSizing" class="cardCenterChild"/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
                 <Card>
-                    <LabyrinthConfigurator :labyrinthSizingProp="this.getLabyrinthSizing" v-on:setLabyrinthSizing="setLabyrinthSizing"/>
+                    <LabyrinthConfigurator :labyrinthSizingProp="getLabyrinthSizing"
+                                           :isEditableProp="getIsConfigEditable"
+                                           v-on:setIsConfigEditable="setIsConfigEditable"
+                                           v-on:setLabyrinthSizing="setLabyrinthSizing"/>
                 </Card>
             </div>
         </div>
@@ -43,15 +46,24 @@ export default class LabyrinthView extends Vue {
         htmlAttrs: {lang: 'ru', amp: true}
     }))
 
+    isConfigEditable = true
+
     labyrinthSizing = 10
 
-    get getLabyrinthSizing(){
+    get getIsConfigEditable() {
+        return this.isConfigEditable
+    }
+
+    get getLabyrinthSizing() {
         return this.labyrinthSizing
     }
 
     setLabyrinthSizing(newValue: number) {
         this.labyrinthSizing = newValue
-        console.log(this.labyrinthSizing)
+    }
+
+    setIsConfigEditable(newValue: boolean) {
+        this.isConfigEditable = newValue
     }
 }
 </script>
