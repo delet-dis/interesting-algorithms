@@ -90,19 +90,19 @@ export default class LabyrinthView extends Vue {
 
     labyrinthSizing = 10
 
-    get getIsConfigEditable() {
+    private get getIsConfigEditable() {
         return this.isConfigEditable
     }
 
-    get getLabyrinthSizing() {
+    private get getLabyrinthSizing() {
         return this.labyrinthSizing
     }
 
-    setLabyrinthSizing(newValue: number) {
+    private setLabyrinthSizing(newValue: number) {
         this.labyrinthSizing = newValue
     }
 
-    setIsConfigEditable(newValue: boolean) {
+    private setIsConfigEditable(newValue: boolean) {
         this.isConfigEditable = newValue
     }
 }

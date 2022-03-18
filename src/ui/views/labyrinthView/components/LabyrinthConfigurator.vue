@@ -37,7 +37,7 @@ export default class LabyrinthConfigurator extends Vue.with(Props) {
         return this.labyrinthSizingProp
     }
 
-    get isEditable(){
+    private get isEditable(){
         return this.isEditableProp
     }
 }

@@ -39,25 +39,25 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
         return list
     }
 
-    private static createWay(size: number, Maze: LabyrinthCell[][], position: number, positionNum: number): LabyrinthCell[][] {
+    private static createWay(size: number, maze: LabyrinthCell[][], position: number, positionNum: number): LabyrinthCell[][] {
         const j = positionNum % size
         const i = Math.floor(positionNum / size)
 
         const PossibleWays: Array<number> = [4, 4, 4, 4]
 
-        if (i + 2 < size && Maze[i + 2][j].type === LabyrinthCellType.EMPTY_CELL) {
+        if (i + 2 < size && maze[i + 2][j].type === LabyrinthCellType.EMPTY_CELL) {
             PossibleWays[0] = 0
         }
 
-        if (i - 2 >= 0 && Maze[i - 2][j].type === LabyrinthCellType.EMPTY_CELL) {
+        if (i - 2 >= 0 && maze[i - 2][j].type === LabyrinthCellType.EMPTY_CELL) {
             PossibleWays[1] = 1
         }
 
-        if (j + 2 < size && Maze[i][j + 2].type === LabyrinthCellType.EMPTY_CELL) {
+        if (j + 2 < size && maze[i][j + 2].type === LabyrinthCellType.EMPTY_CELL) {
             PossibleWays[2] = 2
         }
 
-        if (j - 2 >= 0 && Maze[i][j - 2].type === LabyrinthCellType.EMPTY_CELL) {
+        if (j - 2 >= 0 && maze[i][j - 2].type === LabyrinthCellType.EMPTY_CELL) {
             PossibleWays[3] = 3
         }
 
@@ -70,61 +70,60 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
 
         for (let m = 0; m < 4; m++) {
             if (PossibleWays[m] === 0) {
-                Maze[i + 1][j].type = LabyrinthCellType.EMPTY_CELL
-                Maze[i][j].type = LabyrinthCellType.EMPTY_CELL
+                maze[i + 1][j].type = LabyrinthCellType.EMPTY_CELL
+                maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
 
             if (PossibleWays[m] === 1) {
-                Maze[i - 1][j].type = LabyrinthCellType.EMPTY_CELL
-                Maze[i][j].type = LabyrinthCellType.EMPTY_CELL
+                maze[i - 1][j].type = LabyrinthCellType.EMPTY_CELL
+                maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
 
             if (PossibleWays[m] === 2) {
-                Maze[i][j + 1].type = LabyrinthCellType.EMPTY_CELL
-                Maze[i][j].type = LabyrinthCellType.EMPTY_CELL
+                maze[i][j + 1].type = LabyrinthCellType.EMPTY_CELL
+                maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
 
             if (PossibleWays[m] === 3) {
-                Maze[i][j - 1].type = LabyrinthCellType.EMPTY_CELL
-                Maze[i][j].type = LabyrinthCellType.EMPTY_CELL
+                maze[i][j - 1].type = LabyrinthCellType.EMPTY_CELL
+                maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
         }
         list.splice(position, 1)
-        list = LabyrinthGeneratorRepository.findPossibleDirection(size, Maze, list, i, j)
-        return Maze
+        list = LabyrinthGeneratorRepository.findPossibleDirection(size, maze, list, i, j)
+        return maze
     }
 
     public generateLabyrinth(size: number): LabyrinthCell[][] {
 
-        let Labyrinth: LabyrinthCell[][] = []
+        let labyrinth: LabyrinthCell[][] = []
 
         for (let i = 0; i < size; i++) {
-            Labyrinth[i] = []
+            labyrinth[i] = []
 
             for (let j = 0; j < size; j++) {
-                Labyrinth[i][j] = new LabyrinthCell(j, i, LabyrinthCellType.BORDER_CELL)
+                labyrinth[i][j] = new LabyrinthCell(j, i, LabyrinthCellType.BORDER_CELL)
             }
         }
 
         const a: number = Math.floor(Math.random() * size)
         const b: number = Math.floor(Math.random() * size)
 
-        list = LabyrinthGeneratorRepository.findPossibleDirection(size, Labyrinth, list, a, b)
+        list = LabyrinthGeneratorRepository.findPossibleDirection(size, labyrinth, list, a, b)
 
-        Labyrinth[a][b].type = LabyrinthCellType.EMPTY_CELL
+        labyrinth[a][b].type = LabyrinthCellType.EMPTY_CELL
 
         for (let s = 0; s < Math.floor(Math.pow(Math.log(size), 1.5) * size); s++) {
             const k = Math.floor(Math.random() * list.length)
             const position = list[k]
-            Labyrinth = LabyrinthGeneratorRepository.createWay(size, Labyrinth, k, position)
+            labyrinth = LabyrinthGeneratorRepository.createWay(size, labyrinth, k, position)
         }
 
-        return Labyrinth
+        return labyrinth
     }
-
 }
 

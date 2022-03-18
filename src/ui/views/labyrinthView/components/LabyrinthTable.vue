@@ -23,7 +23,7 @@ class Props {
     components: {},
 })
 export default class LabyrinthDescription extends Vue.with(Props) {
-    get getLabyrinthSizingProp() {
+    private get getLabyrinthSizingProp() {
         return this.labyrinthSizingProp
     }
 }
