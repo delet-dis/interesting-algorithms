@@ -34,12 +34,10 @@ export default class LabyrinthDescription extends Vue.with(Props) {
     width: 30vw;
     height: 30vw;
 
-    border-spacing: 0px;
+    border-spacing: 0;
 }
 
 .table-cell {
     border: 1px solid black;
 }
-
-
 </style>

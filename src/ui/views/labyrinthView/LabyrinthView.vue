@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="container">
         <div class="row">
             <div class="col-lg-3 col-md-12">
                 <Card>
@@ -7,7 +7,7 @@
                 </Card>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card class="cardCenter">
+                <Card class="cardCenter labyrinthCard">
                     <LabyrinthTable :labyrinthSizingProp="getLabyrinthSizing" class="cardCenterChild"/>
                 </Card>
             </div>
@@ -17,46 +17,6 @@
                                            :isEditableProp="getIsConfigEditable"
                                            v-on:setIsConfigEditable="setIsConfigEditable"
                                            v-on:setLabyrinthSizing="setLabyrinthSizing"/>
-
-                    <div class="separator"/>
-
-                    <button class="button button-border button-rounded generateButton"
-                            :class="{'button-primary button-glow':getIsConfigEditable===true,
-                            'button-flat': getIsConfigEditable===false}">
-                        Сгенерировать лабиринт
-                    </button>
-
-                    <div class="separator"/>
-
-                    <button class="button button-border button-rounded generateButton"
-                            :class="{'button-action':getIsConfigEditable===true,
-                            'button-flat': getIsConfigEditable===false}">
-                        Установить старт
-                    </button>
-
-                    <div class="spacer"/>
-
-                    <button class="button button-border button-rounded generateButton"
-                            :class="{'button-caution':getIsConfigEditable===true,
-                            'button-flat': getIsConfigEditable===false}">
-                        Установить финиш
-                    </button>
-
-                    <div class="spacer"/>
-
-                    <button class="button button-border button-rounded generateButton"
-                            :class="{'button-inverse':getIsConfigEditable===true,
-                            'button-flat': getIsConfigEditable===false}">
-                        Установить границы
-                    </button>
-
-                    <div class="separator"/>
-
-                    <button class="button button-border button-rounded generateButton"
-                            :class="{'button-inverse':getIsConfigEditable===true,
-                            'button-flat': getIsConfigEditable===false}">
-                        Очистить
-                    </button>
                 </Card>
             </div>
         </div>
@@ -115,21 +75,4 @@ p {
 </style>
 
 <style scoped>
-.separator {
-    border-top: 2px solid #bbb;
-    border-radius: 5px;
-
-    margin-top: 1.4em;
-
-    margin-bottom: 1.4em;
-}
-
-.button {
-    font-size: 12px;
-    width: 100%;
-}
-
-.spacer {
-    height: 1.4em;
-}
 </style>
