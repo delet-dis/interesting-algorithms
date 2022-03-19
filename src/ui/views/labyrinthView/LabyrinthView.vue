@@ -46,7 +46,8 @@
 
                     <button class="button button-border button-rounded generateButton"
                             :class="{'button-action activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}">
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="startPickingButton">
                         Установить старт
                     </button>
 
@@ -54,7 +55,8 @@
 
                     <button class="button button-border button-rounded generateButton"
                             :class="{'button-caution activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}">
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="finishPickingButton">
                         Установить финиш
                     </button>
 
@@ -68,12 +70,21 @@
 
                     <div class="separator"/>
 
+                    <button class="button button-border button-rounded generateButton"
+                            :class="{'button-highlight activeButton':isConfigEditable===true,
+                            'button-flat nonActiveButton': isConfigEditable===false}">
+                        Запустить
+                    </button>
+
+                    <div class="spacer"/>
+
                     <button class="button button-flat button-border button-rounded generateButton"
                             :class="{'activeButton':isConfigEditable===true,
                             'nonActiveButton': isConfigEditable===false}"
                             @click="clearCells">
                         Очистить
                     </button>
+
                 </Card>
             </div>
         </div>
@@ -91,6 +102,8 @@ import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
+import CellDisplayType from "@/ui/views/labyrinthView/enums/CellType";
+import PickingState from "@/ui/views/labyrinthView/enums/PickingState";
 
 
 @Options({
@@ -109,18 +122,92 @@ export default class LabyrinthView extends Vue {
     private isConfigEditable = true
     private _labyrinthSizing = 10
 
+     startPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        LabyrinthView.clearCell(cell)
+        cell.classList.remove('finish')
+        cell.classList.remove('border')
+        cell.classList.add('start')
+        LabyrinthView.makeCellsNonSelectable()
+
+        this.removeStartListener()
+    }
+
+     finishPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        LabyrinthView.clearCell(cell)
+        cell.classList.remove('start')
+        cell.classList.remove('border')
+        cell.classList.add('finish')
+        LabyrinthView.makeCellsNonSelectable()
+
+        this.removeFinishListener()
+    }
+
     private labyrinthCells: LabyrinthCell[][] | null = null
 
-    private get labyrinthSizing(){
+    private get labyrinthSizing() {
         return this._labyrinthSizing
     }
 
-    private set labyrinthSizing(newValue: number){
+    private set labyrinthSizing(newValue: number) {
         this._labyrinthSizing = newValue
 
         this.clearCells()
     }
 
+    // private set setPickingState(newValue:PickingState) {
+    //     let cells = document.getElementsByClassName(CellDisplayType.CELL)
+    //
+    //     switch(newValue){
+    //         case PickingState.NONE:{
+    //             Array.from(cells).forEach((cell) => {
+    //                 cell.classList.remove(CellDisplayType.STARTABLE_CELL)
+    //                 cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
+    //                 cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+    //             })
+    //
+    //             this.pickingState = newValue
+    //         }
+    //
+    //         case PickingState.START_PICKING:{
+    //             Array.from(cells).forEach((cell) => {
+    //                 cell.classList.add(CellDisplayType.STARTABLE_CELL)
+    //                 cell.classList.remove('start')
+    //
+    //                 let listener = (event: Event) => {
+    //                     let cell = (event.target as Element)
+    //
+    //                     LabyrinthView.clearCell(cell)
+    //                     cell.classList.remove('finish')
+    //                     cell.classList.remove('border')
+    //                     cell.classList.add('start')
+    //                     LabyrinthView.makeCellsNonSelectable()
+    //                 }
+    //
+    //                 cell.addEventListener('click', listener)
+    //             })
+    //         }
+    //     }
+    // }
+
+    private removeStartListener(){
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+        Array.from(cells).forEach((cell) => {
+            cell.removeEventListener('click', this.startPickingListener)
+        })
+    }
+
+    private removeFinishListener(){
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+        Array.from(cells).forEach((cell) => {
+            cell.removeEventListener('click', this.finishPickingListener)
+        })
+    }
 
     private generateLabyrinth() {
         this.setLabyrinthCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
@@ -138,21 +225,21 @@ export default class LabyrinthView extends Vue {
         if (cells !== null) {
             cells.forEach((subArray) => {
                     subArray.forEach((cell) => {
-                        let documentCell = document.getElementById(`table-cell-` + cell.xCoordinate + `x` + cell.yCoordinate)
+                        let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.xCoordinate + `x` + cell.yCoordinate)
 
                         switch (cell.type) {
                             case LabyrinthCellType.BORDER_CELL: {
-                                documentCell?.setAttribute("class", "table-cell border")
+                                documentCell?.setAttribute("class", CellDisplayType.BORDER_CELL)
                                 break
                             }
 
                             case LabyrinthCellType.START_CELL: {
-                                documentCell?.setAttribute("class", "table-cell start")
+                                documentCell?.setAttribute("class", CellDisplayType.START_CELL)
                                 break
                             }
 
                             case LabyrinthCellType.FINISH_CELL: {
-                                documentCell?.setAttribute("class", "table-cell finish")
+                                documentCell?.setAttribute("class", CellDisplayType.FINISH_CELL)
                                 break
                             }
                         }
@@ -163,14 +250,14 @@ export default class LabyrinthView extends Vue {
     }
 
     private clearCells() {
-        let cells = document.getElementsByClassName("table-cell")
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
 
         Array.from(cells).forEach((cell) => {
-            cell.setAttribute("class", "table-cell")
+            cell.setAttribute("class", CellDisplayType.CELL)
         })
     }
 
-    private initCardWidthListener() {
+    private static initCardWidthListener() {
         let card = document.getElementById("labyrinthCard")
 
         LabyrinthView.updateCardSize(card)
@@ -186,8 +273,72 @@ export default class LabyrinthView extends Vue {
         }
     }
 
+    private static makeCellsNonSelectable() {
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+        Array.from(cells).forEach((cell) => {
+            LabyrinthView.clearCell(cell)
+
+            // cell.replaceWith(cell.cloneNode(false))
+        })
+    }
+
+    private static clearCell(cell: Element) {
+        cell.classList.remove(CellDisplayType.STARTABLE_CELL)
+        cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
+        cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+    }
+
+    private makeCellsSelectableForStart() {
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+        Array.from(cells).forEach((cell) => {
+            cell.classList.add(CellDisplayType.STARTABLE_CELL)
+            cell.classList.remove('start')
+
+            cell.addEventListener('click', this.startPickingListener)
+        })
+    }
+
+    private makeCellsSelectableForFinish() {
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+        Array.from(cells).forEach((cell) => {
+            cell.classList.add(CellDisplayType.FINISHABLE_CELL)
+            cell.classList.remove('finish')
+
+            cell.addEventListener('click', this.finishPickingListener)
+        })
+    }
+
+    private static makeCellsSelectableForBorders() {
+        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+        Array.from(cells).forEach((cell) => {
+            cell.setAttribute("class", CellDisplayType.CELL + CellDisplayType.BORDERABLE_CELL)
+        })
+    }
+
+    private initStartPickingButtonOnclickListener() {
+        let startButton = document.getElementById("startPickingButton")
+
+        startButton?.addEventListener('click', () => {
+            this.makeCellsSelectableForStart()
+        })
+    }
+
+    private initFinishPickingButtonOnclickListener() {
+        let finishButton = document.getElementById("finishPickingButton")
+
+        finishButton?.addEventListener('click', () => {
+            this.makeCellsSelectableForFinish()
+        })
+    }
+
     mounted() {
-        this.initCardWidthListener()
+        LabyrinthView.initCardWidthListener()
+        this.initStartPickingButtonOnclickListener()
+        this.initFinishPickingButtonOnclickListener()
     }
 }
 </script>
@@ -217,6 +368,8 @@ h1 {
     word-break: break-all;
 
     border: 1px solid black;
+
+    transition: 0.3s;
 }
 
 .table-cell.border {
@@ -235,6 +388,24 @@ h1 {
     border: 1px solid #FF4351;
 
     background-color: #FF4351;
+}
+
+.table-cell.table-cell-startable:hover {
+    background-color: #A5DE37;
+
+    opacity: 0.3;
+}
+
+.table-cell.table-cell-finishable:hover {
+    background-color: #FF4351;
+
+    opacity: 0.3;
+}
+
+.table-cell.table-cell-borderable:hover {
+    background-color: #545454;
+
+    opacity: 0.3;
 }
 
 .separator {
