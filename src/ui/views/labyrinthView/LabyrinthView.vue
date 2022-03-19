@@ -102,8 +102,7 @@ import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
-import CellDisplayType from "@/ui/views/labyrinthView/enums/CellType";
-import PickingState from "@/ui/views/labyrinthView/enums/PickingState";
+import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 
 
 @Options({
