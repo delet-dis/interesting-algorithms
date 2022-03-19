@@ -43,51 +43,51 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
         const j = positionNum % size
         const i = Math.floor(positionNum / size)
 
-        const PossibleWays: Array<number> = [4, 4, 4, 4]
+        const possibleWays: Array<number> = [4, 4, 4, 4]
 
         if (i + 2 < size && maze[i + 2][j].type === LabyrinthCellType.EMPTY_CELL) {
-            PossibleWays[0] = 0
+            possibleWays[0] = 0
         }
 
         if (i - 2 >= 0 && maze[i - 2][j].type === LabyrinthCellType.EMPTY_CELL) {
-            PossibleWays[1] = 1
+            possibleWays[1] = 1
         }
 
         if (j + 2 < size && maze[i][j + 2].type === LabyrinthCellType.EMPTY_CELL) {
-            PossibleWays[2] = 2
+            possibleWays[2] = 2
         }
 
         if (j - 2 >= 0 && maze[i][j - 2].type === LabyrinthCellType.EMPTY_CELL) {
-            PossibleWays[3] = 3
+            possibleWays[3] = 3
         }
 
         const firstRand: number = Math.floor(Math.random() * 4)
         const secondRand: number = Math.floor(Math.random() * 4)
 
-        const helper: number = PossibleWays[firstRand]
-        PossibleWays[firstRand] = PossibleWays[secondRand]
-        PossibleWays[secondRand] = helper
+        const helper: number = possibleWays[firstRand]
+        possibleWays[firstRand] = possibleWays[secondRand]
+        possibleWays[secondRand] = helper
 
         for (let m = 0; m < 4; m++) {
-            if (PossibleWays[m] === 0) {
+            if (possibleWays[m] === 0) {
                 maze[i + 1][j].type = LabyrinthCellType.EMPTY_CELL
                 maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
 
-            if (PossibleWays[m] === 1) {
+            if (possibleWays[m] === 1) {
                 maze[i - 1][j].type = LabyrinthCellType.EMPTY_CELL
                 maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
 
-            if (PossibleWays[m] === 2) {
+            if (possibleWays[m] === 2) {
                 maze[i][j + 1].type = LabyrinthCellType.EMPTY_CELL
                 maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
             }
 
-            if (PossibleWays[m] === 3) {
+            if (possibleWays[m] === 3) {
                 maze[i][j - 1].type = LabyrinthCellType.EMPTY_CELL
                 maze[i][j].type = LabyrinthCellType.EMPTY_CELL
                 break
@@ -127,3 +127,4 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
     }
 }
 
+export default LabyrinthGeneratorRepository

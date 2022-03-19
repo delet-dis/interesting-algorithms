@@ -15,6 +15,7 @@ import {Options, setup, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import {useMeta} from "vue-meta";
 import AboutText from "@/ui/views/aboutView/components/AboutText.vue";
+import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 
 
 @Options({
@@ -32,5 +33,4 @@ export default class AboutView extends Vue {
 </script>
 
 <style scoped>
-    @import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 </style>
