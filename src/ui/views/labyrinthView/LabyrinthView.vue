@@ -30,7 +30,7 @@
                         Размерность поля
                     </p>
 
-                    <vue-slider v-model="labyrinthSizing" :disabled="!isConfigEditable" :dotSize="20" :max="30" :min="5"
+                    <vue-slider v-model="labyrinthSizing" :disabled="!isConfigEditable" :dotSize="20" :max="29" :min="5"
                                 :silent="true"/>
 
                     <div class="separator"/>
@@ -70,7 +70,8 @@
 
                     <button class="button button-flat button-border button-rounded generateButton"
                             :class="{'activeButton':isConfigEditable===true,
-                            'nonActiveButton': isConfigEditable===false}">
+                            'nonActiveButton': isConfigEditable===false}"
+                            @click="clearCells">
                         Очистить
                     </button>
                 </Card>
@@ -105,11 +106,21 @@ export default class LabyrinthView extends Vue {
         htmlAttrs: {lang: 'ru', amp: true}
     }))
 
-    isConfigEditable = true
-
-    labyrinthSizing = 10
+    private isConfigEditable = true
+    private _labyrinthSizing = 10
 
     private labyrinthCells: LabyrinthCell[][] | null = null
+
+    private get labyrinthSizing(){
+        return this._labyrinthSizing
+    }
+
+    private set labyrinthSizing(newValue: number){
+        this._labyrinthSizing = newValue
+
+        this.clearCells()
+    }
+
 
     private generateLabyrinth() {
         this.setLabyrinthCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
@@ -122,7 +133,7 @@ export default class LabyrinthView extends Vue {
     }
 
     private displayCells(cells: LabyrinthCell[][] | null) {
-        LabyrinthView.clearCells()
+        this.clearCells()
 
         if (cells !== null) {
             cells.forEach((subArray) => {
@@ -151,7 +162,7 @@ export default class LabyrinthView extends Vue {
         }
     }
 
-    private static clearCells() {
+    private clearCells() {
         let cells = document.getElementsByClassName("table-cell")
 
         Array.from(cells).forEach((cell) => {
@@ -234,13 +245,13 @@ h1 {
     margin-bottom: 1.4em;
 }
 
+.spacer {
+    height: 1.4em;
+}
+
 .button {
     font-size: 15px;
     width: 100%;
     overflow: hidden;
-}
-
-.spacer {
-    height: 1.4em;
 }
 </style>
