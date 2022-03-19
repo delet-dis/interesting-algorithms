@@ -121,31 +121,7 @@ export default class LabyrinthView extends Vue {
     private isConfigEditable = true
     private _labyrinthSizing = 10
 
-     startPickingListener = (event: Event) => {
-        let cell = (event.target as Element)
-
-        LabyrinthView.clearCell(cell)
-        cell.classList.remove('finish')
-        cell.classList.remove('border')
-        cell.classList.add('start')
-        LabyrinthView.makeCellsNonSelectable()
-
-        this.removeStartListener()
-    }
-
-     finishPickingListener = (event: Event) => {
-        let cell = (event.target as Element)
-
-        LabyrinthView.clearCell(cell)
-        cell.classList.remove('start')
-        cell.classList.remove('border')
-        cell.classList.add('finish')
-        LabyrinthView.makeCellsNonSelectable()
-
-        this.removeFinishListener()
-    }
-
-    private labyrinthCells: LabyrinthCell[][] | null = null
+    private cells = document.getElementsByClassName(CellDisplayType.CELL)
 
     private get labyrinthSizing() {
         return this._labyrinthSizing
@@ -154,72 +130,55 @@ export default class LabyrinthView extends Vue {
     private set labyrinthSizing(newValue: number) {
         this._labyrinthSizing = newValue
 
-        this.clearCells()
+        this.resetCellsClasses()
+
+        this.updateCellsCollection()
     }
 
-    // private set setPickingState(newValue:PickingState) {
-    //     let cells = document.getElementsByClassName(CellDisplayType.CELL)
-    //
-    //     switch(newValue){
-    //         case PickingState.NONE:{
-    //             Array.from(cells).forEach((cell) => {
-    //                 cell.classList.remove(CellDisplayType.STARTABLE_CELL)
-    //                 cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
-    //                 cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
-    //             })
-    //
-    //             this.pickingState = newValue
-    //         }
-    //
-    //         case PickingState.START_PICKING:{
-    //             Array.from(cells).forEach((cell) => {
-    //                 cell.classList.add(CellDisplayType.STARTABLE_CELL)
-    //                 cell.classList.remove('start')
-    //
-    //                 let listener = (event: Event) => {
-    //                     let cell = (event.target as Element)
-    //
-    //                     LabyrinthView.clearCell(cell)
-    //                     cell.classList.remove('finish')
-    //                     cell.classList.remove('border')
-    //                     cell.classList.add('start')
-    //                     LabyrinthView.makeCellsNonSelectable()
-    //                 }
-    //
-    //                 cell.addEventListener('click', listener)
-    //             })
-    //         }
-    //     }
-    // }
+    private startPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
 
-    private removeStartListener(){
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+        this.makeCellsNonSelectable()
+        cell.classList.remove(CellDisplayType.FINISH_CELL)
+        cell.classList.remove(CellDisplayType.BORDER_CELL)
+        cell.classList.add(CellDisplayType.START_CELL)
 
-        Array.from(cells).forEach((cell) => {
+        this.removeStartListener()
+    }
+
+    private finishPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        this.makeCellsNonSelectable()
+        cell.classList.remove(CellDisplayType.START_CELL)
+        cell.classList.remove(CellDisplayType.BORDER_CELL)
+        cell.classList.add(CellDisplayType.FINISH_CELL)
+
+        this.removeFinishListener()
+    }
+
+    private removeStartListener() {
+        Array.from(this.cells).forEach((cell) => {
             cell.removeEventListener('click', this.startPickingListener)
         })
     }
 
-    private removeFinishListener(){
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
-
-        Array.from(cells).forEach((cell) => {
+    private removeFinishListener() {
+        Array.from(this.cells).forEach((cell) => {
             cell.removeEventListener('click', this.finishPickingListener)
         })
     }
 
-    private generateLabyrinth() {
-        this.setLabyrinthCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+    private updateCellsCollection(){
+        this.cells = document.getElementsByClassName(CellDisplayType.CELL)
     }
 
-    private setLabyrinthCells(newValue: LabyrinthCell[][] | null) {
-        this.labyrinthCells = newValue
-
-        this.displayCells(this.labyrinthCells)
+    private generateLabyrinth() {
+        this.displayCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
     }
 
     private displayCells(cells: LabyrinthCell[][] | null) {
-        this.clearCells()
+        this.resetCellsClasses()
 
         if (cells !== null) {
             cells.forEach((subArray) => {
@@ -228,17 +187,17 @@ export default class LabyrinthView extends Vue {
 
                         switch (cell.type) {
                             case LabyrinthCellType.BORDER_CELL: {
-                                documentCell?.setAttribute("class", CellDisplayType.BORDER_CELL)
+                                documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
                                 break
                             }
 
                             case LabyrinthCellType.START_CELL: {
-                                documentCell?.setAttribute("class", CellDisplayType.START_CELL)
+                                documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.START_CELL)
                                 break
                             }
 
                             case LabyrinthCellType.FINISH_CELL: {
-                                documentCell?.setAttribute("class", CellDisplayType.FINISH_CELL)
+                                documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.FINISH_CELL)
                                 break
                             }
                         }
@@ -248,37 +207,15 @@ export default class LabyrinthView extends Vue {
         }
     }
 
-    private clearCells() {
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
-
-        Array.from(cells).forEach((cell) => {
+    private resetCellsClasses() {
+        Array.from(this.cells).forEach((cell) => {
             cell.setAttribute("class", CellDisplayType.CELL)
         })
     }
 
-    private static initCardWidthListener() {
-        let card = document.getElementById("labyrinthCard")
-
-        LabyrinthView.updateCardSize(card)
-
-        card?.addEventListener('resize', () => {
-            LabyrinthView.updateCardSize(card)
-        })
-    }
-
-    private static updateCardSize(card: HTMLElement | null) {
-        if (card != null) {
-            card.style.height = card.clientWidth + `px`
-        }
-    }
-
-    private static makeCellsNonSelectable() {
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
-
-        Array.from(cells).forEach((cell) => {
+    private makeCellsNonSelectable() {
+        Array.from(this.cells).forEach((cell) => {
             LabyrinthView.clearCell(cell)
-
-            // cell.replaceWith(cell.cloneNode(false))
         })
     }
 
@@ -288,32 +225,32 @@ export default class LabyrinthView extends Vue {
         cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
     }
 
-    private makeCellsSelectableForStart() {
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
+    private static updateCardSize(card: HTMLElement | null) {
+        if (card != null) {
+            card.style.height = card.clientWidth + `px`
+        }
+    }
 
-        Array.from(cells).forEach((cell) => {
+    private makeCellsSelectableForStart() {
+        Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.STARTABLE_CELL)
-            cell.classList.remove('start')
+            cell.classList.remove(CellDisplayType.START_CELL)
 
             cell.addEventListener('click', this.startPickingListener)
         })
     }
 
     private makeCellsSelectableForFinish() {
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
-
-        Array.from(cells).forEach((cell) => {
+        Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.FINISHABLE_CELL)
-            cell.classList.remove('finish')
+            cell.classList.remove(CellDisplayType.FINISH_CELL)
 
             cell.addEventListener('click', this.finishPickingListener)
         })
     }
 
-    private static makeCellsSelectableForBorders() {
-        let cells = document.getElementsByClassName(CellDisplayType.CELL)
-
-        Array.from(cells).forEach((cell) => {
+    private makeCellsSelectableForBorders() {
+        Array.from(this.cells).forEach((cell) => {
             cell.setAttribute("class", CellDisplayType.CELL + CellDisplayType.BORDERABLE_CELL)
         })
     }
@@ -331,6 +268,16 @@ export default class LabyrinthView extends Vue {
 
         finishButton?.addEventListener('click', () => {
             this.makeCellsSelectableForFinish()
+        })
+    }
+
+    private static initCardWidthListener() {
+        let card = document.getElementById("labyrinthCard")
+
+        LabyrinthView.updateCardSize(card)
+
+        card?.addEventListener('resize', () => {
+            LabyrinthView.updateCardSize(card)
         })
     }
 
@@ -371,19 +318,19 @@ h1 {
     transition: 0.3s;
 }
 
-.table-cell.border {
+.table-cell.table-cell-border {
     border: 1px solid #545454;
 
     background-color: #545454;
 }
 
-.table-cell.start {
+.table-cell.table-cell-start {
     border: 1px solid #A5DE37;
 
     background-color: #A5DE37;
 }
 
-.table-cell.finish {
+.table-cell.table-cell-finish {
     border: 1px solid #FF4351;
 
     background-color: #FF4351;

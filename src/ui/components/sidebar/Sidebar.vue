@@ -32,8 +32,8 @@ import SidebarLink from "@/ui/components/sidebar/SidebarLink.vue";
     components: {SidebarLink},
 })
 export default class Sidebar extends Vue {
-    readonly sidebarState = SidebarState.getInstance()
-    readonly sidebarDestinations = Destinations.destinationsList
+    private readonly sidebarState = SidebarState.getInstance()
+    private readonly sidebarDestinations = Destinations.destinationsList
 }
 </script>
 
