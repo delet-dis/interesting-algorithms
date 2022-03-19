@@ -18,10 +18,12 @@ export default class Card extends Vue {
 .card {
     height: fit-content;
 
-    padding: 1em 2em;
+    padding: 1em 1.8em;
 
     border-radius: 0.5em;
 
     box-shadow: 0 3px 11px -4px rgba(34, 60, 80, 0.6);
+
+    margin-bottom: 1em;
 }
 </style>

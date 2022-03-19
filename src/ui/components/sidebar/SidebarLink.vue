@@ -26,10 +26,10 @@ class Props {
     components: {},
 })
 export default class SidebarLink extends Vue.with(Props) {
-    readonly route = useRoute()
-    readonly sidebarState = SidebarState.getInstance()
+    private readonly route = useRoute()
+    private readonly sidebarState = SidebarState.getInstance()
 
-    isActive = this.route.path === this.sidebarLinkEntity.path
+    private isActive = this.route.path === this.sidebarLinkEntity.path
 
     get getIsActive() {
         return this.isActive

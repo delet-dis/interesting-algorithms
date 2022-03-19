@@ -28,7 +28,6 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
         return Math.abs(curPos.x - finish.x) + Math.abs(curPos.y - finish.y)
     }
 
-
     private static sift(arr: pointParams[]) {
         const len = arr.length
         let pos: number = len - 1

@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import './ui/assets/global.css'
+import './ui/assets/buttons.css'
 import router from './router'
 
 import '@fortawesome/fontawesome-free/js/all'
