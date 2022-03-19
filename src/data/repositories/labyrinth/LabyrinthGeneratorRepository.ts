@@ -104,6 +104,7 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
     public generateLabyrinth(size: number): LabyrinthCell[][] {
 
         let labyrinth: LabyrinthCell[][] = []
+
         LabyrinthGeneratorRepository.list=[]
         for (let i = 0; i < size; i++) {
             labyrinth[i] = []
@@ -121,7 +122,7 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
 
         labyrinth[a][b].type = LabyrinthCellType.EMPTY_CELL
 
-        for (let s = 0; s < Math.floor(Math.pow(Math.log(size), 1.5) * size); s++) {
+        for (let s = 0; s < Math.floor(Math.pow(Math.log(size), 2) * size); s++) {
             const k = Math.floor(Math.random() * LabyrinthGeneratorRepository.list.length)
             const position = LabyrinthGeneratorRepository.list[k]
             labyrinth = LabyrinthGeneratorRepository.createWay(size, labyrinth, k, position)
