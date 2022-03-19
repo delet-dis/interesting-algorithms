@@ -96,15 +96,15 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
         }
         LabyrinthGeneratorRepository.list.splice(position, 1)
         LabyrinthGeneratorRepository.list =
-            LabyrinthGeneratorRepository.findPossibleDirection(size, Maze, LabyrinthGeneratorRepository.list, i, j)
+            LabyrinthGeneratorRepository.findPossibleDirection(size, maze, LabyrinthGeneratorRepository.list, i, j)
 
-        return Maze
+        return maze
     }
 
     public generateLabyrinth(size: number): LabyrinthCell[][] {
 
         let labyrinth: LabyrinthCell[][] = []
-        list=[]
+        LabyrinthGeneratorRepository.list=[]
         for (let i = 0; i < size; i++) {
             labyrinth[i] = []
 
@@ -117,14 +117,14 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
         const b: number = Math.floor(Math.random() * size)
 
         LabyrinthGeneratorRepository.list =
-            LabyrinthGeneratorRepository.findPossibleDirection(size, Labyrinth, LabyrinthGeneratorRepository.list, a, b)
+            LabyrinthGeneratorRepository.findPossibleDirection(size, labyrinth, LabyrinthGeneratorRepository.list, a, b)
 
         labyrinth[a][b].type = LabyrinthCellType.EMPTY_CELL
 
         for (let s = 0; s < Math.floor(Math.pow(Math.log(size), 1.5) * size); s++) {
             const k = Math.floor(Math.random() * LabyrinthGeneratorRepository.list.length)
             const position = LabyrinthGeneratorRepository.list[k]
-            Labyrinth = LabyrinthGeneratorRepository.createWay(size, Labyrinth, k, position)
+            labyrinth = LabyrinthGeneratorRepository.createWay(size, labyrinth, k, position)
         }
 
         return labyrinth

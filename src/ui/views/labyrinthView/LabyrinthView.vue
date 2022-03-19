@@ -82,7 +82,7 @@
                     <button class="button button-flat button-border button-rounded generateButton"
                             :class="{'activeButton':isConfigEditable===true,
                             'nonActiveButton': isConfigEditable===false}"
-                            @click="clearCells">
+                            @click="resetCellsClasses">
                         Очистить
                     </button>
 
