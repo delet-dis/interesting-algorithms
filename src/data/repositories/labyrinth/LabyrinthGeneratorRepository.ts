@@ -2,10 +2,11 @@ import LabyrinthGeneratorInterface from "@/data/interfaces/labyrinth/LabyrinthGe
 import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 
-let list: number[] = []
 
 class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
     private static instance: LabyrinthGeneratorRepository
+
+    private static list: number[] = []
 
     public static getInstance(): LabyrinthGeneratorRepository {
         if (!LabyrinthGeneratorRepository.instance) {
@@ -93,8 +94,10 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
                 break
             }
         }
-        list.splice(position, 1)
-        list = LabyrinthGeneratorRepository.findPossibleDirection(size, Maze, list, i, j)
+        LabyrinthGeneratorRepository.list.splice(position, 1)
+        LabyrinthGeneratorRepository.list =
+            LabyrinthGeneratorRepository.findPossibleDirection(size, Maze, LabyrinthGeneratorRepository.list, i, j)
+
         return Maze
     }
 
@@ -113,13 +116,14 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
         const a: number = Math.floor(Math.random() * size)
         const b: number = Math.floor(Math.random() * size)
 
-        list = LabyrinthGeneratorRepository.findPossibleDirection(size, Labyrinth, list, a, b)
+        LabyrinthGeneratorRepository.list =
+            LabyrinthGeneratorRepository.findPossibleDirection(size, Labyrinth, LabyrinthGeneratorRepository.list, a, b)
 
         Labyrinth[a][b].type = LabyrinthCellType.EMPTY_CELL
 
         for (let s = 0; s < Math.floor(Math.pow(Math.log(size), 1.5) * size); s++) {
-            const k = Math.floor(Math.random() * list.length)
-            const position = list[k]
+            const k = Math.floor(Math.random() * LabyrinthGeneratorRepository.list.length)
+            const position = LabyrinthGeneratorRepository.list[k]
             Labyrinth = LabyrinthGeneratorRepository.createWay(size, Labyrinth, k, position)
         }
 
