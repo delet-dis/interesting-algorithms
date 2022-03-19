@@ -64,7 +64,8 @@
 
                     <button class="button button-border button-rounded generateButton"
                             :class="{'button-inverse activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}">
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="borderPickingButton">
                         Установить границы
                     </button>
 
@@ -157,6 +158,14 @@ export default class LabyrinthView extends Vue {
         this.removeFinishListener()
     }
 
+    private borderPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        cell.classList.remove(CellDisplayType.START_CELL)
+        cell.classList.remove(CellDisplayType.FINISH_CELL)
+        cell.classList.add(CellDisplayType.BORDER_CELL)
+    }
+
     private removeStartListener() {
         Array.from(this.cells).forEach((cell) => {
             cell.removeEventListener('click', this.startPickingListener)
@@ -169,12 +178,20 @@ export default class LabyrinthView extends Vue {
         })
     }
 
-    private updateCellsCollection(){
+    private removeBorderListener() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.removeEventListener('click', this.borderPickingListener)
+        })
+    }
+
+    private updateCellsCollection() {
         this.cells = document.getElementsByClassName(CellDisplayType.CELL)
     }
 
     private generateLabyrinth() {
         this.displayCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+
+        this.removeBorderListener()
     }
 
     private displayCells(cells: LabyrinthCell[][] | null) {
@@ -235,6 +252,7 @@ export default class LabyrinthView extends Vue {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.STARTABLE_CELL)
             cell.classList.remove(CellDisplayType.START_CELL)
+            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
             cell.addEventListener('click', this.startPickingListener)
         })
@@ -244,6 +262,7 @@ export default class LabyrinthView extends Vue {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.FINISHABLE_CELL)
             cell.classList.remove(CellDisplayType.FINISH_CELL)
+            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
             cell.addEventListener('click', this.finishPickingListener)
         })
@@ -251,7 +270,9 @@ export default class LabyrinthView extends Vue {
 
     private makeCellsSelectableForBorders() {
         Array.from(this.cells).forEach((cell) => {
-            cell.setAttribute("class", CellDisplayType.CELL + CellDisplayType.BORDERABLE_CELL)
+            cell.classList.add(CellDisplayType.BORDERABLE_CELL)
+
+            cell.addEventListener('click', this.borderPickingListener)
         })
     }
 
@@ -259,6 +280,7 @@ export default class LabyrinthView extends Vue {
         let startButton = document.getElementById("startPickingButton")
 
         startButton?.addEventListener('click', () => {
+            this.removeBorderListener()
             this.makeCellsSelectableForStart()
         })
     }
@@ -267,7 +289,16 @@ export default class LabyrinthView extends Vue {
         let finishButton = document.getElementById("finishPickingButton")
 
         finishButton?.addEventListener('click', () => {
+            this.removeBorderListener()
             this.makeCellsSelectableForFinish()
+        })
+    }
+
+    private initBorderPickingButtonOnclickListener() {
+        let borderButton = document.getElementById("borderPickingButton")
+
+        borderButton?.addEventListener('click', () => {
+            this.makeCellsSelectableForBorders()
         })
     }
 
@@ -285,6 +316,7 @@ export default class LabyrinthView extends Vue {
         LabyrinthView.initCardWidthListener()
         this.initStartPickingButtonOnclickListener()
         this.initFinishPickingButtonOnclickListener()
+        this.initBorderPickingButtonOnclickListener()
     }
 }
 </script>
