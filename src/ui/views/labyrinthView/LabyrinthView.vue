@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="container">
         <div class="row">
             <div class="col-lg-3 col-md-12">
                 <Card>
@@ -7,12 +7,13 @@
                 </Card>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card class="cardCenter labyrinthCard">
+                <Card class="cardCenter labyrinthCard" id="labyrinthCard">
                     <table class="table cardCenterChild">
                         <tbody>
                         <tr v-for="firstIterator in labyrinthSizing" :key="firstIterator">
                             <td v-for="secondIterator in labyrinthSizing" :key="secondIterator"
-                                :id="`table-cell-` + (firstIterator-1) + `x` + (secondIterator-1)" class="table-cell">&nbsp;
+                                :id="`table-cell-` + (firstIterator-1) + `x` + (secondIterator-1)" class="table-cell">
+                                &nbsp;
                             </td>
                         </tr>
                         </tbody>
@@ -29,7 +30,7 @@
                         Размерность поля
                     </p>
 
-                    <vue-slider v-model="labyrinthSizing" :disabled="!isConfigEditable" :dotSize="20" :max="40" :min="5"
+                    <vue-slider v-model="labyrinthSizing" :disabled="!isConfigEditable" :dotSize="20" :max="30" :min="5"
                                 :silent="true"/>
 
                     <div class="separator"/>
@@ -157,6 +158,26 @@ export default class LabyrinthView extends Vue {
             cell.setAttribute("class", "table-cell")
         })
     }
+
+    private initCardWidthListener() {
+        let card = document.getElementById("labyrinthCard")
+
+        LabyrinthView.updateCardSize(card)
+
+        card?.addEventListener('resize', () => {
+            LabyrinthView.updateCardSize(card)
+        })
+    }
+
+    private static updateCardSize(card: HTMLElement | null) {
+        if (card != null) {
+            card.style.height = card.clientWidth + `px`
+        }
+    }
+
+    mounted() {
+        this.initCardWidthListener()
+    }
 }
 </script>
 
@@ -172,13 +193,18 @@ h1 {
 }
 
 .table {
-    width: 30vw;
-    height: 30vw;
+    table-layout: fixed;
+    height: 100%;
 
     border-spacing: 0;
 }
 
 .table-cell {
+    width: auto;
+    height: auto;
+
+    word-break: break-all;
+
     border: 1px solid black;
 }
 
