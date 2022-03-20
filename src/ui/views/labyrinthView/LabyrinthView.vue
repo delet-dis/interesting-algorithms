@@ -37,8 +37,8 @@
 
                     <button class="button button-border button-rounded generateButton"
                             :class="{'button-primary button-glow activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}" id="generateButton"
-                            @click="generateLabyrinth">
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="generateButton">
                         Сгенерировать лабиринт
                     </button>
 
@@ -73,7 +73,8 @@
 
                     <button class="button button-border button-rounded generateButton"
                             :class="{'button-highlight activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}">
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="startButton">
                         Запустить
                     </button>
 
@@ -82,7 +83,7 @@
                     <button class="button button-flat button-border button-rounded generateButton"
                             :class="{'activeButton':isConfigEditable===true,
                             'nonActiveButton': isConfigEditable===false}"
-                            @click="resetCellsClasses">
+                            id="clearButton">
                         Очистить
                     </button>
 
@@ -104,6 +105,8 @@ import 'vue-slider-component/theme/antd.css'
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
+import Point from "@/data/models/labyrinth/Point";
+import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
 
 
 @Options({
@@ -189,39 +192,42 @@ export default class LabyrinthView extends Vue {
     }
 
     private generateLabyrinth() {
-        this.displayCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+        this.displayGeneratedCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
 
         this.removeBorderListener()
     }
 
-    private displayCells(cells: LabyrinthCell[][] | null) {
+    private displayGeneratedCells(cells: LabyrinthCell[][]) {
         this.resetCellsClasses()
 
-        if (cells !== null) {
-            cells.forEach((subArray) => {
-                    subArray.forEach((cell) => {
-                        let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.xCoordinate + `x` + cell.yCoordinate)
+        cells.forEach((subArray) => {
+                subArray.forEach((cell) => {
+                    let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.xCoordinate + `x` + cell.yCoordinate)
 
-                        switch (cell.type) {
-                            case LabyrinthCellType.BORDER_CELL: {
-                                documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
-                                break
-                            }
+                    documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
+                })
+            }
+        )
+    }
 
-                            case LabyrinthCellType.START_CELL: {
-                                documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.START_CELL)
-                                break
-                            }
+    private displayLabyrinthPathsCells(cells: LabyrinthCell[]) {
 
-                            case LabyrinthCellType.FINISH_CELL: {
-                                documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.FINISH_CELL)
-                                break
-                            }
-                        }
-                    })
-                }
-            )
+    }
+
+    private displayLabyrinthCorrectPathCells(cells: LabyrinthCell[]) {
+
+    }
+
+    private static getCellCoordinates(cell: Element): Point | null {
+        let regex = new RegExp("(\\d*)x(\\d*)", "g")
+
+        let matches = cell.id.match(regex)
+
+        if (matches && matches[0] != null && matches[1] != null) {
+            return new Point(Number(matches[0]), Number(matches[1]))
         }
+
+        return null
     }
 
     private resetCellsClasses() {
@@ -243,7 +249,7 @@ export default class LabyrinthView extends Vue {
     }
 
     private static updateCardSize(card: HTMLElement | null) {
-        if (card != null) {
+        if (card) {
             card.style.height = card.clientWidth + `px`
         }
     }
@@ -302,6 +308,30 @@ export default class LabyrinthView extends Vue {
         })
     }
 
+    private initStartButtonOnClickListener() {
+        let startButton = document.getElementById("startButton")
+
+        startButton?.addEventListener('click', () => {
+            this.submitCellsToSolver()
+        })
+    }
+
+    private initClearButtonOnClickListener() {
+        let clearButton = document.getElementById("clearButton")
+
+        clearButton?.addEventListener('click', () => {
+            this.resetCellsClasses()
+        })
+    }
+
+    private initGenerateButtonOnClickListener() {
+        let generateButton = document.getElementById("generateButton")
+
+        generateButton?.addEventListener('click', () => {
+            this.generateLabyrinth()
+        })
+    }
+
     private static initCardWidthListener() {
         let card = document.getElementById("labyrinthCard")
 
@@ -312,11 +342,64 @@ export default class LabyrinthView extends Vue {
         })
     }
 
+    private submitCellsToSolver() {
+        let cellsArray: LabyrinthCell[][] = []
+
+        let startCellPoint: Point | null = null
+        let finishCellPoint: Point | null = null
+
+        Array.from(this.cells).forEach((cell) => {
+            let point = LabyrinthView.getCellCoordinates(cell)
+
+            if (cell.classList.contains(CellDisplayType.START_CELL)) {
+                if (point) {
+                    cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.START_CELL))
+
+                    startCellPoint = point
+
+                    return
+                }
+            }
+
+            if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
+                if (point) {
+                    cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.FINISH_CELL))
+
+                    finishCellPoint = point
+
+                    return
+                }
+            }
+
+            if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
+                if (point) {
+                    cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.BORDER_CELL))
+
+                    return
+                }
+            }
+
+            if (point) {
+                cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.EMPTY_CELL))
+            }
+        })
+
+        if (startCellPoint && finishCellPoint) {
+            let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
+
+            this.displayLabyrinthPathsCells(solverRepositoryResult.processedCells)
+            this.displayLabyrinthCorrectPathCells(solverRepositoryResult.correctPathCells)
+        }
+    }
+
     mounted() {
         LabyrinthView.initCardWidthListener()
         this.initStartPickingButtonOnclickListener()
         this.initFinishPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()
+        this.initStartButtonOnClickListener()
+        this.initClearButtonOnClickListener()
+        this.initGenerateButtonOnClickListener()
     }
 }
 </script>
