@@ -107,6 +107,7 @@ import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 import Point from "@/data/models/labyrinth/Point";
 import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
+import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
 
 
 @Options({
@@ -204,13 +205,17 @@ export default class LabyrinthView extends Vue {
                 subArray.forEach((cell) => {
                     let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
-                    documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
+                    if (cell.type === LabyrinthCellType.BORDER_CELL) {
+                        documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
+                    }
                 })
             }
         )
     }
 
-    private async displayLabyrinthPathsCells(cells: LabyrinthCell[]) {
+    private async displayLabyrinthPathsCells(solution: LabyrinthSolution) {
+        let cells = solution.processedCells
+
         for (let i = 0; i < cells.length; i++) {
             let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cells[i].point.x + `x` + cells[i].point.y)
 
@@ -218,6 +223,8 @@ export default class LabyrinthView extends Vue {
 
             await new Promise(resolve => setTimeout(resolve, 300))
         }
+
+        await this.displayLabyrinthCorrectPathCells(solution.correctPathCells)
     }
 
     private async displayLabyrinthCorrectPathCells(cells: LabyrinthCell[]) {
@@ -230,16 +237,12 @@ export default class LabyrinthView extends Vue {
         }
     }
 
-    private static getCellCoordinates(cell: Element): Point | null {
+    private static getCellCoordinates(cell: Element): Point {
         let regex = new RegExp("(\\d*)x(\\d*)", "g")
 
-        let matches = cell.id.match(regex)
+        let matches = [...cell.id.matchAll(regex)]
 
-        if (matches && matches[0] != null && matches[1] != null) {
-            return new Point(Number(matches[0]), Number(matches[1]))
-        }
-
-        return null
+        return new Point(Number(matches[0][1]), Number(matches[0][2]))
     }
 
     private resetCellsClasses() {
@@ -365,7 +368,11 @@ export default class LabyrinthView extends Vue {
     }
 
     private submitCellsToSolver() {
-        let cellsArray: LabyrinthCell[][] = []
+        let cellsArray: LabyrinthCell[][] = new Array(this.labyrinthSizing)
+
+        for (let i = 0; i < this.labyrinthSizing; i++) {
+            cellsArray[i] = new Array(this.labyrinthSizing)
+        }
 
         let startCellPoint: Point | null = null
         let finishCellPoint: Point | null = null
@@ -411,10 +418,7 @@ export default class LabyrinthView extends Vue {
 
             this.isConfigEditable = false
 
-            this.displayLabyrinthPathsCells(solverRepositoryResult.processedCells)
-            this.displayLabyrinthCorrectPathCells(solverRepositoryResult.correctPathCells)
-
-            this.isConfigEditable = true
+            this.displayLabyrinthPathsCells(solverRepositoryResult)
         }
     }
 
@@ -466,7 +470,7 @@ h1 {
 }
 
 .table-cell.table-cell-start {
-    border: 1px solid #A5DE37;
+    border: 1px solid #b9e563;
 
     background-color: #A5DE37;
 }
@@ -478,13 +482,13 @@ h1 {
 }
 
 .table-cell.table-cell-wrong-path {
-    border: 1px solid #FEAE1B;
+    border: 1px solid #fec04e;
 
     background-color: #FEAE1B;
 }
 
 .table-cell.table-cell-correct-path {
-    border: 1px solid #7B72E9;
+    border: 1px solid #a49ef0;
 
     background-color: #7B72E9;
 }
