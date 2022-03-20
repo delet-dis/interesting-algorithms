@@ -202,7 +202,7 @@ export default class LabyrinthView extends Vue {
 
         cells.forEach((subArray) => {
                 subArray.forEach((cell) => {
-                    let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.xCoordinate + `x` + cell.yCoordinate)
+                    let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
                     documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
                 })
@@ -210,12 +210,24 @@ export default class LabyrinthView extends Vue {
         )
     }
 
-    private displayLabyrinthPathsCells(cells: LabyrinthCell[]) {
+    private async displayLabyrinthPathsCells(cells: LabyrinthCell[]) {
+        for (let i = 0; i < cells.length; i++) {
+            let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cells[i].point.x + `x` + cells[i].point.y)
 
+            documentCell?.classList.add(CellDisplayType.WRONG_PATH_CELL)
+
+            await new Promise(resolve => setTimeout(resolve, 300))
+        }
     }
 
-    private displayLabyrinthCorrectPathCells(cells: LabyrinthCell[]) {
+    private async displayLabyrinthCorrectPathCells(cells: LabyrinthCell[]) {
+        for (let i = 0; i < cells.length; i++) {
+            let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cells[i].point.x + `x` + cells[i].point.y)
 
+            documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
+
+            await new Promise(resolve => setTimeout(resolve, 100))
+        }
     }
 
     private static getCellCoordinates(cell: Element): Point | null {
@@ -282,10 +294,18 @@ export default class LabyrinthView extends Vue {
         })
     }
 
+    private clearPreviousResult() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
+            cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
+        })
+    }
+
     private initStartPickingButtonOnclickListener() {
         let startButton = document.getElementById("startPickingButton")
 
         startButton?.addEventListener('click', () => {
+            this.clearPreviousResult()
             this.removeBorderListener()
             this.makeCellsSelectableForStart()
         })
@@ -295,6 +315,7 @@ export default class LabyrinthView extends Vue {
         let finishButton = document.getElementById("finishPickingButton")
 
         finishButton?.addEventListener('click', () => {
+            this.clearPreviousResult()
             this.removeBorderListener()
             this.makeCellsSelectableForFinish()
         })
@@ -304,6 +325,7 @@ export default class LabyrinthView extends Vue {
         let borderButton = document.getElementById("borderPickingButton")
 
         borderButton?.addEventListener('click', () => {
+            this.clearPreviousResult()
             this.makeCellsSelectableForBorders()
         })
     }
@@ -353,7 +375,7 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.START_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.START_CELL))
+                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
 
                     startCellPoint = point
 
@@ -363,7 +385,7 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.FINISH_CELL))
+                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
 
                     finishCellPoint = point
 
@@ -373,22 +395,26 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.BORDER_CELL))
+                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
 
                     return
                 }
             }
 
             if (point) {
-                cellsArray[point.x][point.y] = (new LabyrinthCell(point.x, point.y, LabyrinthCellType.EMPTY_CELL))
+                cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
             }
         })
 
         if (startCellPoint && finishCellPoint) {
             let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
 
+            this.isConfigEditable = false
+
             this.displayLabyrinthPathsCells(solverRepositoryResult.processedCells)
             this.displayLabyrinthCorrectPathCells(solverRepositoryResult.correctPathCells)
+
+            this.isConfigEditable = true
         }
     }
 
@@ -449,6 +475,18 @@ h1 {
     border: 1px solid #FF4351;
 
     background-color: #FF4351;
+}
+
+.table-cell.table-cell-wrong-path {
+    border: 1px solid #FEAE1B;
+
+    background-color: #FEAE1B;
+}
+
+.table-cell.table-cell-correct-path {
+    border: 1px solid #7B72E9;
+
+    background-color: #7B72E9;
 }
 
 .table-cell.table-cell-startable:hover {
