@@ -1,6 +1,7 @@
 import LabyrinthGeneratorInterface from "@/data/interfaces/labyrinth/LabyrinthGeneratorInterface";
 import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
+import Point from "@/data/models/labyrinth/Point";
 
 
 class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
@@ -104,13 +105,12 @@ class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {
     public generateLabyrinth(size: number): LabyrinthCell[][] {
 
         let labyrinth: LabyrinthCell[][] = []
-
         LabyrinthGeneratorRepository.list=[]
         for (let i = 0; i < size; i++) {
             labyrinth[i] = []
 
             for (let j = 0; j < size; j++) {
-                labyrinth[i][j] = new LabyrinthCell(j, i, LabyrinthCellType.BORDER_CELL)
+                labyrinth[i][j] = new LabyrinthCell(new Point(j, i), LabyrinthCellType.BORDER_CELL)
             }
         }
 
