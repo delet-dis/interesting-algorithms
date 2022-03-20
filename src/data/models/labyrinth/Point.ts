@@ -1,6 +1,6 @@
-type Point = {
-    x: number
-    y: number
+class Point {
+    constructor(public x: number, public y: number) {
+    }
 }
 
 export default Point

@@ -58,8 +58,8 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
         const xLimit: number = labyrinthCells.length - 1
         const yLimit: number = labyrinthCells[0].length - 1
 
-        const grandparent = {x: -2, y: -2}
-        const noParent = {x: -1, y: -1}
+        const grandparent: Point = new Point(0, 0)
+        const noParent = new Point(0, 0)
         const parents: Point[][] = Array(labyrinthCells.length)
         for (let i = 0; i < labyrinthCells.length; i++) {
             parents[i] = new Array(labyrinthCells[0].length).fill(noParent)
@@ -80,39 +80,27 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
 
             if (x > 0 && parents[y][x - 1] == noParent && labyrinthCells[y][x - 1].type) {
                 parents[y][x - 1] = parent
-                newPointsToCheck.push({
-                    x: x - 1,
-                    y: y
-                })
+                newPointsToCheck.push(new Point(x - 1, y))
             }
 
             if (x < xLimit && parents[y][x + 1] == noParent && labyrinthCells[y][x + 1].type) {
                 parents[y][x + 1] = parent
-                newPointsToCheck.push({
-                    x: x + 1,
-                    y: y
-                })
+                newPointsToCheck.push(new Point(x + 1, y))
             }
 
             if (y > 0 && parents[y - 1][x] == noParent && labyrinthCells[y - 1][x].type) {
                 parents[y - 1][x] = parent
-                newPointsToCheck.push({
-                    x: x,
-                    y: y - 1
-                })
+                newPointsToCheck.push(new Point(x, y - 1))
             }
 
             if (y < yLimit && parents[y + 1][x] == noParent && labyrinthCells[y + 1][x].type) {
                 parents[y + 1][x] = parent
-                newPointsToCheck.push({
-                    x: x,
-                    y: y + 1
-                })
+                newPointsToCheck.push(new Point(x, y + 1))         
             }
 
 
             newPointsToCheck.every((newPoint) => {
-                processedCells.push(new LabyrinthCell(newPoint.x, newPoint.y, LabyrinthCellType.PATH_CELL))
+                processedCells.push(new LabyrinthCell(newPoint, LabyrinthCellType.PATH_CELL))
 
                 if (newPoint.x == finish.x && newPoint.y == finish.y) {
                     pathFound = true
@@ -136,7 +124,7 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
             let parent: Point = finish;
 
             while (parent != grandparent) {
-                minPathCells.unshift(new LabyrinthCell(parent.x, parent.y, LabyrinthCellType.PATH_CELL))
+                minPathCells.unshift(new LabyrinthCell(parent, LabyrinthCellType.PATH_CELL))
                 parent = parents[parent.y][parent.x]
             }
         }
