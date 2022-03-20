@@ -58,13 +58,12 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
         const xLimit: number = labyrinthCells.length - 1
         const yLimit: number = labyrinthCells[0].length - 1
 
-        const grandparent: Point = new Point(0, 0)
         const noParent = new Point(0, 0)
         const parents: Point[][] = Array(labyrinthCells.length)
         for (let i = 0; i < labyrinthCells.length; i++) {
             parents[i] = new Array(labyrinthCells[0].length).fill(noParent)
         }
-        parents[start.y][start.x] = grandparent
+        parents[start.y][start.x] = new Point(0, 0)
 
         const pointsToCheck: pointParams[] = [{
             coords: start,
@@ -100,8 +99,6 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
 
 
             newPointsToCheck.every((newPoint) => {
-                processedCells.push(new LabyrinthCell(newPoint, LabyrinthCellType.PATH_CELL))
-
                 if (newPoint.x == finish.x && newPoint.y == finish.y) {
                     pathFound = true
                     return false
@@ -112,7 +109,8 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
                     fromStartToPoint: prevPathLen + 1,
                     wholePathLen: prevPathLen + LabyrinthSolverRepository.distanceToFinish(newPoint, finish)
                 })
-
+                
+                processedCells.push(new LabyrinthCell(newPoint, LabyrinthCellType.PATH_CELL))
                 LabyrinthSolverRepository.sift(pointsToCheck)
                 return true
             })
@@ -121,16 +119,16 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
         }
 
         if (pathFound) {
-            let parent: Point = finish;
-
-            while (parent != grandparent) {
+            let parent: Point = parents[finish.y][finish.x];
+            while (parent != start) {
                 minPathCells.unshift(new LabyrinthCell(parent, LabyrinthCellType.PATH_CELL))
                 parent = parents[parent.y][parent.x]
             }
         }
 
-
-        return new LabyrinthSolution(processedCells, minPathCells);
+        const v = new LabyrinthSolution(processedCells, minPathCells);
+        console.log(v)
+        return v
     }
 }
 
