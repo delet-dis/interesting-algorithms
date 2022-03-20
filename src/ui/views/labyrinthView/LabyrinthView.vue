@@ -235,6 +235,8 @@ export default class LabyrinthView extends Vue {
 
             await new Promise(resolve => setTimeout(resolve, 100))
         }
+
+        this.isConfigEditable = true
     }
 
     private static getCellCoordinates(cell: Element): Point {
@@ -308,9 +310,11 @@ export default class LabyrinthView extends Vue {
         let startButton = document.getElementById("startPickingButton")
 
         startButton?.addEventListener('click', () => {
-            this.clearPreviousResult()
-            this.removeBorderListener()
-            this.makeCellsSelectableForStart()
+            if (this.isConfigEditable) {
+                this.clearPreviousResult()
+                this.removeBorderListener()
+                this.makeCellsSelectableForStart()
+            }
         })
     }
 
@@ -318,9 +322,11 @@ export default class LabyrinthView extends Vue {
         let finishButton = document.getElementById("finishPickingButton")
 
         finishButton?.addEventListener('click', () => {
-            this.clearPreviousResult()
-            this.removeBorderListener()
-            this.makeCellsSelectableForFinish()
+            if (this.isConfigEditable) {
+                this.clearPreviousResult()
+                this.removeBorderListener()
+                this.makeCellsSelectableForFinish()
+            }
         })
     }
 
@@ -328,8 +334,10 @@ export default class LabyrinthView extends Vue {
         let borderButton = document.getElementById("borderPickingButton")
 
         borderButton?.addEventListener('click', () => {
-            this.clearPreviousResult()
-            this.makeCellsSelectableForBorders()
+            if (this.isConfigEditable) {
+                this.clearPreviousResult()
+                this.makeCellsSelectableForBorders()
+            }
         })
     }
 
@@ -337,7 +345,9 @@ export default class LabyrinthView extends Vue {
         let startButton = document.getElementById("startButton")
 
         startButton?.addEventListener('click', () => {
-            this.submitCellsToSolver()
+            if (this.isConfigEditable) {
+                this.submitCellsToSolver()
+            }
         })
     }
 
@@ -345,7 +355,9 @@ export default class LabyrinthView extends Vue {
         let clearButton = document.getElementById("clearButton")
 
         clearButton?.addEventListener('click', () => {
-            this.resetCellsClasses()
+            if (this.isConfigEditable) {
+                this.resetCellsClasses()
+            }
         })
     }
 
@@ -353,7 +365,9 @@ export default class LabyrinthView extends Vue {
         let generateButton = document.getElementById("generateButton")
 
         generateButton?.addEventListener('click', () => {
-            this.generateLabyrinth()
+            if (this.isConfigEditable) {
+                this.generateLabyrinth()
+            }
         })
     }
 
