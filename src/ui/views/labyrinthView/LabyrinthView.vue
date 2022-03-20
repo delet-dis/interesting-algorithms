@@ -12,7 +12,7 @@
                         <tbody>
                         <tr v-for="firstIterator in labyrinthSizing" :key="firstIterator">
                             <td v-for="secondIterator in labyrinthSizing" :key="secondIterator"
-                                :id="`table-cell-` + (firstIterator-1) + `x` + (secondIterator-1)" class="table-cell">
+                                :id="`table-cell-` + (secondIterator-1) + `x` + (firstIterator-1)" class="table-cell">
                                 &nbsp;
                             </td>
                         </tr>
@@ -396,7 +396,7 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.START_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
 
                     startCellPoint = point
 
@@ -406,7 +406,7 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
 
                     finishCellPoint = point
 
@@ -416,14 +416,14 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
 
                     return
                 }
             }
 
             if (point) {
-                cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
+                cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
             }
         })
 
@@ -478,7 +478,7 @@ h1 {
 }
 
 .table-cell.table-cell-border {
-    border: 1px solid #545454;
+    border: 1px solid #808080;
 
     background-color: #545454;
 }
