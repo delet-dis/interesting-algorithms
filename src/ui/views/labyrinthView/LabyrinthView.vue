@@ -143,7 +143,7 @@ export default class LabyrinthView extends Vue {
     private startPickingListener = (event: Event) => {
         let cell = (event.target as Element)
 
-        this.makeCellsNonSelectable()
+        this.clearCells()
         cell.classList.remove(CellDisplayType.FINISH_CELL)
         cell.classList.remove(CellDisplayType.BORDER_CELL)
         cell.classList.add(CellDisplayType.START_CELL)
@@ -154,7 +154,7 @@ export default class LabyrinthView extends Vue {
     private finishPickingListener = (event: Event) => {
         let cell = (event.target as Element)
 
-        this.makeCellsNonSelectable()
+        this.clearCells()
         cell.classList.remove(CellDisplayType.START_CELL)
         cell.classList.remove(CellDisplayType.BORDER_CELL)
         cell.classList.add(CellDisplayType.FINISH_CELL)
@@ -253,7 +253,7 @@ export default class LabyrinthView extends Vue {
         })
     }
 
-    private makeCellsNonSelectable() {
+    private clearCells() {
         Array.from(this.cells).forEach((cell) => {
             LabyrinthView.clearCell(cell)
         })
@@ -263,6 +263,9 @@ export default class LabyrinthView extends Vue {
         cell.classList.remove(CellDisplayType.STARTABLE_CELL)
         cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
         cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+
+        cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
+        cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
     private static updateCardSize(card: HTMLElement | null) {
@@ -346,6 +349,7 @@ export default class LabyrinthView extends Vue {
 
         startButton?.addEventListener('click', () => {
             if (this.isConfigEditable) {
+                this.clearCells()
                 this.submitCellsToSolver()
             }
         })
