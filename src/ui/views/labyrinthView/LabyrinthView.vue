@@ -12,7 +12,7 @@
                         <tbody>
                         <tr v-for="firstIterator in labyrinthSizing" :key="firstIterator">
                             <td v-for="secondIterator in labyrinthSizing" :key="secondIterator"
-                                :id="`table-cell-` + (firstIterator-1) + `x` + (secondIterator-1)" class="table-cell">
+                                :id="`table-cell-` + (secondIterator-1) + `x` + (firstIterator-1)" class="table-cell">
                                 &nbsp;
                             </td>
                         </tr>
@@ -143,7 +143,7 @@ export default class LabyrinthView extends Vue {
     private startPickingListener = (event: Event) => {
         let cell = (event.target as Element)
 
-        this.makeCellsNonSelectable()
+        this.clearCells()
         cell.classList.remove(CellDisplayType.FINISH_CELL)
         cell.classList.remove(CellDisplayType.BORDER_CELL)
         cell.classList.add(CellDisplayType.START_CELL)
@@ -154,7 +154,7 @@ export default class LabyrinthView extends Vue {
     private finishPickingListener = (event: Event) => {
         let cell = (event.target as Element)
 
-        this.makeCellsNonSelectable()
+        this.clearCells()
         cell.classList.remove(CellDisplayType.START_CELL)
         cell.classList.remove(CellDisplayType.BORDER_CELL)
         cell.classList.add(CellDisplayType.FINISH_CELL)
@@ -253,7 +253,7 @@ export default class LabyrinthView extends Vue {
         })
     }
 
-    private makeCellsNonSelectable() {
+    private clearCells() {
         Array.from(this.cells).forEach((cell) => {
             LabyrinthView.clearCell(cell)
         })
@@ -263,6 +263,9 @@ export default class LabyrinthView extends Vue {
         cell.classList.remove(CellDisplayType.STARTABLE_CELL)
         cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
         cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+
+        cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
+        cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
     private static updateCardSize(card: HTMLElement | null) {
@@ -346,6 +349,7 @@ export default class LabyrinthView extends Vue {
 
         startButton?.addEventListener('click', () => {
             if (this.isConfigEditable) {
+                this.clearCells()
                 this.submitCellsToSolver()
             }
         })
@@ -396,7 +400,7 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.START_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
 
                     startCellPoint = point
 
@@ -406,7 +410,7 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
 
                     finishCellPoint = point
 
@@ -416,14 +420,14 @@ export default class LabyrinthView extends Vue {
 
             if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
                 if (point) {
-                    cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
 
                     return
                 }
             }
 
             if (point) {
-                cellsArray[point.x][point.y] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
+                cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
             }
         })
 
@@ -478,7 +482,7 @@ h1 {
 }
 
 .table-cell.table-cell-border {
-    border: 1px solid #545454;
+    border: 1px solid #808080;
 
     background-color: #545454;
 }
