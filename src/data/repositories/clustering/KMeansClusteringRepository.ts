@@ -1,7 +1,7 @@
 import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface";
 import Dot from "@/data/models/clustering/Dot";
 
-class KMeansClusteringRepository implements ClusteringInterface{
+class KMeansClusteringRepository implements ClusteringInterface {
     private static instance: KMeansClusteringRepository
 
     public static getInstance(): KMeansClusteringRepository {
@@ -16,3 +16,5 @@ class KMeansClusteringRepository implements ClusteringInterface{
         return [];
     }
 }
+
+export default KMeansClusteringRepository

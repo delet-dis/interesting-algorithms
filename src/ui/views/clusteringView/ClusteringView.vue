@@ -79,8 +79,8 @@ import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import ClusteringDescription from "@/ui/views/clusteringView/components/ClusteringDescription.vue";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
-import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 import Dot from "@/data/models/clustering/Dot";
+import KMeansClusteringRepository from "@/data/repositories/clustering/KMeansClusteringRepository";
 
 
 @Options({
@@ -218,10 +218,19 @@ export default class ClusteringView extends Vue {
         })
     }
 
+    private initKMeansButtonOnClickListener() {
+        let kMeansButton = document.getElementById("kMeansButton")
+
+        kMeansButton?.addEventListener('click', () => {
+            console.log(KMeansClusteringRepository.getInstance().splitByClusters(this.dotsToDisplay, this.numberOfClusters))
+        })
+    }
+
     mounted() {
         this.initCardWidthListener()
         this.initCanvas()
         this.initAddDotButtonOnClickListener()
+        this.initKMeansButtonOnClickListener()
     }
 }
 </script>
