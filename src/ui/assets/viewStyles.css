@@ -1,0 +1,25 @@
+p {
+    font-size: 20px;
+}
+
+h1 {
+    overflow-wrap: break-word;
+}
+
+.separator {
+    border-top: 2px solid #bbb;
+    border-radius: 5px;
+
+    margin-top: 1.4em;
+    margin-bottom: 1.4em;
+}
+
+.spacer {
+    height: 1.4em;
+}
+
+.button {
+    font-size: 15px;
+    width: 100%;
+    overflow: hidden;
+}
