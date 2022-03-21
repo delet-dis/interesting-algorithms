@@ -79,6 +79,7 @@ import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import ClusteringDescription from "@/ui/views/clusteringView/components/ClusteringDescription.vue";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
+import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 
 
 @Options({
@@ -96,12 +97,50 @@ export default class ClusteringView extends Vue {
 
     private _numberOfClusters = 6
 
+    private canvas: HTMLElement | null = null
+
     private get numberOfClusters() {
         return this._numberOfClusters
     }
 
     private set numberOfClusters(newValue: number) {
         this._numberOfClusters = newValue
+    }
+
+    private addDotListener = (event: MouseEvent) => {
+        let canvasRect = this.canvas?.getBoundingClientRect()
+
+        console.log("canvasClick")
+
+        if (canvasRect) {
+            console.log(event.clientX - canvasRect.left)
+            console.log(event.clientY - canvasRect.top)
+
+        }
+
+        this.removeAddDotListener()
+    }
+
+    private removeAddDotListener() {
+        this.canvas?.removeEventListener('click', this.addDotListener)
+    }
+
+    private makeCanvasAbleToAddDot() {
+        this.canvas?.addEventListener('click', this.addDotListener)
+    }
+
+    private initAddDotButtonOnClickListener() {
+        let addDotButton = document.getElementById("addDotButton")
+
+        addDotButton?.addEventListener('click', () => {
+            this.makeCanvasAbleToAddDot()
+        })
+    }
+
+    mounted() {
+        this.canvas = document.getElementById("clusterCanvas")
+
+        this.initAddDotButtonOnClickListener()
     }
 }
 </script>
@@ -110,18 +149,24 @@ export default class ClusteringView extends Vue {
 </style>
 
 <style scoped>
-.descriptionCard{
+.descriptionCard {
     padding-right: 1.3em;
     padding-left: 1.3em;
 }
 
 .clusterCanvas {
     width: 100%;
-    height: 100%;
+    height: 0;
+
+    border-radius: 0.5em;
+
+    border: 3px solid #808080;
+
+    padding-bottom: 100%;
 }
 
 .clusteringCard {
     height: 0;
-    padding-bottom: 100%;
+    padding: 0.2em 0.3em 100%;
 }
 </style>
