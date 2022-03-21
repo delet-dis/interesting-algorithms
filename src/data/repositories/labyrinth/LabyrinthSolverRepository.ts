@@ -7,6 +7,7 @@ import Point from "@/data/models/labyrinth/Point";
 
 type pointParams = {
     coords: Point
+    parent: Point
     fromStartToPoint: number
     wholePathLen: number
 }
@@ -37,7 +38,7 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
             if (chld - 1 >= 0 && arr[chld - 1].wholePathLen < arr[chld].wholePathLen)
                 chld--
 
-            if (arr[pos].wholePathLen >= arr[chld].wholePathLen) {
+            if (arr[pos].wholePathLen > arr[chld].wholePathLen) {
                 const tmp = arr[pos]
                 arr[pos] = arr[chld]
                 arr[chld] = tmp
@@ -60,13 +61,13 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
 
         const noParent = new Point(0, 0)
         const parents: Point[][] = Array(labyrinthCells.length)
-        for (let i = 0; i < labyrinthCells.length; i++) {
+        for (let i = 0; i < labyrinthCells.length; i++)
             parents[i] = new Array(labyrinthCells[0].length).fill(noParent)
-        }
-        parents[start.y][start.x] = new Point(0, 0)
+        
 
         const pointsToCheck: pointParams[] = [{
             coords: start,
+            parent: new Point(0, 0),
             fromStartToPoint: 0,
             wholePathLen: LabyrinthSolverRepository.distanceToFinish(start, finish)
         }]
@@ -74,43 +75,44 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
 
         while (pointsToCheck.length && !pathFound) {
 
-            const {coords: parent, fromStartToPoint: prevPathLen} = pointsToCheck.pop()!
-            const {x, y} = parent
+            const {coords: curCell, parent: parent, fromStartToPoint: prevPathLen} = pointsToCheck.pop()!
+            const {x, y} = curCell
+            if(parents[y][x] != noParent)
+                continue
+                
+            processedCells.push(new LabyrinthCell(curCell, LabyrinthCellType.PATH_CELL))
+            parents[y][x] = parent
 
-            if (x > 0 && parents[y][x - 1] == noParent && labyrinthCells[y][x - 1].type) {
-                parents[y][x - 1] = parent
+            if (x > 0 && parents[y][x - 1] == noParent && labyrinthCells[y][x - 1].type) 
                 newPointsToCheck.push(new Point(x - 1, y))
-            }
-
-            if (x < xLimit && parents[y][x + 1] == noParent && labyrinthCells[y][x + 1].type) {
-                parents[y][x + 1] = parent
+            
+            
+            if (x < xLimit && parents[y][x + 1] == noParent && labyrinthCells[y][x + 1].type) 
                 newPointsToCheck.push(new Point(x + 1, y))
-            }
+            
 
-            if (y > 0 && parents[y - 1][x] == noParent && labyrinthCells[y - 1][x].type) {
-                parents[y - 1][x] = parent
+            if (y > 0 && parents[y - 1][x] == noParent && labyrinthCells[y - 1][x].type) 
                 newPointsToCheck.push(new Point(x, y - 1))
-            }
+            
 
-            if (y < yLimit && parents[y + 1][x] == noParent && labyrinthCells[y + 1][x].type) {
-                parents[y + 1][x] = parent
+            if (y < yLimit && parents[y + 1][x] == noParent && labyrinthCells[y + 1][x].type) 
                 newPointsToCheck.push(new Point(x, y + 1))         
-            }
 
 
             newPointsToCheck.every((newPoint) => {
                 if (newPoint.x == finish.x && newPoint.y == finish.y) {
+                    parents[finish.y][finish.x] = curCell
                     pathFound = true
                     return false
                 }
 
                 pointsToCheck.push({
                     coords: newPoint,
+                    parent: curCell,
                     fromStartToPoint: prevPathLen + 1,
-                    wholePathLen: prevPathLen + LabyrinthSolverRepository.distanceToFinish(newPoint, finish)
+                    wholePathLen: prevPathLen + 1 + LabyrinthSolverRepository.distanceToFinish(newPoint, finish)
                 })
                 
-                processedCells.push(new LabyrinthCell(newPoint, LabyrinthCellType.PATH_CELL))
                 LabyrinthSolverRepository.sift(pointsToCheck)
                 return true
             })
@@ -126,9 +128,8 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
             }
         }
 
-        const v = new LabyrinthSolution(processedCells, minPathCells);
-        console.log(v)
-        return v
+        processedCells.shift()  // without start
+        return new LabyrinthSolution(processedCells, minPathCells);
     }
 }
 
