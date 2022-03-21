@@ -20,8 +20,9 @@ class KMeansClusteringRepository implements ClusteringInterface {
         const step = size / k
         let steper = 0
         for (let j = 0; j < k; j++, steper += step) {
-            this.clusArr[j].curX = allDots[steper].xCoordinate
-            this.clusArr[j].curY = allDots[steper].yCoordinate
+            console.log(steper, allDots.length)
+            this.clusArr[j].curX = allDots[Math.floor(steper)].xCoordinate
+            this.clusArr[j].curY = allDots[Math.floor(steper)].yCoordinate
         }
 
     }
@@ -58,7 +59,7 @@ class KMeansClusteringRepository implements ClusteringInterface {
             for (let j = 0; j < this.clusArr.length; j++) {
                 this.clusArr[j].SetCenter()
             }
-            for (let p = 0; p < 3; p++) {
+            for (let p = 0; p < numberOfClusters; p++) {
                 if (this.clusArr[p].curX == this.clusArr[p].lastX && this.clusArr[p].curY == this.clusArr[p].lastY)
                     chk++
             }
@@ -67,7 +68,7 @@ class KMeansClusteringRepository implements ClusteringInterface {
                 break
             }
         }
-        return [];
+        return dots;
     }
 }
 
