@@ -20,7 +20,7 @@ class KMeansClusteringRepository implements ClusteringInterface {
         const step = size / k
         let steper = 0
         for (let j = 0; j < k; j++, steper += step) {
-            
+
             this.clusArr[j].curX = allDots[Math.floor(steper)].xCoordinate
             this.clusArr[j].curY = allDots[Math.floor(steper)].yCoordinate
         }
@@ -49,6 +49,7 @@ class KMeansClusteringRepository implements ClusteringInterface {
     }
 
     splitByClusters(dots: Dot[], numberOfClusters: number): Dot[] {
+        this.clusArr=[]
         for (let i = 0; i < numberOfClusters; i++)
             this.clusArr[i] = new Cluster()
         this.IdentifyCenters(numberOfClusters, dots)
