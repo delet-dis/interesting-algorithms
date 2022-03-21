@@ -8,7 +8,7 @@
             </div>
             <div class="col-lg-6 col-md-12">
                 <Card class="cardCenter clusteringCard" id="clusteringCard">
-                    <canvas class="clusterCanvas" id="clusterCanvas"/>
+                    <canvas class="clusterCanvas" id="clusterCanvas" ref="clusterCanvas"/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -80,6 +80,7 @@ import ClusteringDescription from "@/ui/views/clusteringView/components/Clusteri
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
+import Dot from "@/data/models/clustering/Dot";
 
 
 @Options({
@@ -95,9 +96,20 @@ export default class ClusteringView extends Vue {
         htmlAttrs: {lang: 'ru', amp: true}
     }))
 
+    private _dotsToDisplay: Dot[] = []
     private _numberOfClusters = 6
+    private canvas: HTMLCanvasElement | null = null
+    private canvasContext: CanvasRenderingContext2D | null = null
 
-    private canvas: HTMLElement | null = null
+    private set dotsToDisplay(newValue: Dot[]) {
+        this._dotsToDisplay = newValue
+
+        this.drawDots()
+    }
+
+    private get dotsToDisplay() {
+        return this._dotsToDisplay
+    }
 
     private get numberOfClusters() {
         return this._numberOfClusters
@@ -107,17 +119,43 @@ export default class ClusteringView extends Vue {
         this._numberOfClusters = newValue
     }
 
-    private addDotListener = (event: MouseEvent) => {
-        let canvasRect = this.canvas?.getBoundingClientRect()
-
-        console.log("canvasClick")
-
-        if (canvasRect) {
-            console.log(event.clientX - canvasRect.left)
-            console.log(event.clientY - canvasRect.top)
-
+    private drawDots() {
+        if (this.canvas) {
+            this.canvasContext?.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            this.canvasContext?.beginPath()
+            this.canvasContext?.closePath()
         }
 
+        this.dotsToDisplay.forEach((dot) => {
+            if (this.canvasContext) {
+                this.canvasContext.moveTo(dot.xCoordinate, dot.yCoordinate)
+
+                this.canvasContext.beginPath()
+
+                this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
+
+                this.canvasContext.lineWidth = 20
+                this.canvasContext.strokeStyle = "#000000"
+
+                this.canvasContext.stroke()
+            }
+        })
+    }
+
+    private addDotListener = (event: MouseEvent) => {
+        let canvasRect = (event.target as Element).getBoundingClientRect()
+
+        if (canvasRect) {
+            let dotToAdd = new Dot(
+                event.clientX - canvasRect.left,
+                event.clientY - canvasRect.top
+            )
+
+            let dots = this.dotsToDisplay
+            dots.push(dotToAdd)
+
+            this.dotsToDisplay = dots
+        }
         this.removeAddDotListener()
     }
 
@@ -137,9 +175,52 @@ export default class ClusteringView extends Vue {
         })
     }
 
-    mounted() {
-        this.canvas = document.getElementById("clusterCanvas")
+    private initCanvas() {
+        this.canvas = document.getElementById("clusterCanvas") as HTMLCanvasElement
+        this.canvasContext = this.canvas.getContext("2d")
 
+        this.updateCanvasSize()
+    }
+
+    private updateCanvasSize() {
+        let clusteringCard = document.getElementById("clusteringCard")
+
+        if (clusteringCard) {
+            if (this.canvas) {
+                let clusteringCardOffsetWidth = clusteringCard!.offsetWidth - 30
+                let clusteringCardOffsetHeight = clusteringCard!.offsetHeight - 40
+
+                this.canvas.width = clusteringCardOffsetWidth
+                this.canvas.height = clusteringCardOffsetHeight
+
+                this.canvas.style.width = clusteringCardOffsetWidth + "px"
+                this.canvas.style.height = clusteringCardOffsetHeight + "px"
+            }
+        }
+        this.drawDots()
+    }
+
+    private static updateCardSize(card: HTMLElement | null) {
+        if (card) {
+            card.style.height = card.clientWidth + `px`
+        }
+    }
+
+    private initCardWidthListener() {
+        let card = document.getElementById("clusteringCard")
+
+        ClusteringView.updateCardSize(card)
+        this.updateCanvasSize()
+
+        window?.addEventListener('resize', () => {
+            ClusteringView.updateCardSize(card)
+            this.updateCanvasSize()
+        })
+    }
+
+    mounted() {
+        this.initCardWidthListener()
+        this.initCanvas()
         this.initAddDotButtonOnClickListener()
     }
 }
@@ -155,18 +236,11 @@ export default class ClusteringView extends Vue {
 }
 
 .clusterCanvas {
-    width: 100%;
-    height: 0;
-
     border-radius: 0.5em;
 
     border: 3px solid #808080;
-
-    padding-bottom: 100%;
 }
 
 .clusteringCard {
-    height: 0;
-    padding: 0.2em 0.3em 100%;
 }
 </style>
