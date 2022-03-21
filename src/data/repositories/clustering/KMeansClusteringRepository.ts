@@ -70,3 +70,5 @@ class KMeansClusteringRepository implements ClusteringInterface {
         return [];
     }
 }
+
+export default KMeansClusteringRepository
