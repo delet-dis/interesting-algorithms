@@ -35,7 +35,7 @@
 
                     <div class="separator"/>
 
-                    <button class="button button-border button-rounded generateButton"
+                    <button class="button button-border button-rounded"
                             :class="{'button-primary button-glow activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="generateButton">
@@ -44,7 +44,7 @@
 
                     <div class="separator"/>
 
-                    <button class="button button-border button-rounded generateButton"
+                    <button class="button button-border button-rounded"
                             :class="{'button-action activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="startPickingButton">
@@ -53,7 +53,7 @@
 
                     <div class="spacer"/>
 
-                    <button class="button button-border button-rounded generateButton"
+                    <button class="button button-border button-rounded"
                             :class="{'button-caution activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="finishPickingButton">
@@ -62,7 +62,7 @@
 
                     <div class="spacer"/>
 
-                    <button class="button button-border button-rounded generateButton"
+                    <button class="button button-border button-rounded"
                             :class="{'button-inverse activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="borderPickingButton">
@@ -71,7 +71,7 @@
 
                     <div class="separator"/>
 
-                    <button class="button button-border button-rounded generateButton"
+                    <button class="button button-border button-rounded"
                             :class="{'button-highlight activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="startButton">
@@ -80,7 +80,7 @@
 
                     <div class="spacer"/>
 
-                    <button class="button button-flat button-border button-rounded generateButton"
+                    <button class="button button-flat button-border button-rounded"
                             :class="{'activeButton':isConfigEditable===true,
                             'nonActiveButton': isConfigEditable===false}"
                             id="clearButton">
@@ -452,17 +452,7 @@ export default class LabyrinthView extends Vue {
 }
 </script>
 
-<style>
-p {
-    font-size: 20px;
-}
-</style>
-
 <style scoped>
-h1 {
-    overflow-wrap: break-word;
-}
-
 .table {
     table-layout: fixed;
     height: 100%;
@@ -527,23 +517,5 @@ h1 {
     background-color: #545454;
 
     opacity: 0.3;
-}
-
-.separator {
-    border-top: 2px solid #bbb;
-    border-radius: 5px;
-
-    margin-top: 1.4em;
-    margin-bottom: 1.4em;
-}
-
-.spacer {
-    height: 1.4em;
-}
-
-.button {
-    font-size: 15px;
-    width: 100%;
-    overflow: hidden;
 }
 </style>

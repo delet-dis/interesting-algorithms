@@ -14,8 +14,8 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/clusteringAlgorithm',
-        name: 'test',
-        component: App
+        name: 'clustering',
+        component: () => import('../ui/views/clusteringView/ClusteringView.vue'),
     },
     {
         path: '/geneticAlgorithm',
