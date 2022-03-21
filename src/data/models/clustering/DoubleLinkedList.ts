@@ -6,10 +6,10 @@ class List < T > implements Iterable < ListNode < T >> {
     private frontNode: ListNode < T > | null = null
     private backNode: ListNode < T > | null = null
     public iteratorStartNode: ListNode < T > | null = null
-    public size: number = 0
+    public size = 0
 
     constructor(...args: T[]) {
-        for (let i of args)
+        for (const i of args)
             this.push_back(i)
     }
 
@@ -27,23 +27,20 @@ class List < T > implements Iterable < ListNode < T >> {
     }
 
     public remove(node: ListNode < T > ): void {
-        let notRemoved: boolean = true
+        let notRemoved = true
         if (node === this.backNode) {
-            console.log("its back")
             if (node.prevNode)
                 node.prevNode!.nextNode = null
             this.backNode = node.prevNode
             notRemoved = false
         }
         if (node === this.frontNode) {
-            console.log("its front")
             if (node.nextNode)
                 node.nextNode!.prevNode = null
             this.frontNode = node.nextNode
             this.iteratorStartNode = this.frontNode
             notRemoved = false
         } else if (notRemoved) {
-            console.log("its ordinary")
             node.prevNode!.nextNode = node.nextNode
             node.nextNode!.prevNode = node.prevNode
         }

@@ -1,12 +1,11 @@
 import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface";
 import Dot from "@/data/models/clustering/Dot";
 import List, {ListNode} from "@/data/models/clustering/DoubleLinkedList";
-import Point from "@/data/models/labyrinth/Point";
 
 type Cluster = {
-    points: List < Dot >
-        closest ? : ListNode < Cluster >
-        minDist: number
+    points: List<Dot>
+    closest ? : ListNode<Cluster>
+    minDist: number
     distCol: number
 }
 
@@ -25,7 +24,7 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         const clusters: List < Cluster > = new List < Cluster > ()
         for (let i = 0; i < dots.length; i++) {
             clusters.push_back({
-                points: new List < Dot > (dots[i]),
+                points: new List<Dot>(dots[i]),
                 minDist: 99999,
                 distCol: i
             })
@@ -35,14 +34,14 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         const distances: number[][] = Array(dots.length)
         for (let i = 0; i < dots.length; i++)
             distances[i] = Array(dots.length)
-        let globalMin: number = 9999
-        let bestCluster!: ListNode < Cluster > // will be init in next cycle
+        let globalMin = 9999
+        let bestCluster!: ListNode<Cluster> // will be init in next cycle
             let i = 0
 
-        for (let cl1 of clusters) {
+        for (const cl1 of clusters) {
             clusters.iteratorStartNode = cl1.nextNode
             let j = i + 1
-            for (let cl2 of clusters) {
+            for (const cl2 of clusters) {
                 const distance = Math.sqrt(
                     Math.pow(dots[i].xCoordinate - dots[j].xCoordinate, 2) +
                     Math.pow(dots[i].yCoordinate - dots[j].yCoordinate, 2)
@@ -71,7 +70,6 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         }
 
         while (clusters.size != numberOfClusters) {
-            clusters.remove(bestCluster.data.closest!)
             bestCluster.data.points.concat(bestCluster.data.closest!.data.points)
             bestCluster.data.minDist = 9999
 
@@ -80,13 +78,13 @@ class HierarchyClusteringRepository implements ClusteringInterface {
             const prevBest = bestCluster
             const bcl: number = bestCluster.data.distCol
             const cbcl: number = bestCluster.data.closest!.data.distCol
-            for (let cl of clusters) {
+            clusters.remove(bestCluster.data.closest!)
+            for (const cl of clusters) {
                 if (cl === prevBest)
                     continue
 
                 const ncl: number = cl.data.distCol
-                const newDistance: number =
-                    (distances[bcl][ncl] + distances[cbcl][ncl] - Math.abs(distances[bcl][ncl] - distances[cbcl][ncl])) / 2
+                const newDistance: number = Math.min(distances[bcl][ncl], distances[cbcl][ncl])
                 distances[bcl][ncl] = newDistance
                 distances[ncl][bcl] = newDistance
 
@@ -95,9 +93,9 @@ class HierarchyClusteringRepository implements ClusteringInterface {
                     prevBest.data.closest = cl
                 }
 
-                if (newDistance < cl.data.minDist) {
+                if (newDistance <= cl.data.minDist) {
                     cl.data.minDist = newDistance
-                    cl.data.closest = bestCluster
+                    cl.data.closest = prevBest
                 }
 
                 if (cl.data.minDist < globalMin) {
@@ -109,8 +107,8 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         }
 
         let clusterNum = 0
-        for (let cl of clusters) {
-            for (let dot of cl.data.points)
+        for (const cl of clusters) {
+            for (const dot of cl.data.points)
                 dot.data.hierarchyIndex = clusterNum
             clusterNum++
         }
@@ -119,3 +117,5 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         return dots;
     }
 }
+
+export default HierarchyClusteringRepository
