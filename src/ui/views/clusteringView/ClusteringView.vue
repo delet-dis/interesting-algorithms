@@ -39,14 +39,14 @@
 
                     <button class="button button-border button-rounded button-action"
                             id="addDotButton">
-                        Добавить точку
+                        Добавить точки
                     </button>
 
                     <div class="spacer"/>
 
                     <button class="button button-border button-rounded button-caution"
                             id="removeDotButton">
-                        Удалить точку
+                        Удалить точки
                     </button>
 
                     <div class="separator"/>
@@ -415,8 +415,8 @@ export default class ClusteringView extends Vue {
     }
 
     private initColorsArrays() {
-        this.kMeansColorsArray = ["#ADA8F1", "#F1A3E7", "#FFA3C6", "#FFB49A", "#FFBDCE", "#FF8598", "#C55065", "#E36F48", "#FFF6F0", "#E5DBCE"]
-        this.hierarchyColorsArray = ["#62A2EB", "#009BD7", "#0090B4", "#008284", "#00714F", "#00ABBB", "#00C5B2", "#5FDB9C", "#ABED82", "#F9F871"]
+        this.kMeansColorsArray = ["#ADA8F1", "#474555", "#ACA9BB", "#F69591", "#BB615F", "#574240", "#BFA5A3", "#71823B", "#3F510A", "#E5DBCE"]
+        this.hierarchyColorsArray = ["#514438", "#ED992A", "#0090B4", "#B8A89A", "#00C77F", "#00ABBB", "#00C77F", "#00C9DD", "#BEFCFF", "#458084"]
     }
 
     mounted() {
