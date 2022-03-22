@@ -5,6 +5,14 @@
                 <Card>
                     <LabyrinthDescription/>
                 </Card>
+                <Error id="error" :class="{'error-displaying':isErrorDisplaying}">
+                    <h1>
+                        Чего-то не хватает
+                    </h1>
+                    <p>
+                        Стоит проверить наличие финиша и старта
+                    </p>
+                </Error>
             </div>
             <div class="col-lg-6 col-md-12">
                 <Card class="cardCenter labyrinthCard" id="labyrinthCard">
@@ -109,13 +117,15 @@ import Point from "@/data/models/labyrinth/Point";
 import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
 import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
 import LabyrinthDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthDisplayType";
+import Error from "@/ui/components/error/Error.vue";
 
 
 @Options({
     components: {
         LabyrinthDescription,
         VueSlider,
-        Card
+        Card,
+        Error
     },
 })
 export default class LabyrinthView extends Vue {
@@ -126,6 +136,7 @@ export default class LabyrinthView extends Vue {
 
     private isConfigEditable = true
     private _labyrinthSizing = 10
+    private isErrorDisplaying = false
 
     private cells = document.getElementsByClassName(CellDisplayType.CELL)
 
@@ -466,11 +477,15 @@ export default class LabyrinthView extends Vue {
         })
 
         if (startCellPoint && finishCellPoint) {
+            this.isErrorDisplaying = false
+
             let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
 
             this.isConfigEditable = false
 
             this.displayLabyrinthPathsCells(solverRepositoryResult)
+        } else {
+            this.isErrorDisplaying = true
         }
     }
 

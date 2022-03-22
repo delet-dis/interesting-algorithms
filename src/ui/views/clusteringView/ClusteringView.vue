@@ -5,6 +5,14 @@
                 <Card class="descriptionCard">
                     <ClusteringDescription/>
                 </Card>
+                <Error id="error" :class="{'error-displaying':isErrorDisplaying}">
+                    <h1>
+                        Ошибка
+                    </h1>
+                    <p>
+                        Количество точек меньше количества кластеров
+                    </p>
+                </Error>
             </div>
             <div class="col-lg-6 col-md-12">
                 <Card class="cardCenter clusteringCard" id="clusteringCard">
@@ -83,10 +91,12 @@ import Dot from "@/data/models/clustering/Dot";
 import KMeansClusteringRepository from "@/data/repositories/clustering/KMeansClusteringRepository";
 import ClusteringDisplayState from "@/ui/views/clusteringView/enums/ClusteringDisplayState";
 import HierarchyClusteringRepository from "@/data/repositories/clustering/HierarchyClusteringRepository";
+import Error from "@/ui/components/error/Error.vue";
 
 
 @Options({
     components: {
+        Error,
         ClusteringDescription,
         Card,
         VueSlider
@@ -103,6 +113,7 @@ export default class ClusteringView extends Vue {
     private canvas: HTMLCanvasElement | null = null
     private canvasContext: CanvasRenderingContext2D | null = null
     private clusteringDisplayState: ClusteringDisplayState | null = null
+    private isErrorDisplaying = false
 
     private kMeansColorsArray: string[] | null = null
     private hierarchyColorsArray: string[] | null = null
@@ -340,6 +351,8 @@ export default class ClusteringView extends Vue {
 
         kMeansButton?.addEventListener('click', () => {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.isErrorDisplaying = false
+
                 this.clearPreviousResult()
 
                 this.clusteringDisplayState = null
@@ -347,6 +360,8 @@ export default class ClusteringView extends Vue {
                 this.dotsToDisplay = KMeansClusteringRepository
                     .getInstance()
                     .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            } else {
+                this.isErrorDisplaying = true
             }
         })
     }
@@ -356,6 +371,8 @@ export default class ClusteringView extends Vue {
 
         hierarchyButton?.addEventListener('click', () => {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.isErrorDisplaying = false
+
                 this.clearPreviousResult()
 
                 this.clusteringDisplayState = null
@@ -363,6 +380,8 @@ export default class ClusteringView extends Vue {
                 this.dotsToDisplay = HierarchyClusteringRepository
                     .getInstance()
                     .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            } else {
+                this.isErrorDisplaying = true
             }
         })
     }
@@ -372,6 +391,8 @@ export default class ClusteringView extends Vue {
 
         comparisonButton?.addEventListener('click', () => {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.isErrorDisplaying = false
+
                 this.clearPreviousResult()
 
                 this.clusteringDisplayState = null
@@ -383,8 +404,14 @@ export default class ClusteringView extends Vue {
                 this.dotsToDisplay = KMeansClusteringRepository
                     .getInstance()
                     .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            } else {
+                this.isErrorDisplaying = true
             }
         })
+    }
+
+    private initContainerWidthListener() {
+        new ResizeObserver(() => this.updateCanvasSize()).observe(document.getElementById("container")!)
     }
 
     private initColorsArrays() {
@@ -393,6 +420,7 @@ export default class ClusteringView extends Vue {
     }
 
     mounted() {
+        this.initContainerWidthListener()
         this.initColorsArrays()
         this.initCanvas()
         this.initCardWidthListener()
@@ -419,8 +447,5 @@ export default class ClusteringView extends Vue {
     border-radius: 0.5em;
 
     border: 3px solid #808080;
-}
-
-.clusteringCard {
 }
 </style>
