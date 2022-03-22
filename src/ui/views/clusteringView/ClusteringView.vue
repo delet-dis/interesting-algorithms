@@ -17,7 +17,7 @@
                         Конфигуратор алгоритма
                     </h1>
                     <p>
-                        Количество точек
+                        Количество кластеров
                     </p>
 
                     <vue-slider v-model="numberOfClusters" :dotSize="20" :max="10" :min="2"
@@ -37,7 +37,7 @@
                     <div class="spacer"/>
 
                     <button class="button button-border button-rounded button-caution"
-                            id="deleteDotButton">
+                            id="removeDotButton">
                         Удалить точку
                     </button>
 
@@ -81,6 +81,8 @@ import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import Dot from "@/data/models/clustering/Dot";
 import KMeansClusteringRepository from "@/data/repositories/clustering/KMeansClusteringRepository";
+import ClusteringDisplayState from "@/ui/views/clusteringView/enums/ClusteringDisplayState";
+import HierarchyClusteringRepository from "@/data/repositories/clustering/HierarchyClusteringRepository";
 
 
 @Options({
@@ -100,6 +102,10 @@ export default class ClusteringView extends Vue {
     private _numberOfClusters = 6
     private canvas: HTMLCanvasElement | null = null
     private canvasContext: CanvasRenderingContext2D | null = null
+    private clusteringDisplayState: ClusteringDisplayState | null = null
+
+    private kMeansColorsArray: string[] | null = null
+    private hierarchyColorsArray: string[] | null = null
 
     private set dotsToDisplay(newValue: Dot[]) {
         this._dotsToDisplay = newValue
@@ -132,46 +138,150 @@ export default class ClusteringView extends Vue {
 
                 this.canvasContext.beginPath()
 
-                this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
-
                 this.canvasContext.lineWidth = 20
-                this.canvasContext.strokeStyle = "#000000"
 
-                this.canvasContext.stroke()
+                if (dot.hierarchyIndex != null && dot.kMeansIndex != null) {
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, -Math.PI / 2, Math.PI / 2)
+
+                    if (this.hierarchyColorsArray) {
+                        this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
+
+                        this.canvasContext.stroke()
+                    }
+
+                    this.canvasContext.beginPath()
+
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, Math.PI / 2, -Math.PI / 2)
+
+                    if (this.kMeansColorsArray) {
+                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
+
+                        this.canvasContext.stroke()
+                    }
+                }
+
+                if (dot.hierarchyIndex != null && dot.kMeansIndex == null) {
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
+
+                    if (this.hierarchyColorsArray) {
+                        this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
+                    }
+
+                    this.canvasContext.stroke()
+                }
+
+                if (dot.kMeansIndex != null && dot.hierarchyIndex == null) {
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
+
+                    if (this.kMeansColorsArray) {
+                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
+                    }
+
+                    this.canvasContext.stroke()
+                }
+
+                if (dot.kMeansIndex == null && dot.hierarchyIndex == null) {
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
+
+                    this.canvasContext.strokeStyle = "#000000"
+
+                    this.canvasContext.stroke()
+                }
             }
         })
     }
 
-    private addDotListener = (event: MouseEvent) => {
+    private static areDotsNearby(firstDot: Dot, secondDot: Dot): boolean {
+        let centersDiff = Math.sqrt(Math.pow(firstDot.xCoordinate - secondDot.xCoordinate, 2)) +
+            Math.sqrt(Math.pow(firstDot.yCoordinate - secondDot.yCoordinate, 2)) - 25
+
+        return centersDiff <= 25
+    }
+
+    private canvasClickListener = (event: MouseEvent) => {
         let canvasRect = (event.target as Element).getBoundingClientRect()
 
-        if (canvasRect) {
-            let dotToAdd = new Dot(
-                event.clientX - canvasRect.left,
-                event.clientY - canvasRect.top
-            )
+        switch (this.clusteringDisplayState) {
+            case ClusteringDisplayState.DOTS_ADDING: {
+                if (canvasRect) {
+                    this.clearPreviousResult()
 
-            let dots = this.dotsToDisplay
-            dots.push(dotToAdd)
+                    let dotToAdd = new Dot(
+                        event.clientX - canvasRect.left,
+                        event.clientY - canvasRect.top
+                    )
 
-            this.dotsToDisplay = dots
+                    let isAbleToAddDot = true
+
+                    for (let i = 0; i < this.dotsToDisplay.length; i++) {
+                        let processingDot = this.dotsToDisplay[i]
+
+                        if (ClusteringView.areDotsNearby(dotToAdd, processingDot)) {
+                            isAbleToAddDot = false
+
+                            break
+                        }
+                    }
+
+                    if (isAbleToAddDot) {
+                        let dots = this.dotsToDisplay
+                        dots.push(dotToAdd)
+
+                        this.dotsToDisplay = dots
+                    }
+                }
+
+                break
+            }
+
+            case ClusteringDisplayState.DOTS_REMOVING: {
+                if (canvasRect) {
+                    this.clearPreviousResult()
+
+                    let clickDot = new Dot(
+                        event.clientX - canvasRect.left,
+                        event.clientY - canvasRect.top)
+
+                    for (let i = 0; i < this.dotsToDisplay.length; i++) {
+                        let processingDot = this.dotsToDisplay[i]
+
+                        if (ClusteringView.areDotsNearby(clickDot, processingDot)) {
+                            let dots = this.dotsToDisplay
+                            dots.splice(i, 1)
+
+                            this.dotsToDisplay = dots
+
+                            break
+                        }
+                    }
+                }
+
+                break
+            }
         }
-        this.removeAddDotListener()
     }
 
-    private removeAddDotListener() {
-        this.canvas?.removeEventListener('click', this.addDotListener)
+    private removeCanvasClickListener() {
+        this.canvas?.removeEventListener('click', this.canvasClickListener)
     }
 
-    private makeCanvasAbleToAddDot() {
-        this.canvas?.addEventListener('click', this.addDotListener)
+    private makeCanvasAbleToClick() {
+        this.canvas?.addEventListener('click', this.canvasClickListener)
     }
 
     private initAddDotButtonOnClickListener() {
         let addDotButton = document.getElementById("addDotButton")
 
         addDotButton?.addEventListener('click', () => {
-            this.makeCanvasAbleToAddDot()
+            this.clusteringDisplayState = ClusteringDisplayState.DOTS_ADDING
+        })
+    }
+
+    private initRemoveDotButtonOnClickListener() {
+        let removeDotButton = document.getElementById("removeDotButton")
+
+        removeDotButton?.addEventListener('click', () => {
+            this.clusteringDisplayState = ClusteringDisplayState.DOTS_REMOVING
         })
     }
 
@@ -218,19 +328,80 @@ export default class ClusteringView extends Vue {
         })
     }
 
+    private clearPreviousResult() {
+        for (let i = 0; i < this.dotsToDisplay.length; i++) {
+            this.dotsToDisplay[i].hierarchyIndex = null
+            this.dotsToDisplay[i].kMeansIndex = null
+        }
+    }
+
     private initKMeansButtonOnClickListener() {
         let kMeansButton = document.getElementById("kMeansButton")
 
         kMeansButton?.addEventListener('click', () => {
-            console.log(KMeansClusteringRepository.getInstance().splitByClusters(this.dotsToDisplay, this.numberOfClusters))
+            if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.clearPreviousResult()
+
+                this.clusteringDisplayState = null
+
+                this.dotsToDisplay = KMeansClusteringRepository
+                    .getInstance()
+                    .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            }
         })
     }
 
+    private initHierarchyButtonOnClickListener() {
+        let hierarchyButton = document.getElementById("hierarchyButton")
+
+        hierarchyButton?.addEventListener('click', () => {
+            if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.clearPreviousResult()
+
+                this.clusteringDisplayState = null
+
+                this.dotsToDisplay = HierarchyClusteringRepository
+                    .getInstance()
+                    .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            }
+        })
+    }
+
+    private initComparisonButtonOnClickListener() {
+        let comparisonButton = document.getElementById("comparisonButton")
+
+        comparisonButton?.addEventListener('click', () => {
+            if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.clearPreviousResult()
+
+                this.clusteringDisplayState = null
+
+                this.dotsToDisplay = HierarchyClusteringRepository
+                    .getInstance()
+                    .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+
+                this.dotsToDisplay = KMeansClusteringRepository
+                    .getInstance()
+                    .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            }
+        })
+    }
+
+    private initColorsArrays() {
+        this.kMeansColorsArray = ["#ADA8F1", "#F1A3E7", "#FFA3C6", "#FFB49A", "#FFBDCE", "#FF8598", "#C55065", "#E36F48", "#FFF6F0", "#E5DBCE"]
+        this.hierarchyColorsArray = ["#62A2EB", "#009BD7", "#0090B4", "#008284", "#00714F", "#00ABBB", "#00C5B2", "#5FDB9C", "#ABED82", "#F9F871"]
+    }
+
     mounted() {
-        this.initCardWidthListener()
+        this.initColorsArrays()
         this.initCanvas()
+        this.initCardWidthListener()
         this.initAddDotButtonOnClickListener()
+        this.initRemoveDotButtonOnClickListener()
         this.initKMeansButtonOnClickListener()
+        this.initHierarchyButtonOnClickListener()
+        this.initComparisonButtonOnClickListener()
+        this.makeCanvasAbleToClick()
     }
 }
 </script>
