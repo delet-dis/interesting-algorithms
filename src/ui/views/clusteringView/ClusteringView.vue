@@ -144,7 +144,7 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, -Math.PI / 2, Math.PI / 2)
 
                     if (this.hierarchyColorsArray) {
-                        this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
+                        this.canvasContext.strokeStyle = "#" + this.hierarchyColorsArray[dot.hierarchyIndex]
 
                         this.canvasContext.stroke()
                     }
@@ -154,19 +154,17 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, Math.PI / 2, -Math.PI / 2)
 
                     if (this.kMeansColorsArray) {
-                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
+                        this.canvasContext.strokeStyle = "#" + this.kMeansColorsArray[dot.kMeansIndex]
 
                         this.canvasContext.stroke()
                     }
-
-                    this.canvasContext.beginPath()
                 }
 
                 if (dot.hierarchyIndex != null && dot.kMeansIndex == null) {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
 
                     if (this.hierarchyColorsArray) {
-                        this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
+                        this.canvasContext.strokeStyle = "#" + this.hierarchyColorsArray[dot.hierarchyIndex]
                     }
 
                     this.canvasContext.stroke()
@@ -176,7 +174,7 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
 
                     if (this.kMeansColorsArray) {
-                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
+                        this.canvasContext.strokeStyle = "#" + this.kMeansColorsArray[dot.kMeansIndex]
                     }
 
                     this.canvasContext.stroke()
@@ -396,7 +394,7 @@ export default class ClusteringView extends Vue {
     }
 
     private generateColorsArrays() {
-        if (this.kMeansColorsArray?.length != this.numberOfClusters && this.hierarchyColorsArray?.length != this.numberOfClusters) {
+        if (this.kMeansColorsArray?.length != this.numberOfClusters || this.hierarchyColorsArray?.length != this.numberOfClusters) {
             this.kMeansColorsArray = Array(this.numberOfClusters)
             this.hierarchyColorsArray = Array(this.numberOfClusters)
 
@@ -408,8 +406,8 @@ export default class ClusteringView extends Vue {
     }
 
     mounted() {
-        this.initCardWidthListener()
         this.initCanvas()
+        this.initCardWidthListener()
         this.initAddDotButtonOnClickListener()
         this.initRemoveDotButtonOnClickListener()
         this.initKMeansButtonOnClickListener()
