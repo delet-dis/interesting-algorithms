@@ -17,7 +17,7 @@
                         Конфигуратор алгоритма
                     </h1>
                     <p>
-                        Количество точек
+                        Количество кластеров
                     </p>
 
                     <vue-slider v-model="numberOfClusters" :dotSize="20" :max="10" :min="2"
@@ -141,7 +141,7 @@ export default class ClusteringView extends Vue {
                 this.canvasContext.lineWidth = 20
 
                 if (dot.hierarchyIndex != null && dot.kMeansIndex != null) {
-                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, Math.PI)
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, -Math.PI / 2, Math.PI / 2)
 
                     if (this.hierarchyColorsArray) {
                         this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
@@ -151,7 +151,7 @@ export default class ClusteringView extends Vue {
 
                     this.canvasContext.beginPath()
 
-                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, Math.PI, 2*Math.PI)
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, Math.PI / 2, -Math.PI / 2)
 
                     if (this.kMeansColorsArray) {
                         this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
