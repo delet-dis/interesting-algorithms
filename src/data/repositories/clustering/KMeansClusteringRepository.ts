@@ -13,7 +13,7 @@ class KMeansClusteringRepository implements ClusteringInterface {
         return KMeansClusteringRepository.instance
     }
 
-    clusArr: Cluster[] = []
+    private clusArr: Cluster[] = []
 
     private IdentifyCenters(k: number, allDots: Dot[]): void {
         const size = allDots.length
