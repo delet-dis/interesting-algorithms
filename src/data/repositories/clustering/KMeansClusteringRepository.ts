@@ -20,7 +20,6 @@ class KMeansClusteringRepository implements ClusteringInterface {
         const step = size / k
         let steper = 0
         for (let j = 0; j < k; j++, steper += step) {
-            console.log(steper, allDots.length)
             this.clusArr[j].curX = allDots[Math.floor(steper)].xCoordinate
             this.clusArr[j].curY = allDots[Math.floor(steper)].yCoordinate
         }
