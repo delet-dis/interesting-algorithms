@@ -108,6 +108,7 @@ import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 import Point from "@/data/models/labyrinth/Point";
 import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
 import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
+import LabyrinthDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthDisplayType";
 
 
 @Options({
@@ -213,6 +214,57 @@ export default class LabyrinthView extends Vue {
         )
     }
 
+    private changeLabyrinthDisplayState(state: LabyrinthDisplayType) {
+        if (this.isConfigEditable) {
+            switch (state) {
+                case LabyrinthDisplayType.FINISH_PICKING:
+                case LabyrinthDisplayType.START_PICKING: {
+                    this.clearPreviousResult()
+                    this.removeBorderListener()
+                }
+            }
+
+            switch (state) {
+                case LabyrinthDisplayType.START_PICKING: {
+                    this.makeCellsSelectableForStart()
+
+                    break
+                }
+                case LabyrinthDisplayType.FINISH_PICKING: {
+                    this.makeCellsSelectableForFinish()
+
+                    break
+                }
+
+                case LabyrinthDisplayType.BORDERS_PICKING: {
+                    this.clearPreviousResult()
+                    this.makeCellsSelectableForBorders()
+
+                    break
+                }
+
+                case LabyrinthDisplayType.DATA_SUBMITTING: {
+                    this.clearCells()
+                    this.submitCellsToSolver()
+
+                    break
+                }
+
+                case LabyrinthDisplayType.LABYRINTH_GENERATING: {
+                    this.generateLabyrinth()
+
+                    break
+                }
+
+                case LabyrinthDisplayType.LABYRINTH_CLEANING: {
+                    this.resetCellsClasses()
+
+                    break
+                }
+            }
+        }
+    }
+
     private async displayLabyrinthPathsCells(solution: LabyrinthSolution) {
         let cells = solution.processedCells
 
@@ -313,11 +365,7 @@ export default class LabyrinthView extends Vue {
         let startButton = document.getElementById("startPickingButton")
 
         startButton?.addEventListener('click', () => {
-            if (this.isConfigEditable) {
-                this.clearPreviousResult()
-                this.removeBorderListener()
-                this.makeCellsSelectableForStart()
-            }
+            this.changeLabyrinthDisplayState(LabyrinthDisplayType.START_PICKING)
         })
     }
 
@@ -325,11 +373,7 @@ export default class LabyrinthView extends Vue {
         let finishButton = document.getElementById("finishPickingButton")
 
         finishButton?.addEventListener('click', () => {
-            if (this.isConfigEditable) {
-                this.clearPreviousResult()
-                this.removeBorderListener()
-                this.makeCellsSelectableForFinish()
-            }
+            this.changeLabyrinthDisplayState(LabyrinthDisplayType.FINISH_PICKING)
         })
     }
 
@@ -337,10 +381,7 @@ export default class LabyrinthView extends Vue {
         let borderButton = document.getElementById("borderPickingButton")
 
         borderButton?.addEventListener('click', () => {
-            if (this.isConfigEditable) {
-                this.clearPreviousResult()
-                this.makeCellsSelectableForBorders()
-            }
+            this.changeLabyrinthDisplayState(LabyrinthDisplayType.BORDERS_PICKING)
         })
     }
 
@@ -348,10 +389,7 @@ export default class LabyrinthView extends Vue {
         let startButton = document.getElementById("startButton")
 
         startButton?.addEventListener('click', () => {
-            if (this.isConfigEditable) {
-                this.clearCells()
-                this.submitCellsToSolver()
-            }
+            this.changeLabyrinthDisplayState(LabyrinthDisplayType.DATA_SUBMITTING)
         })
     }
 
@@ -359,9 +397,7 @@ export default class LabyrinthView extends Vue {
         let clearButton = document.getElementById("clearButton")
 
         clearButton?.addEventListener('click', () => {
-            if (this.isConfigEditable) {
-                this.resetCellsClasses()
-            }
+            this.changeLabyrinthDisplayState(LabyrinthDisplayType.LABYRINTH_CLEANING)
         })
     }
 
@@ -369,9 +405,7 @@ export default class LabyrinthView extends Vue {
         let generateButton = document.getElementById("generateButton")
 
         generateButton?.addEventListener('click', () => {
-            if (this.isConfigEditable) {
-                this.generateLabyrinth()
-            }
+            this.changeLabyrinthDisplayState(LabyrinthDisplayType.LABYRINTH_GENERATING)
         })
     }
 
