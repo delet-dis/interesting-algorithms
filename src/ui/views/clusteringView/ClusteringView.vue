@@ -141,11 +141,25 @@ export default class ClusteringView extends Vue {
                 this.canvasContext.lineWidth = 20
 
                 if (dot.hierarchyIndex != null && dot.kMeansIndex != null) {
-                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, Math.PI)
 
                     if (this.hierarchyColorsArray) {
                         this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
+
+                        this.canvasContext.stroke()
                     }
+
+                    this.canvasContext.beginPath()
+
+                    this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, Math.PI, 2*Math.PI)
+
+                    if (this.kMeansColorsArray) {
+                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
+
+                        this.canvasContext.stroke()
+                    }
+
+                    this.canvasContext.beginPath()
                 }
 
                 if (dot.hierarchyIndex != null && dot.kMeansIndex == null) {
@@ -154,6 +168,8 @@ export default class ClusteringView extends Vue {
                     if (this.hierarchyColorsArray) {
                         this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
                     }
+
+                    this.canvasContext.stroke()
                 }
 
                 if (dot.kMeansIndex != null && dot.hierarchyIndex == null) {
@@ -162,15 +178,17 @@ export default class ClusteringView extends Vue {
                     if (this.kMeansColorsArray) {
                         this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
                     }
+
+                    this.canvasContext.stroke()
                 }
 
                 if (dot.kMeansIndex == null && dot.hierarchyIndex == null) {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
 
                     this.canvasContext.strokeStyle = "#000000"
-                }
 
-                this.canvasContext.stroke()
+                    this.canvasContext.stroke()
+                }
             }
         })
     }
@@ -188,6 +206,8 @@ export default class ClusteringView extends Vue {
         switch (this.clusteringDisplayState) {
             case ClusteringDisplayState.DOTS_ADDING: {
                 if (canvasRect) {
+                    this.clearPreviousResult()
+
                     let dotToAdd = new Dot(
                         event.clientX - canvasRect.left,
                         event.clientY - canvasRect.top
@@ -218,6 +238,8 @@ export default class ClusteringView extends Vue {
 
             case ClusteringDisplayState.DOTS_REMOVING: {
                 if (canvasRect) {
+                    this.clearPreviousResult()
+
                     let clickDot = new Dot(
                         event.clientX - canvasRect.left,
                         event.clientY - canvasRect.top)
@@ -322,7 +344,7 @@ export default class ClusteringView extends Vue {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
                 this.clearPreviousResult()
 
-                this.removeCanvasClickListener()
+                this.clusteringDisplayState = null
 
                 this.generateColorsArrays()
 
@@ -340,11 +362,33 @@ export default class ClusteringView extends Vue {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
                 this.clearPreviousResult()
 
-                this.removeCanvasClickListener()
+                this.clusteringDisplayState = null
 
                 this.generateColorsArrays()
 
                 this.dotsToDisplay = HierarchyClusteringRepository
+                    .getInstance()
+                    .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+            }
+        })
+    }
+
+    private initComparisonButtonOnClickListener() {
+        let comparisonButton = document.getElementById("comparisonButton")
+
+        comparisonButton?.addEventListener('click', () => {
+            if (this.numberOfClusters <= this.dotsToDisplay.length) {
+                this.clearPreviousResult()
+
+                this.clusteringDisplayState = null
+
+                this.generateColorsArrays()
+
+                this.dotsToDisplay = HierarchyClusteringRepository
+                    .getInstance()
+                    .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
+
+                this.dotsToDisplay = KMeansClusteringRepository
                     .getInstance()
                     .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
             }
@@ -370,6 +414,7 @@ export default class ClusteringView extends Vue {
         this.initRemoveDotButtonOnClickListener()
         this.initKMeansButtonOnClickListener()
         this.initHierarchyButtonOnClickListener()
+        this.initComparisonButtonOnClickListener()
         this.makeCanvasAbleToClick()
     }
 }
