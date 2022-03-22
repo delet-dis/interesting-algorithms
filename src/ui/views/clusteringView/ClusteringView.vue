@@ -144,7 +144,7 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, -Math.PI / 2, Math.PI / 2)
 
                     if (this.hierarchyColorsArray) {
-                        this.canvasContext.strokeStyle = "#" + this.hierarchyColorsArray[dot.hierarchyIndex]
+                        this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
 
                         this.canvasContext.stroke()
                     }
@@ -154,7 +154,7 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, Math.PI / 2, -Math.PI / 2)
 
                     if (this.kMeansColorsArray) {
-                        this.canvasContext.strokeStyle = "#" + this.kMeansColorsArray[dot.kMeansIndex]
+                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
 
                         this.canvasContext.stroke()
                     }
@@ -164,7 +164,7 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
 
                     if (this.hierarchyColorsArray) {
-                        this.canvasContext.strokeStyle = "#" + this.hierarchyColorsArray[dot.hierarchyIndex]
+                        this.canvasContext.strokeStyle = this.hierarchyColorsArray[dot.hierarchyIndex]
                     }
 
                     this.canvasContext.stroke()
@@ -174,7 +174,7 @@ export default class ClusteringView extends Vue {
                     this.canvasContext.arc(dot.xCoordinate, dot.yCoordinate, 10, 0, 2 * Math.PI)
 
                     if (this.kMeansColorsArray) {
-                        this.canvasContext.strokeStyle = "#" + this.kMeansColorsArray[dot.kMeansIndex]
+                        this.canvasContext.strokeStyle = this.kMeansColorsArray[dot.kMeansIndex]
                     }
 
                     this.canvasContext.stroke()
@@ -344,8 +344,6 @@ export default class ClusteringView extends Vue {
 
                 this.clusteringDisplayState = null
 
-                this.generateColorsArrays()
-
                 this.dotsToDisplay = KMeansClusteringRepository
                     .getInstance()
                     .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
@@ -361,8 +359,6 @@ export default class ClusteringView extends Vue {
                 this.clearPreviousResult()
 
                 this.clusteringDisplayState = null
-
-                this.generateColorsArrays()
 
                 this.dotsToDisplay = HierarchyClusteringRepository
                     .getInstance()
@@ -380,8 +376,6 @@ export default class ClusteringView extends Vue {
 
                 this.clusteringDisplayState = null
 
-                this.generateColorsArrays()
-
                 this.dotsToDisplay = HierarchyClusteringRepository
                     .getInstance()
                     .splitByClusters(this.dotsToDisplay, this.numberOfClusters)
@@ -393,19 +387,13 @@ export default class ClusteringView extends Vue {
         })
     }
 
-    private generateColorsArrays() {
-        if (this.kMeansColorsArray?.length != this.numberOfClusters || this.hierarchyColorsArray?.length != this.numberOfClusters) {
-            this.kMeansColorsArray = Array(this.numberOfClusters)
-            this.hierarchyColorsArray = Array(this.numberOfClusters)
-
-            for (let i = 0; i < this.numberOfClusters; i++) {
-                this.kMeansColorsArray[i] = (Math.random() * 0xFFFFFF << 0).toString(16)
-                this.hierarchyColorsArray[i] = (Math.random() * 0xFFFFFF << 0).toString(16)
-            }
-        }
+    private initColorsArrays() {
+        this.kMeansColorsArray = ["#ADA8F1", "#F1A3E7", "#FFA3C6", "#FFB49A", "#FFBDCE", "#FF8598", "#C55065", "#E36F48", "#FFF6F0", "#E5DBCE"]
+        this.hierarchyColorsArray = ["#62A2EB", "#009BD7", "#0090B4", "#008284", "#00714F", "#00ABBB", "#00C5B2", "#5FDB9C", "#ABED82", "#F9F871"]
     }
 
     mounted() {
+        this.initColorsArrays()
         this.initCanvas()
         this.initCardWidthListener()
         this.initAddDotButtonOnClickListener()
