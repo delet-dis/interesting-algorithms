@@ -25,9 +25,12 @@ export default class Error extends Vue {
     transition: 0.3s;
 
     opacity: 0;
+
+    display: none;
 }
 
 .error.error-displaying{
     opacity: 1;
+    display: block;
 }
 </style>

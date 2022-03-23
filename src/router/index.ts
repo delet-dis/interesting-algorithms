@@ -19,8 +19,8 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/geneticAlgorithm',
-        name: 'test',
-        component: App
+        name: 'genetic',
+        component: () => import('../ui/views/geneticView/GeneticView.vue'),
     },
     {
         path: '/antAlgorithm',
