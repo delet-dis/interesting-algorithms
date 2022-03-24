@@ -103,7 +103,7 @@ import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
-import Point from "@/data/models/labyrinth/Point";
+import Point from "@/data/models/Point";
 import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
 import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
 import LabyrinthDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthDisplayType";
