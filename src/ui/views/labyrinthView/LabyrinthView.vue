@@ -102,7 +102,6 @@ import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/Labyrint
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 import Point from "@/data/models/labyrinth/Point";
 import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
@@ -324,12 +323,6 @@ export default class LabyrinthView extends Vue {
         cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
-    private static updateCardSize(card: HTMLElement | null) {
-        if (card) {
-            card.style.height = card.clientWidth + `px`
-        }
-    }
-
     private makeCellsSelectableForStart() {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.STARTABLE_CELL)
@@ -413,16 +406,6 @@ export default class LabyrinthView extends Vue {
         })
     }
 
-    private static initCardWidthListener() {
-        let card = document.getElementById("labyrinthCard")
-
-        LabyrinthView.updateCardSize(card)
-
-        card?.addEventListener('resize', () => {
-            LabyrinthView.updateCardSize(card)
-        })
-    }
-
     private submitCellsToSolver() {
         let cellsArray: LabyrinthCell[][] = new Array(this.labyrinthSizing)
 
@@ -483,7 +466,6 @@ export default class LabyrinthView extends Vue {
     }
 
     mounted() {
-        LabyrinthView.initCardWidthListener()
         this.initStartPickingButtonOnclickListener()
         this.initFinishPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()

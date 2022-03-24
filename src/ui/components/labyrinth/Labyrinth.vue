@@ -29,6 +29,26 @@ export default class Labyrinth extends Vue.with(Props) {
     private get getLabyrinthSizing() {
         return this.labyrinthSizing
     }
+
+    private static updateCardSize(card: HTMLElement | null) {
+        if (card) {
+            card.style.height = card.clientWidth + `px`
+        }
+    }
+
+    private static initCardWidthListener() {
+        let card = document.getElementById("labyrinthCard")
+
+        Labyrinth.updateCardSize(card)
+
+        card?.addEventListener('resize', () => {
+            Labyrinth.updateCardSize(card)
+        })
+    }
+
+    mounted() {
+        Labyrinth.initCardWidthListener()
+    }
 }
 </script>
 
