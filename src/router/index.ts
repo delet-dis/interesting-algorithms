@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/neuralAlgorithm',
-        name: 'test',
+        name: 'test1',
         component: App
     }
 ]

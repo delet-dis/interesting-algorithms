@@ -108,8 +108,8 @@ export default class ClusteringView extends Vue {
         htmlAttrs: {lang: 'ru', amp: true}
     }))
 
-    private _dotsToDisplay: Dot[] = []
-    private _numberOfClusters = 6
+    private dotsToDisplayField: Dot[] = []
+    private numberOfClustersField = 6
 
     private canvas: HTMLCanvasElement | null = null
     private canvasContext: CanvasRenderingContext2D | null = null
@@ -121,21 +121,21 @@ export default class ClusteringView extends Vue {
     private hierarchyColorsArray: string[] | null = null
 
     private set dotsToDisplay(newValue: Dot[]) {
-        this._dotsToDisplay = newValue
+        this.dotsToDisplayField = newValue
 
         this.drawDots()
     }
 
     private get dotsToDisplay() {
-        return this._dotsToDisplay
+        return this.dotsToDisplayField
     }
 
     private get numberOfClusters() {
-        return this._numberOfClusters
+        return this.numberOfClustersField
     }
 
     private set numberOfClusters(newValue: number) {
-        this._numberOfClusters = newValue
+        this.numberOfClustersField = newValue
     }
 
     private static areDotsNearby(firstDot: Dot, secondDot: Dot): boolean {

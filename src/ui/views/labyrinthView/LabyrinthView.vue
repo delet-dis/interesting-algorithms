@@ -127,17 +127,17 @@ export default class LabyrinthView extends Vue {
     }))
 
     private isConfigEditable = true
-    private _labyrinthSizing = 10
+    private labyrinthSizingField = 10
     private isErrorDisplaying = false
 
     private cells = document.getElementsByClassName(CellDisplayType.CELL)
 
     private get labyrinthSizing() {
-        return this._labyrinthSizing
+        return this.labyrinthSizingField
     }
 
     private set labyrinthSizing(newValue: number) {
-        this._labyrinthSizing = newValue
+        this.labyrinthSizingField = newValue
 
         this.resetCellsClasses()
 
