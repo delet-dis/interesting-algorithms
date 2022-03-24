@@ -16,16 +16,7 @@
             </div>
             <div class="col-lg-6 col-md-12">
                 <Card class="cardCenter labyrinthCard" id="labyrinthCard">
-                    <table class="table cardCenterChild">
-                        <tbody>
-                        <tr v-for="firstIterator in labyrinthSizing" :key="firstIterator">
-                            <td v-for="secondIterator in labyrinthSizing" :key="secondIterator"
-                                :id="`table-cell-` + (secondIterator-1) + `x` + (firstIterator-1)" class="table-cell">
-                                &nbsp;
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <Labyrinth :labyrinthSizing="labyrinthSizing"/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -111,17 +102,18 @@ import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/Labyrint
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 import Point from "@/data/models/labyrinth/Point";
 import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
 import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
 import LabyrinthDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthDisplayType";
 import Error from "@/ui/components/error/Error.vue";
+import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
 
 
 @Options({
     components: {
+        Labyrinth,
         LabyrinthDescription,
         VueSlider,
         Card,
@@ -135,17 +127,17 @@ export default class LabyrinthView extends Vue {
     }))
 
     private isConfigEditable = true
-    private _labyrinthSizing = 10
+    private labyrinthSizingField = 10
     private isErrorDisplaying = false
 
     private cells = document.getElementsByClassName(CellDisplayType.CELL)
 
     private get labyrinthSizing() {
-        return this._labyrinthSizing
+        return this.labyrinthSizingField
     }
 
     private set labyrinthSizing(newValue: number) {
-        this._labyrinthSizing = newValue
+        this.labyrinthSizingField = newValue
 
         this.resetCellsClasses()
 
@@ -331,12 +323,6 @@ export default class LabyrinthView extends Vue {
         cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
-    private static updateCardSize(card: HTMLElement | null) {
-        if (card) {
-            card.style.height = card.clientWidth + `px`
-        }
-    }
-
     private makeCellsSelectableForStart() {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.STARTABLE_CELL)
@@ -420,16 +406,6 @@ export default class LabyrinthView extends Vue {
         })
     }
 
-    private static initCardWidthListener() {
-        let card = document.getElementById("labyrinthCard")
-
-        LabyrinthView.updateCardSize(card)
-
-        card?.addEventListener('resize', () => {
-            LabyrinthView.updateCardSize(card)
-        })
-    }
-
     private submitCellsToSolver() {
         let cellsArray: LabyrinthCell[][] = new Array(this.labyrinthSizing)
 
@@ -490,7 +466,6 @@ export default class LabyrinthView extends Vue {
     }
 
     mounted() {
-        LabyrinthView.initCardWidthListener()
         this.initStartPickingButtonOnclickListener()
         this.initFinishPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()
@@ -502,69 +477,5 @@ export default class LabyrinthView extends Vue {
 </script>
 
 <style scoped>
-.table {
-    table-layout: fixed;
-    height: 100%;
 
-    border-spacing: 0;
-}
-
-.table-cell {
-    width: auto;
-    height: auto;
-
-    word-break: break-all;
-
-    border: 1px solid black;
-
-    transition: 0.3s;
-}
-
-.table-cell.table-cell-border {
-    border: 1px solid #808080;
-
-    background-color: #545454;
-}
-
-.table-cell.table-cell-start {
-    border: 1px solid #b9e563;
-
-    background-color: #A5DE37;
-}
-
-.table-cell.table-cell-finish {
-    border: 1px solid #FF4351;
-
-    background-color: #FF4351;
-}
-
-.table-cell.table-cell-wrong-path {
-    border: 1px solid #fec04e;
-
-    background-color: #FEAE1B;
-}
-
-.table-cell.table-cell-correct-path {
-    border: 1px solid #a49ef0;
-
-    background-color: #7B72E9;
-}
-
-.table-cell.table-cell-startable:hover {
-    background-color: #A5DE37;
-
-    opacity: 0.3;
-}
-
-.table-cell.table-cell-finishable:hover {
-    background-color: #FF4351;
-
-    opacity: 0.3;
-}
-
-.table-cell.table-cell-borderable:hover {
-    background-color: #545454;
-
-    opacity: 0.3;
-}
 </style>

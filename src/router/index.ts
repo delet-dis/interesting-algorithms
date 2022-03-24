@@ -24,8 +24,8 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/antAlgorithm',
-        name: 'test',
-        component: App
+        name: 'ant',
+        component: () => import('../ui/views/antView/AntView.vue'),
     },
     {
         path: '/treeAlgorithm',
@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/neuralAlgorithm',
-        name: 'test',
+        name: 'test1',
         component: App
     }
 ]
