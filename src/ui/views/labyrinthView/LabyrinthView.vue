@@ -16,7 +16,7 @@
             </div>
             <div class="col-lg-6 col-md-12">
                 <Card class="cardCenter labyrinthCard" id="labyrinthCard">
-                    <Labyrinth :labyrinthSizing="labyrinthSizing"/>
+                    <Labyrinth :labyrinthSizing="labyrinthSizing" ref="labyrinth"/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -109,6 +109,7 @@ import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
 import LabyrinthDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthDisplayType";
 import Error from "@/ui/components/error/Error.vue";
 import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
+import {Ref} from "vue";
 
 
 @Options({
@@ -131,6 +132,8 @@ export default class LabyrinthView extends Vue {
     private isErrorDisplaying = false
 
     private cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+    private labyrinth: Labyrinth | null = null
 
     private get labyrinthSizing() {
         return this.labyrinthSizingField
@@ -229,25 +232,25 @@ export default class LabyrinthView extends Vue {
 
             switch (state) {
                 case LabyrinthDisplayType.START_PICKING: {
-                    this.makeCellsSelectableForStart()
+                    this.labyrinth?.makeCellsSelectableForStart(this.startPickingListener)
 
                     break
                 }
                 case LabyrinthDisplayType.FINISH_PICKING: {
-                    this.makeCellsSelectableForFinish()
+                    this.labyrinth?.makeCellsSelectableForFinish(this.finishPickingListener)
 
                     break
                 }
 
                 case LabyrinthDisplayType.BORDERS_PICKING: {
-                    this.clearPreviousResult()
-                    this.makeCellsSelectableForBorders()
+                    this.labyrinth?.clearPreviousResult()
+                    this.labyrinth?.makeCellsSelectableForBorders(this.borderPickingListener)
 
                     break
                 }
 
                 case LabyrinthDisplayType.DATA_SUBMITTING: {
-                    this.clearCells()
+                    this.labyrinth?.clearCells()
                     this.submitCellsToSolver()
 
                     break
@@ -260,7 +263,7 @@ export default class LabyrinthView extends Vue {
                 }
 
                 case LabyrinthDisplayType.LABYRINTH_CLEANING: {
-                    this.resetCellsClasses()
+                    this.labyrinth?.resetCellsClasses()
 
                     break
                 }
@@ -323,39 +326,15 @@ export default class LabyrinthView extends Vue {
         cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
-    private makeCellsSelectableForStart() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.classList.add(CellDisplayType.STARTABLE_CELL)
-            cell.classList.remove(CellDisplayType.START_CELL)
-            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
-
-            cell.addEventListener('click', this.startPickingListener)
-        })
-    }
-
-    private makeCellsSelectableForFinish() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.classList.add(CellDisplayType.FINISHABLE_CELL)
-            cell.classList.remove(CellDisplayType.FINISH_CELL)
-            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
-
-            cell.addEventListener('click', this.finishPickingListener)
-        })
-    }
-
-    private makeCellsSelectableForBorders() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.classList.add(CellDisplayType.BORDERABLE_CELL)
-
-            cell.addEventListener('click', this.borderPickingListener)
-        })
-    }
-
     private clearPreviousResult() {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
             cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
         })
+    }
+
+    private initLabyrinth() {
+        this.labyrinth = this.$refs.labyrinth as Labyrinth
     }
 
     private initStartPickingButtonOnclickListener() {
@@ -466,6 +445,7 @@ export default class LabyrinthView extends Vue {
     }
 
     mounted() {
+        this.initLabyrinth()
         this.initStartPickingButtonOnclickListener()
         this.initFinishPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()

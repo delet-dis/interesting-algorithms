@@ -101,6 +101,8 @@ export default class AntView extends Vue {
 
     private labyrinthSizing = 29
 
+
+
 }
 </script>
 

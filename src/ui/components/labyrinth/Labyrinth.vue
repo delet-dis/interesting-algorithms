@@ -15,6 +15,7 @@
 import {Options, prop, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
+import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
 
 class Props {
     labyrinthSizing: SidebarLinkEntity = prop({
@@ -26,6 +27,8 @@ class Props {
     components: {Card},
 })
 export default class Labyrinth extends Vue.with(Props) {
+    private cells = document.getElementsByClassName(CellDisplayType.CELL)
+
     private get getLabyrinthSizing() {
         return this.labyrinthSizing
     }
@@ -44,6 +47,62 @@ export default class Labyrinth extends Vue.with(Props) {
         card?.addEventListener('resize', () => {
             Labyrinth.updateCardSize(card)
         })
+    }
+
+    makeCellsSelectableForStart(listener: (event: Event) => void) {
+        Array.from(this.cells).forEach((cell) => {
+            cell.classList.add(CellDisplayType.STARTABLE_CELL)
+            cell.classList.remove(CellDisplayType.START_CELL)
+            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+
+            cell.addEventListener('click', listener)
+        })
+    }
+
+    makeCellsSelectableForFinish(listener: (event: Event) => void) {
+        Array.from(this.cells).forEach((cell) => {
+            cell.classList.add(CellDisplayType.FINISHABLE_CELL)
+            cell.classList.remove(CellDisplayType.FINISH_CELL)
+            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+
+            cell.addEventListener('click', listener)
+        })
+    }
+
+    makeCellsSelectableForBorders(listener: (event: Event) => void) {
+        Array.from(this.cells).forEach((cell) => {
+            cell.classList.add(CellDisplayType.BORDERABLE_CELL)
+
+            cell.addEventListener('click', listener)
+        })
+    }
+
+    clearPreviousResult() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
+            cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
+        })
+    }
+
+    resetCellsClasses() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.setAttribute("class", CellDisplayType.CELL)
+        })
+    }
+
+    clearCells() {
+        Array.from(this.cells).forEach((cell) => {
+            Labyrinth.clearCell(cell)
+        })
+    }
+
+    private static clearCell(cell: Element) {
+        cell.classList.remove(CellDisplayType.STARTABLE_CELL)
+        cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
+        cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+
+        cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
+        cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
     mounted() {
