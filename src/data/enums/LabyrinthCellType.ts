@@ -5,6 +5,7 @@ enum LabyrinthCellType {
     START_CELL,
     FINISH_CELL,
     PATH_CELL,
+    FOOD_CELL
 }
 
 export default LabyrinthCellType

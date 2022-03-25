@@ -109,7 +109,6 @@ import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
 import LabyrinthViewDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthViewDisplayType";
 import Error from "@/ui/components/error/Error.vue";
 import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
-import {Ref} from "vue";
 
 
 @Options({
@@ -296,7 +295,7 @@ export default class LabyrinthView extends Vue {
 
         if (this.labyrinth) {
             Array.from(this.labyrinth.cells).forEach((cell) => {
-                let point = Labyrinth.getCellCoordinates(cell)
+                let point = this.labyrinth?.getCellCoordinates(cell)
 
                 if (cell.classList.contains(CellDisplayType.START_CELL)) {
                     if (point) {

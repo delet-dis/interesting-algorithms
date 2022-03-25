@@ -30,7 +30,7 @@ export default class Error extends Vue {
 }
 
 .error.error-displaying{
-    opacity: 1;
     display: block;
+    opacity: 1;
 }
 </style>

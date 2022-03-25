@@ -93,7 +93,7 @@ export default class Labyrinth extends Vue.with(Props) {
         )
     }
 
-    static getCellCoordinates(cell: Element): Point {
+    getCellCoordinates(cell: Element): Point {
         let regex = new RegExp("(\\d*)x(\\d*)", "g")
 
         let matches = [...cell.id.matchAll(regex)]
