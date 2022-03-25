@@ -131,8 +131,6 @@ export default class LabyrinthView extends Vue {
     private labyrinthSizingField = 10
     private isErrorDisplaying = false
 
-    private cells = document.getElementsByClassName(CellDisplayType.CELL)
-
     private labyrinth: Labyrinth | null = null
 
     private get labyrinthSizing() {
@@ -142,71 +140,25 @@ export default class LabyrinthView extends Vue {
     private set labyrinthSizing(newValue: number) {
         this.labyrinthSizingField = newValue
 
-        this.resetCellsClasses()
+        this.labyrinth?.resetCellsClasses()
 
         this.updateCellsCollection()
     }
 
-    private startPickingListener = (event: Event) => {
-        let cell = (event.target as Element)
-
-        this.clearCells()
-        cell.classList.remove(CellDisplayType.FINISH_CELL)
-        cell.classList.remove(CellDisplayType.BORDER_CELL)
-        cell.classList.add(CellDisplayType.START_CELL)
-
-        this.removeStartListener()
-    }
-
-    private finishPickingListener = (event: Event) => {
-        let cell = (event.target as Element)
-
-        this.clearCells()
-        cell.classList.remove(CellDisplayType.START_CELL)
-        cell.classList.remove(CellDisplayType.BORDER_CELL)
-        cell.classList.add(CellDisplayType.FINISH_CELL)
-
-        this.removeFinishListener()
-    }
-
-    private borderPickingListener = (event: Event) => {
-        let cell = (event.target as Element)
-
-        cell.classList.remove(CellDisplayType.START_CELL)
-        cell.classList.remove(CellDisplayType.FINISH_CELL)
-        cell.classList.add(CellDisplayType.BORDER_CELL)
-    }
-
-    private removeStartListener() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.startPickingListener)
-        })
-    }
-
-    private removeFinishListener() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.finishPickingListener)
-        })
-    }
-
-    private removeBorderListener() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.borderPickingListener)
-        })
-    }
-
     private updateCellsCollection() {
-        this.cells = document.getElementsByClassName(CellDisplayType.CELL)
+        if (this.labyrinth) {
+            this.labyrinth.cells = document.getElementsByClassName(CellDisplayType.CELL)
+        }
     }
 
     private generateLabyrinth() {
         this.displayGeneratedCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
 
-        this.removeBorderListener()
+        this.labyrinth?.removeBorderListener()
     }
 
     private displayGeneratedCells(cells: LabyrinthCell[][]) {
-        this.resetCellsClasses()
+        this.labyrinth?.resetCellsClasses()
 
         cells.forEach((subArray) => {
                 subArray.forEach((cell) => {
@@ -225,26 +177,26 @@ export default class LabyrinthView extends Vue {
             switch (state) {
                 case LabyrinthDisplayType.FINISH_PICKING:
                 case LabyrinthDisplayType.START_PICKING: {
-                    this.clearPreviousResult()
-                    this.removeBorderListener()
+                    this.labyrinth?.clearPreviousResult()
+                    this.labyrinth?.removeBorderListener()
                 }
             }
 
             switch (state) {
                 case LabyrinthDisplayType.START_PICKING: {
-                    this.labyrinth?.makeCellsSelectableForStart(this.startPickingListener)
+                    this.labyrinth?.makeCellsSelectableForStart()
 
                     break
                 }
                 case LabyrinthDisplayType.FINISH_PICKING: {
-                    this.labyrinth?.makeCellsSelectableForFinish(this.finishPickingListener)
+                    this.labyrinth?.makeCellsSelectableForFinish()
 
                     break
                 }
 
                 case LabyrinthDisplayType.BORDERS_PICKING: {
                     this.labyrinth?.clearPreviousResult()
-                    this.labyrinth?.makeCellsSelectableForBorders(this.borderPickingListener)
+                    this.labyrinth?.makeCellsSelectableForBorders()
 
                     break
                 }
@@ -305,33 +257,6 @@ export default class LabyrinthView extends Vue {
         return new Point(Number(matches[0][1]), Number(matches[0][2]))
     }
 
-    private resetCellsClasses() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.setAttribute("class", CellDisplayType.CELL)
-        })
-    }
-
-    private clearCells() {
-        Array.from(this.cells).forEach((cell) => {
-            LabyrinthView.clearCell(cell)
-        })
-    }
-
-    private static clearCell(cell: Element) {
-        cell.classList.remove(CellDisplayType.STARTABLE_CELL)
-        cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
-        cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
-
-        cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
-        cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
-    }
-
-    private clearPreviousResult() {
-        Array.from(this.cells).forEach((cell) => {
-            cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
-            cell.classList.remove(CellDisplayType.CORRECT_PATH_CELL)
-        })
-    }
 
     private initLabyrinth() {
         this.labyrinth = this.$refs.labyrinth as Labyrinth
@@ -395,52 +320,54 @@ export default class LabyrinthView extends Vue {
         let startCellPoint: Point | null = null
         let finishCellPoint: Point | null = null
 
-        Array.from(this.cells).forEach((cell) => {
-            let point = LabyrinthView.getCellCoordinates(cell)
+        if (this.labyrinth) {
+            Array.from(this.labyrinth.cells).forEach((cell) => {
+                let point = LabyrinthView.getCellCoordinates(cell)
 
-            if (cell.classList.contains(CellDisplayType.START_CELL)) {
-                if (point) {
-                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
+                if (cell.classList.contains(CellDisplayType.START_CELL)) {
+                    if (point) {
+                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
 
-                    startCellPoint = point
+                        startCellPoint = point
 
-                    return
+                        return
+                    }
                 }
-            }
 
-            if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
-                if (point) {
-                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
+                if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
+                    if (point) {
+                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.FINISH_CELL))
 
-                    finishCellPoint = point
+                        finishCellPoint = point
 
-                    return
+                        return
+                    }
                 }
-            }
 
-            if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
-                if (point) {
-                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
+                if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
+                    if (point) {
+                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
 
-                    return
+                        return
+                    }
                 }
+
+                if (point) {
+                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
+                }
+            })
+
+            if (startCellPoint && finishCellPoint) {
+                this.isErrorDisplaying = false
+
+                let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
+
+                this.isConfigEditable = false
+
+                this.displayLabyrinthPathsCells(solverRepositoryResult)
+            } else {
+                this.isErrorDisplaying = true
             }
-
-            if (point) {
-                cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
-            }
-        })
-
-        if (startCellPoint && finishCellPoint) {
-            this.isErrorDisplaying = false
-
-            let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
-
-            this.isConfigEditable = false
-
-            this.displayLabyrinthPathsCells(solverRepositoryResult)
-        } else {
-            this.isErrorDisplaying = true
         }
     }
 

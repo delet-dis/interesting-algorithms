@@ -27,7 +27,46 @@ class Props {
     components: {Card},
 })
 export default class Labyrinth extends Vue.with(Props) {
-    private cells = document.getElementsByClassName(CellDisplayType.CELL)
+    cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+    private updateCellsCollection() {
+        this.cells = document.getElementsByClassName(CellDisplayType.CELL)
+    }
+
+    public get getCells() {
+        this.updateCellsCollection()
+        return this.cells
+    }
+
+    private startPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        this.clearCells()
+        cell.classList.remove(CellDisplayType.FINISH_CELL)
+        cell.classList.remove(CellDisplayType.BORDER_CELL)
+        cell.classList.add(CellDisplayType.START_CELL)
+
+        this.removeStartListener()
+    }
+
+    private finishPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        this.clearCells()
+        cell.classList.remove(CellDisplayType.START_CELL)
+        cell.classList.remove(CellDisplayType.BORDER_CELL)
+        cell.classList.add(CellDisplayType.FINISH_CELL)
+
+        this.removeFinishListener()
+    }
+
+    private borderPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        cell.classList.remove(CellDisplayType.START_CELL)
+        cell.classList.remove(CellDisplayType.FINISH_CELL)
+        cell.classList.add(CellDisplayType.BORDER_CELL)
+    }
 
     private get getLabyrinthSizing() {
         return this.labyrinthSizing
@@ -49,31 +88,31 @@ export default class Labyrinth extends Vue.with(Props) {
         })
     }
 
-    makeCellsSelectableForStart(listener: (event: Event) => void) {
+    makeCellsSelectableForStart() {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.STARTABLE_CELL)
             cell.classList.remove(CellDisplayType.START_CELL)
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
-            cell.addEventListener('click', listener)
+            cell.addEventListener('click', this.startPickingListener)
         })
     }
 
-    makeCellsSelectableForFinish(listener: (event: Event) => void) {
+    makeCellsSelectableForFinish() {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.FINISHABLE_CELL)
             cell.classList.remove(CellDisplayType.FINISH_CELL)
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
-            cell.addEventListener('click', listener)
+            cell.addEventListener('click', this.finishPickingListener)
         })
     }
 
-    makeCellsSelectableForBorders(listener: (event: Event) => void) {
+    makeCellsSelectableForBorders() {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.BORDERABLE_CELL)
 
-            cell.addEventListener('click', listener)
+            cell.addEventListener('click', this.borderPickingListener)
         })
     }
 
@@ -105,8 +144,27 @@ export default class Labyrinth extends Vue.with(Props) {
         cell.classList.remove(CellDisplayType.WRONG_PATH_CELL)
     }
 
+    removeStartListener() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.removeEventListener('click', this.startPickingListener)
+        })
+    }
+
+    removeFinishListener() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.removeEventListener('click', this.finishPickingListener)
+        })
+    }
+
+    removeBorderListener() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.removeEventListener('click', this.borderPickingListener)
+        })
+    }
+
     mounted() {
         Labyrinth.initCardWidthListener()
+        this.updateCellsCollection()
     }
 }
 </script>
