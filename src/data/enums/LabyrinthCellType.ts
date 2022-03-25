@@ -4,7 +4,7 @@ enum LabyrinthCellType {
     CAN_BECOME_EMPTY,
     START_CELL,
     FINISH_CELL,
-    PATH_CELL
+    PATH_CELL,
 }
 
 export default LabyrinthCellType

@@ -1,4 +1,4 @@
-enum LabyrinthDisplayType {
+enum LabyrinthViewDisplayType {
     START_PICKING,
     FINISH_PICKING,
     BORDERS_PICKING,
@@ -7,4 +7,4 @@ enum LabyrinthDisplayType {
     LABYRINTH_GENERATING
 }
 
-export default LabyrinthDisplayType
+export default LabyrinthViewDisplayType

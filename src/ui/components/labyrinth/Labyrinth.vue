@@ -15,7 +15,11 @@
 import {Options, prop, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
-import CellDisplayType from "@/ui/views/labyrinthView/enums/CellDisplayType";
+import CellDisplayType from "@/data/enums/CellDisplayType";
+import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/LabyrinthGeneratorRepository";
+import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
+import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
+import Point from "@/data/models/Point";
 
 class Props {
     labyrinthSizing: SidebarLinkEntity = prop({
@@ -70,6 +74,31 @@ export default class Labyrinth extends Vue.with(Props) {
 
     private get getLabyrinthSizing() {
         return this.labyrinthSizing
+    }
+
+    displayBorderCells(cells: LabyrinthCell[][]) {
+        this.removeBorderListener()
+
+        this.resetCellsClasses()
+
+        cells.forEach((subArray) => {
+                subArray.forEach((cell) => {
+                    let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
+
+                    if (cell.type === LabyrinthCellType.BORDER_CELL) {
+                        documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
+                    }
+                })
+            }
+        )
+    }
+
+    static getCellCoordinates(cell: Element): Point {
+        let regex = new RegExp("(\\d*)x(\\d*)", "g")
+
+        let matches = [...cell.id.matchAll(regex)]
+
+        return new Point(Number(matches[0][1]), Number(matches[0][2]))
     }
 
     private static updateCardSize(card: HTMLElement | null) {
