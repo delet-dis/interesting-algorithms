@@ -2,7 +2,7 @@ import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import LabyrinthSolverInterface from "@/data/interfaces/labyrinth/LabyrinthSolverInterface";
 import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
-import Point from "@/data/models/labyrinth/Point";
+import Point from "@/data/models/Point";
 
 
 type pointParams = {
@@ -63,7 +63,7 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
         const parents: Point[][] = Array(labyrinthCells.length)
         for (let i = 0; i < labyrinthCells.length; i++)
             parents[i] = new Array(labyrinthCells[0].length).fill(noParent)
-        
+
 
         const pointsToCheck: pointParams[] = [{
             coords: start,
@@ -79,24 +79,24 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
             const {x, y} = curCell
             if(parents[y][x] != noParent)
                 continue
-                
+
             processedCells.push(new LabyrinthCell(curCell, LabyrinthCellType.PATH_CELL))
             parents[y][x] = parent
 
-            if (x > 0 && parents[y][x - 1] == noParent && labyrinthCells[y][x - 1].type) 
+            if (x > 0 && parents[y][x - 1] == noParent && labyrinthCells[y][x - 1].type)
                 newPointsToCheck.push(new Point(x - 1, y))
-            
-            
-            if (x < xLimit && parents[y][x + 1] == noParent && labyrinthCells[y][x + 1].type) 
+
+
+            if (x < xLimit && parents[y][x + 1] == noParent && labyrinthCells[y][x + 1].type)
                 newPointsToCheck.push(new Point(x + 1, y))
-            
 
-            if (y > 0 && parents[y - 1][x] == noParent && labyrinthCells[y - 1][x].type) 
+
+            if (y > 0 && parents[y - 1][x] == noParent && labyrinthCells[y - 1][x].type)
                 newPointsToCheck.push(new Point(x, y - 1))
-            
 
-            if (y < yLimit && parents[y + 1][x] == noParent && labyrinthCells[y + 1][x].type) 
-                newPointsToCheck.push(new Point(x, y + 1))         
+
+            if (y < yLimit && parents[y + 1][x] == noParent && labyrinthCells[y + 1][x].type)
+                newPointsToCheck.push(new Point(x, y + 1))
 
 
             newPointsToCheck.every((newPoint) => {
@@ -112,7 +112,7 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
                     fromStartToPoint: prevPathLen + 1,
                     wholePathLen: prevPathLen + 1 + LabyrinthSolverRepository.distanceToFinish(newPoint, finish)
                 })
-                
+
                 LabyrinthSolverRepository.sift(pointsToCheck)
                 return true
             })
