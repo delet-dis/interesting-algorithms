@@ -236,11 +236,11 @@ export default class AntView extends Vue {
                     }
                 }
 
-                if (cell.classList.contains(CellDisplayType.FOOD_CELL)) {
+                if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
                     if (point) {
                         let cellAsHTMLElement = (cell as HTMLElement)
 
-                        let nutritionalValue = 0;
+                        let nutritionalValue = 0
 
                         if (cellAsHTMLElement.dataset.nutritionalValue) {
                             nutritionalValue = Number(cellAsHTMLElement.dataset.nutritionalVaslue)
@@ -266,8 +266,8 @@ export default class AntView extends Vue {
                     cellsArray[point.y][point.x] = new AntCell(point, AntCellType.EMPTY_CELL)
                 }
             })
-
-            if (startCellPoint && foodCellPoints.length == 0) {
+            
+            if (startCellPoint && foodCellPoints.length > 0) {
                 this.isErrorDisplaying = false
 
                 // let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
