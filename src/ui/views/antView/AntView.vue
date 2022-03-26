@@ -80,6 +80,15 @@
 
                     <div class="spacer"/>
 
+                    <button class="button button-border button-rounded "
+                            :class="{'button-royal activeButton':isConfigEditable===false,
+                            'button-flat nonActiveButton': isConfigEditable===true}"
+                            id="stopButton">
+                        Остановить
+                    </button>
+
+                    <div class="spacer"/>
+
                     <button class="button button-flat button-border button-rounded"
                             :class="{'activeButton':isConfigEditable===true,
                             'nonActiveButton': isConfigEditable===false}"
@@ -328,6 +337,14 @@ export default class AntView extends Vue {
         })
     }
 
+    private initStopButtonOnClickListener() {
+        let stopButton = document.getElementById("stopButton")
+
+        stopButton?.addEventListener('click', () => {
+            this.isConfigEditable = true
+        })
+    }
+
     mounted() {
         this.initLabyrinth()
         this.initGenerateButtonOnClickListener()
@@ -335,6 +352,7 @@ export default class AntView extends Vue {
         this.initFoodPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()
         this.initStartButtonOnClickListener()
+        this.initStopButtonOnClickListener()
         this.initClearButtonOnClickListener()
     }
 }
