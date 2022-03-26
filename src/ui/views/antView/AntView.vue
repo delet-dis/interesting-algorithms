@@ -44,19 +44,29 @@
                     <div class="spacer"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-caution activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}"
-                            id="foodPickingButton">
-                        Установить точку еды
-                    </button>
-
-                    <div class="spacer"/>
-
-                    <button class="button button-border button-rounded"
                             :class="{'button-inverse activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="borderPickingButton">
                         Установить границы
+                    </button>
+
+                    <div class="separator"/>
+
+                    <p>
+                        Питательность точки еды
+                    </p>
+
+                    <vue-slider v-model="foodNutritionalValue" :disabled="!isConfigEditable" :dotSize="20" :max="10"
+                                :min="1"
+                                :silent="true"/>
+
+                    <div class="spacer"/>
+
+                    <button class="button button-border button-rounded"
+                            :class="{'button-caution activeButton':isConfigEditable===true,
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="foodPickingButton">
+                        Установить точку еды
                     </button>
 
                     <div class="separator"/>
@@ -91,18 +101,22 @@ import AntDescription from "@/ui/views/antView/components/AntDescription.vue";
 import Error from "@/ui/components/error/Error.vue";
 import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
 import AntViewDisplayType from "@/ui/views/antView/enums/AntViewDisplayType";
+import 'vue-slider-component/theme/antd.css';
 import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import Point from "@/data/models/Point";
 import CellDisplayType from "@/data/enums/CellDisplayType";
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
+import VueSlider from "vue-slider-component";
+import AntCell from "@/data/models/ant/AntCell";
+import AntCellType from "@/data/enums/AntCellType";
 
 @Options({
     components: {
         Labyrinth,
         Error,
         AntDescription,
-        Card
+        Card,
+        VueSlider
     },
 })
 export default class AntView extends Vue {
@@ -114,13 +128,27 @@ export default class AntView extends Vue {
     private isErrorDisplaying = false
     private isConfigEditable = true
 
-    private labyrinthSizing = 29
+    private labyrinthSizing = 15
+
+    private foodNutritionalValueField = 5
 
     private labyrinth: Labyrinth | null = null
 
     private generateLabyrinth() {
         // TODO: Add generator
         // this.labyrinth?.displayBorderCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+    }
+
+    private get foodNutritionalValue() {
+        return this.foodNutritionalValueField
+    }
+
+    private set foodNutritionalValue(newValue: number) {
+        this.foodNutritionalValueField = newValue
+
+        if (this.labyrinth) {
+            this.labyrinth.foodNutritionalValue = this.foodNutritionalValueField
+        }
     }
 
     private changeLabyrinthDisplayState(state: AntViewDisplayType) {
@@ -130,6 +158,7 @@ export default class AntView extends Vue {
                 case AntViewDisplayType.CENTER_PICKING: {
                     this.labyrinth?.clearPreviousResult()
                     this.labyrinth?.removeBorderListener()
+                    this.labyrinth?.removeFinishListener()
                 }
             }
 
@@ -140,7 +169,7 @@ export default class AntView extends Vue {
                     break
                 }
                 case AntViewDisplayType.FOOD_PICKING: {
-                    // this.labyrinth?.makeCellsSelectableForFinish()
+                    this.labyrinth?.makeCellsSelectableForFood()
 
                     break
                 }
@@ -175,7 +204,7 @@ export default class AntView extends Vue {
     }
 
     private submitCellsToAlgorithm() {
-        let cellsArray: LabyrinthCell[][] = new Array(this.labyrinthSizing)
+        let cellsArray: AntCell[][] = new Array(this.labyrinthSizing)
 
         for (let i = 0; i < this.labyrinthSizing; i++) {
             cellsArray[i] = new Array(this.labyrinthSizing)
@@ -190,7 +219,7 @@ export default class AntView extends Vue {
 
                 if (cell.classList.contains(CellDisplayType.START_CELL)) {
                     if (point) {
-                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
+                        cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.CENTER_CELL))
 
                         startCellPoint = point
 
@@ -200,7 +229,15 @@ export default class AntView extends Vue {
 
                 if (cell.classList.contains(CellDisplayType.FOOD_CELL)) {
                     if (point) {
-                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.FOOD_CELL))
+                        let cellAsHTMLElement = (cell as HTMLElement)
+
+                        let nutritionalValue = 0;
+
+                        if (cellAsHTMLElement.dataset.nutritionalValue) {
+                            nutritionalValue = Number(cellAsHTMLElement.dataset.nutritionalVaslue)
+                        }
+
+                        cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.FOOD_CELL, nutritionalValue))
 
                         foodCellPoints.push(point)
 
@@ -210,18 +247,18 @@ export default class AntView extends Vue {
 
                 if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
                     if (point) {
-                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
+                        cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.BORDER_CELL))
 
                         return
                     }
                 }
 
                 if (point) {
-                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
+                    cellsArray[point.y][point.x] = new AntCell(point, AntCellType.EMPTY_CELL)
                 }
             })
 
-            if (startCellPoint && foodCellPoints.length != 0) {
+            if (startCellPoint && foodCellPoints.length == 0) {
                 this.isErrorDisplaying = false
 
                 // let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
@@ -237,6 +274,10 @@ export default class AntView extends Vue {
 
     private initLabyrinth() {
         this.labyrinth = this.$refs.labyrinth as Labyrinth
+
+        if (this.labyrinth) {
+            this.labyrinth.foodNutritionalValue = this.foodNutritionalValue
+        }
     }
 
     private initColonyCenterPickingButtonOnclickListener() {
