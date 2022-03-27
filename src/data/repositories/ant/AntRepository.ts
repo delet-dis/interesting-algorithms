@@ -45,7 +45,7 @@ class AntRepository extends AntBase {
                     possDir = colony[i].FindPossibleWays(labyrinth, size, colony.length)
                     if (!colony[i].ChooseDirection(labyrinth, possDir)) {
                         if (colony[i].curPosition.type == AntCellType.FOOD_CELL) {
-                            colony[i].foodUsefulness = colony[i].curPosition.usefulness
+                            colony[i].foodUsefulness = colony[i].curPosition.numberOfPheromones
 
                         } else {
                             colony[i].foodUsefulness = 0
@@ -59,7 +59,7 @@ class AntRepository extends AntBase {
             }
             for (let o = 0; o < size; o++) {
                 for (let p = 0; p < size; p++) {
-                    labyrinth[o][p].pheromones = (0.4 * labyrinth[o][p].pheromones)
+                    labyrinth[o][p].numberOfPheromones = (0.4 * labyrinth[o][p].numberOfPheromones)
                 }
             }
             for (let i = 0; i < colony.length; i++) {
@@ -71,8 +71,8 @@ class AntRepository extends AntBase {
                     }
                     for (let j = 0; j < colony[i].way.length; j++) {
 
-                        labyrinth[colony[i].way[j].point.y][colony[i].way[j].point.x].pheromones += ((colony[i].foodUsefulness) / (colony[i].way.length))
-                        // console.log(labyrinth[colony[i].way[j].yCoordinate][colony[i].way[j].xCoordinate].pheromones, 10 / colony[i].way.length, colony[i].way[j].yCoordinate,colony[i].way[j].xCoordinate)
+                        labyrinth[colony[i].way[j].point.y][colony[i].way[j].point.x].numberOfPheromones += ((colony[i].foodUsefulness) / (colony[i].way.length))
+                        // console.log(labyrinth[colony[i].way[j].yCoordinate][colony[i].way[j].xCoordinate].numberOfPheromones, 10 / colony[i].way.length, colony[i].way[j].yCoordinate,colony[i].way[j].xCoordinate)
                     }
                 }
 
@@ -89,7 +89,7 @@ class AntRepository extends AntBase {
                         iterationCounterValue=s
                     })
                 )
-            
+
             for (let i = 0; i < colony.length; i++) {
                 colony[i].foodUsefulness=0
                 colony[i].way=[]

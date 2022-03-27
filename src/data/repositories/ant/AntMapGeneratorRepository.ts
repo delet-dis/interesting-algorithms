@@ -1,6 +1,4 @@
-import AntBase from "@/data/interfaces/ant/AntBase";
 import AntCell from "@/data/models/ant/AntCell";
-import Ant from "@/data/models/ant/Ant";
 import AntCellType from "@/data/enums/AntCellType";
 import point from "@/data/models/Point";
 import AntMapGeneratorInterface from "@/data/interfaces/ant/AntMapGeneratorInterface";

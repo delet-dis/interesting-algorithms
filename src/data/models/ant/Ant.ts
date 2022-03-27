@@ -43,7 +43,7 @@ class Ant{
         }
 
         if(possibleDirections.length==2){
-            const a=((Math.pow(possibleDirections[0].pheromones,1))/(Math.pow(possibleDirections[0].pheromones,1)+Math.pow(possibleDirections[1].pheromones,1)))
+            const a=((Math.pow(possibleDirections[0].numberOfPheromones,1))/(Math.pow(possibleDirections[0].numberOfPheromones,1)+Math.pow(possibleDirections[1].numberOfPheromones,1)))
             // console.log(a,Math.pow(possibleDirections[0].pheromones,2)+0.5, (Math.pow(possibleDirections[0].pheromones,2)+Math.pow(possibleDirections[1].pheromones,2)+1), "kk")
             const rand=Math.random()
             if(rand<a){
@@ -66,8 +66,8 @@ class Ant{
         }
 
         if(possibleDirections.length==3){
-           const a = (Math.pow(possibleDirections[0].pheromones,1)/((Math.pow(possibleDirections[0].pheromones,1)+Math.pow(possibleDirections[1].pheromones,1)+Math.pow(possibleDirections[2].pheromones,1))))
-            const b = a + (Math.pow(possibleDirections[1].pheromones,1)/((Math.pow(possibleDirections[0].pheromones,1)+Math.pow(possibleDirections[1].pheromones,1)+Math.pow(possibleDirections[2].pheromones,1))))
+           const a = (Math.pow(possibleDirections[0].numberOfPheromones,1)/((Math.pow(possibleDirections[0].numberOfPheromones,1)+Math.pow(possibleDirections[1].numberOfPheromones,1)+Math.pow(possibleDirections[2].numberOfPheromones,1))))
+            const b = a + (Math.pow(possibleDirections[1].numberOfPheromones,1)/((Math.pow(possibleDirections[0].numberOfPheromones,1)+Math.pow(possibleDirections[1].numberOfPheromones,1)+Math.pow(possibleDirections[2].numberOfPheromones,1))))
             const rand=Math.random()
             // console.log(a, b)
             if(rand<a){
