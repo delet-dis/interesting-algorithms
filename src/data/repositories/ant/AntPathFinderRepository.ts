@@ -104,7 +104,7 @@ class AntPathFinderRepository extends AntBase {
             }else{
                 clearInterval(this.intervalExecutorNumber!)
             }
-        }, 100))
+        }, 200))
     }
 
 }
