@@ -243,8 +243,8 @@ export default class AntView extends Vue {
 
                         let nutritionalValue = 0
 
-                        if (cellAsHTMLElement.dataset.nutritionalValue) {
-                            nutritionalValue = Number(cellAsHTMLElement.dataset.nutritionalVaslue)
+                        if (cellAsHTMLElement.dataset.nutritionalvalue) {
+                            nutritionalValue = Number(cellAsHTMLElement.dataset.nutritionalvalue)
                         }
 
                         cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.FOOD_CELL, nutritionalValue))
