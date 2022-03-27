@@ -73,7 +73,7 @@ export default class Labyrinth extends Vue.with(Props) {
         cell.classList.remove(CellDisplayType.BORDER_CELL)
         cell.classList.add(CellDisplayType.FINISH_CELL)
 
-        cell.setAttribute('nutritionalValue', this.foodNutritionalValue.toString())
+        cell.setAttribute('data-nutritionalValue', this.foodNutritionalValue.toString())
     }
 
     private borderPickingListener = (event: Event) => {
@@ -178,7 +178,7 @@ export default class Labyrinth extends Vue.with(Props) {
         Array.from(this.cells).forEach((cell) => {
             cell.setAttribute("class", CellDisplayType.CELL)
 
-            cell.removeAttribute("nutritionalValue")
+            cell.removeAttribute("data-nutritionalValue")
         })
     }
 
