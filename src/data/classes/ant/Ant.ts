@@ -99,6 +99,46 @@ class Ant{
             return true
         }
         return false
+        if(possibleDirections.length==4){
+            const a = (Math.pow(possibleDirections[0].numberOfPheromones,1)/((Math.pow(possibleDirections[0].numberOfPheromones,1)+Math.pow(possibleDirections[1].numberOfPheromones,1)+Math.pow(possibleDirections[2].numberOfPheromones,1)+Math.pow(possibleDirections[3].numberOfPheromones,1))))
+            const b = a + (Math.pow(possibleDirections[1].numberOfPheromones,1)/((Math.pow(possibleDirections[0].numberOfPheromones,1)+Math.pow(possibleDirections[1].numberOfPheromones,1)+Math.pow(possibleDirections[2].numberOfPheromones,1))+Math.pow(possibleDirections[2].numberOfPheromones,1)))
+            const c= a+b+(Math.pow(possibleDirections[2].numberOfPheromones,1)/((Math.pow(possibleDirections[0].numberOfPheromones,1)+Math.pow(possibleDirections[1].numberOfPheromones,1)+Math.pow(possibleDirections[2].numberOfPheromones,1))+Math.pow(possibleDirections[2].numberOfPheromones,1)))
+            const rand=Math.random()
+            if(rand<a){
+                this.previousPosition=this.curPosition
+                this.way.push(this.curPosition)
+                this.curPosition=possibleDirections[0]
+                if(this.curPosition.type==AntCellType.FOOD_CELL){
+                    return false
+                }
+
+            }
+            else if(rand<b){
+                this.previousPosition=this.curPosition
+                this.way.push(this.curPosition)
+                this.curPosition=possibleDirections[1]
+                if(this.curPosition.type==AntCellType.FOOD_CELL){
+                    return false
+                }
+            }
+            else if(rand<c){
+                this.previousPosition=this.curPosition
+                this.way.push(this.curPosition)
+                this.curPosition=possibleDirections[2]
+                if(this.curPosition.type==AntCellType.FOOD_CELL){
+                    return false
+                }
+            }
+            else{
+                this.previousPosition=this.curPosition
+                this.way.push(this.curPosition)
+                this.curPosition=possibleDirections[3]
+                if(this.curPosition.type==AntCellType.FOOD_CELL){
+                    return false
+                }
+            }
+            return true
+        }
     }
 
 }
