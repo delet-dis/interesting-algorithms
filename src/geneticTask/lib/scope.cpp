@@ -71,7 +71,15 @@ u_int8_t Scope::get_rand_var(u_int8_t scopeID) {
 }
 
 u_int8_t Scope::get_rand_func() {
+    int choise = randint(1, funcBank.totalVars);
+    int func = 0, i = 0;
+    while(i != choise){
+        func++;
+        if(funcBank.varsOccupied[func / 8] & (1 << (func % 8)))
+            i++;
+    }
     
+    return func;
 }
 
 

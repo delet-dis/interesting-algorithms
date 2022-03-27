@@ -29,7 +29,6 @@ private:
     node local[32];
     u_int8_t global[32];
     u_int8_t lastVar;
-    u_int8_t lastFunc;
     Bank varBank;
     Bank funcBank;
     Bank scopeBank;
@@ -37,7 +36,6 @@ private:
 public:
     //TODO: free
     Scope(const Scope &other);
-    u_int8_t get_local(u_int8_t scopeID); //TODO: нужна ли???
     u_int8_t new_scope(u_int8_t prevID); //return newScopeId
     u_int8_t new_global_var(); //var name / func /scope
     u_int8_t new_func();
