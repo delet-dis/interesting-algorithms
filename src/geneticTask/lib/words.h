@@ -34,7 +34,7 @@ namespace operators {
 }
 
 namespace compare_operators {
-    enum : unsigned char {
+    enum : u_int8_t {
         G,
         L,
         E,

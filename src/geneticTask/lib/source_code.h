@@ -1,11 +1,11 @@
 #pragma once
 
-#include <algorithm>
 #include <list>
 #include "words.h"
 #include "scope.h"
 #include "dependencies.h"
 
+class Deps;
 
 struct raw_line {
     u_int8_t word0;

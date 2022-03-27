@@ -1,5 +1,4 @@
 #pragma once
-#include <algorithm>
 #include "source_code.h"
 
 class Line;
