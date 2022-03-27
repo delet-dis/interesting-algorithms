@@ -34,7 +34,6 @@ class AntPathFinderRepository extends AntBase {
                 }
             }
         }
-
         for (let i = 0; i < colonySize; i++) {
             colony[i] = new Ant(startpos)
         }
@@ -43,10 +42,14 @@ class AntPathFinderRepository extends AntBase {
                 for (; ;) {
                     possDir = colony[i].FindPossibleWays(labyrinth, size, colony.length)
                     if (!colony[i].ChooseDirection(labyrinth, possDir)) {
+                       // console.log( colony[i].curPosition.point.x, colony[i].curPosition.point.y, possDir[0].point.x, possDir[0].point.y)
                         if (colony[i].curPosition.type == AntCellType.FOOD_CELL) {
-                            colony[i].foodUsefulness = colony[i].curPosition.numberOfPheromones
-
-                        } else {
+                            if(colony[i].curPosition.nutritionalValue){
+                            colony[i].foodUsefulness = colony[i].curPosition.nutritionalValue!
+                            }
+                            console.log(colony[i].curPosition.nutritionalValue)
+                        }
+                        else {
                             colony[i].foodUsefulness = 0
 
 
@@ -69,7 +72,6 @@ class AntPathFinderRepository extends AntBase {
                         bestWay = colony[i].way
                     }
                     for (let j = 0; j < colony[i].way.length; j++) {
-
                         labyrinth[colony[i].way[j].point.y][colony[i].way[j].point.x].numberOfPheromones += ((colony[i].foodUsefulness) / (colony[i].way.length))
                         // console.log(labyrinth[colony[i].way[j].yCoordinate][colony[i].way[j].xCoordinate].numberOfPheromones, 10 / colony[i].way.length, colony[i].way[j].yCoordinate,colony[i].way[j].xCoordinate)
                     }
@@ -88,7 +90,22 @@ class AntPathFinderRepository extends AntBase {
             }
 
         }
+        const mas:Array<number>[]=new Array(size)
+        for(let i=0;i<size;i++){
+            mas[i]=new Array(size)
+        }
+        for(let i=0;i<size;i++){
+            for(let j=0;j<size;j++){
+                mas[i][j]=labyrinth[i][j].numberOfPheromones
+            }
+        }
+        const k:string[]=[]
 
+        for(let i=0;i<size;i++){
+            k[i]=mas[i].toString()
+        }
+        for(let i=0;i<size;i++)
+            console.log(k[i])
     }
 
 }

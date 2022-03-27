@@ -32,6 +32,7 @@ class Ant{
     public ChooseDirection(Maze:AntCell[][],possibleDirections:AntCell[]):boolean{
         //console.log((possibleDirections.length))
        //[this.curPosition.point.y][this.curPosition.point.x].type=AntCellType.BE_ON_WAY
+        //console.log(possibleDirections.length)
         if(possibleDirections.length==1){
             this.previousPosition=this.curPosition
             this.way.push(this.curPosition)
