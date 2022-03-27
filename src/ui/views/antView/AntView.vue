@@ -213,7 +213,7 @@ export default class AntView extends Vue {
         }
     }
 
-    private submitCellsToAlgorithm() {
+    private async submitCellsToAlgorithm() {
         let cellsArray: AntCell[][] = new Array(this.labyrinthSizing)
 
         for (let i = 0; i < this.labyrinthSizing; i++) {
@@ -270,12 +270,11 @@ export default class AntView extends Vue {
 
             if (startCellPoint && foodCellPoints.length > 0) {
                 this.isErrorDisplaying = false
-
-                AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
-
                 this.isConfigEditable = false
 
-                this.observeAntPathFinderRepositoryResults()
+                await AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
+
+                await this.observeAntPathFinderRepositoryResults()
             } else {
                 this.isErrorDisplaying = true
             }
@@ -284,7 +283,11 @@ export default class AntView extends Vue {
 
     private async observeAntPathFinderRepositoryResults() {
         AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
-            console.log(mapState[0].point)
+            mapState.forEach((cell) => {
+                let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
+
+                documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
+            })
         })
     }
 
