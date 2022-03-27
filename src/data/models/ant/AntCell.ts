@@ -1,8 +1,10 @@
 import Point from "@/data/models/Point";
 import AntCellType from "@/data/enums/AntCellType";
+import Cell from "@/data/models/cell/Cell";
 
-class AntCell {
-    constructor(public point: Point, public type: AntCellType, public pheromones: number, public usefulness:number) {
+class AntCell extends Cell {
+    constructor(public point: Point, public type: AntCellType, public nutritionalValue: number | null = null, public numberOfPheromones: number = 0) {
+        super(point, type)
     }
 }
 

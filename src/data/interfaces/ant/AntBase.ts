@@ -5,7 +5,7 @@ abstract class AntBase {
     abstract mapState: Observable<AntCell[]>
     abstract iterationCounter: Observable<number>
 
-    abstract provideDataForCalculation(cells: AntCell[][]): void
+    abstract provideDataForCalculation(cells: AntCell[][], size: number): void
 }
 
 export default AntBase
