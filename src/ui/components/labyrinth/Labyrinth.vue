@@ -16,10 +16,10 @@ import {Options, prop, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
 import CellDisplayType from "@/data/enums/CellDisplayType";
-import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/LabyrinthGeneratorRepository";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import Point from "@/data/models/Point";
+import Cell from "@/data/models/cell/Cell";
+import AntCellType from "@/data/enums/AntCellType";
 
 class Props {
     labyrinthSizing: SidebarLinkEntity = prop({
@@ -88,7 +88,7 @@ export default class Labyrinth extends Vue.with(Props) {
         return this.labyrinthSizing
     }
 
-    displayBorderCells(cells: LabyrinthCell[][]) {
+    displayBorderCells<T extends Cell>(cells: T[][]) {
         this.removeBorderListener()
 
         this.resetCellsClasses()
@@ -97,7 +97,7 @@ export default class Labyrinth extends Vue.with(Props) {
                 subArray.forEach((cell) => {
                     let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
-                    if (cell.type === LabyrinthCellType.BORDER_CELL) {
+                    if (cell.type === LabyrinthCellType.BORDER_CELL || cell.type === AntCellType.BORDER_CELL) {
                         documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
                     }
                 })

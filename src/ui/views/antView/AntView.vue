@@ -118,6 +118,7 @@ import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import VueSlider from "vue-slider-component";
 import AntCell from "@/data/models/ant/AntCell";
 import AntCellType from "@/data/enums/AntCellType";
+import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
 
 @Options({
     components: {
@@ -144,8 +145,7 @@ export default class AntView extends Vue {
     private labyrinth: Labyrinth | null = null
 
     private generateLabyrinth() {
-        // TODO: Add generator
-        // this.labyrinth?.displayBorderCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+        this.labyrinth?.displayBorderCells<AntCell>(AntLabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
     }
 
     private get foodNutritionalValue() {
@@ -266,7 +266,7 @@ export default class AntView extends Vue {
                     cellsArray[point.y][point.x] = new AntCell(point, AntCellType.EMPTY_CELL)
                 }
             })
-            
+
             if (startCellPoint && foodCellPoints.length > 0) {
                 this.isErrorDisplaying = false
 
