@@ -4,10 +4,10 @@
 class Bank {
 public:
     union {
-        u_int64_t all_params = 0;
+        u_int64_t alParams = 0;
         struct {
-            u_int8_t vars_occupied[4];
-            u_int8_t total_vars;
+            u_int8_t varsOccupied[4];
+            u_int8_t totalVars;
         };
     };
     

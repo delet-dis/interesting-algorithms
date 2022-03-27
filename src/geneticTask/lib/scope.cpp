@@ -3,22 +3,23 @@
 #include "utils.h"
 
 u_int8_t Bank::get() {
+    
     u_int8_t var, add = 0;
     for (var = 0; var < 4; var++)
-        if(vars_occupied[var] != 255)
+        if(varsOccupied[var] != 255)
             break;
-    while (!(vars_occupied[var] & (1 << add)))
+    while (!(varsOccupied[var] & (1 << add)))
         add++;
-    vars_occupied[var] |= 1 << add;
-    total_vars++;
+    varsOccupied[var] |= 1 << add;
+    totalVars++;
     var *= 8;
     var += add;
     return var;
 }
 
 void Bank::free(u_int8_t varID) {
-    total_vars--;
-    vars_occupied[varID / 8] ^= 1 << (varID % 8);
+    totalVars--;
+    varsOccupied[varID / 8] ^= 1 << (varID % 8);
 }
 
 

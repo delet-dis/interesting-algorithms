@@ -1,7 +1,7 @@
 #pragma once
 
 namespace coeffs {
-    const int mutation_ratio = 0;
-    const int max_deletions_ratio = 3;
+    const int mutationRatio = 0;
+    const int maxDeletionsRatio = 3;
     
 }
