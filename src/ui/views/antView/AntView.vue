@@ -111,15 +111,14 @@ import Error from "@/ui/components/error/Error.vue";
 import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
 import AntViewDisplayType from "@/ui/views/antView/enums/AntViewDisplayType";
 import 'vue-slider-component/theme/antd.css';
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import Point from "@/data/models/Point";
 import CellDisplayType from "@/data/enums/CellDisplayType";
-import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import VueSlider from "vue-slider-component";
 import AntCell from "@/data/models/ant/AntCell";
 import AntCellType from "@/data/enums/AntCellType";
 import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
 import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository";
+import {run} from "js-coroutines";
 
 @Options({
     components: {
@@ -210,6 +209,12 @@ export default class AntView extends Vue {
                     break
                 }
             }
+        } else {
+            if (state == AntViewDisplayType.LABYRINTH_STOP_DISPLAYING) {
+                this.isConfigEditable = true
+
+                AntPathFinderRepository.getInstance().isWorking = false
+            }
         }
     }
 
@@ -272,7 +277,11 @@ export default class AntView extends Vue {
                 this.isErrorDisplaying = false
                 this.isConfigEditable = false
 
-                await AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
+                    }, 1000)
+                })
 
                 await this.observeAntPathFinderRepositoryResults()
             } else {
@@ -282,11 +291,13 @@ export default class AntView extends Vue {
     }
 
     private async observeAntPathFinderRepositoryResults() {
-        AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
-            mapState.forEach((cell) => {
-                let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
+        await run(() => {
+            AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
+                mapState.forEach((cell) => {
+                    let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
-                documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
+                    documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
+                })
             })
         })
     }
@@ -351,7 +362,9 @@ export default class AntView extends Vue {
         let stopButton = document.getElementById("stopButton")
 
         stopButton?.addEventListener('click', () => {
-            this.isConfigEditable = true
+            if (!this.isConfigEditable) {
+                this.changeLabyrinthDisplayState(AntViewDisplayType.LABYRINTH_STOP_DISPLAYING)
+            }
         })
     }
 
