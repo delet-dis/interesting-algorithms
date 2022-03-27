@@ -13,6 +13,7 @@
     "core-js": "^3.8.3",
     "normalize.css": "^8.0.1",
     "rxjs": "^7.5.5",
+    "rxjs-compat": "^6.6.7",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
     "vue-meta": "^3.0.0-alpha.7",
