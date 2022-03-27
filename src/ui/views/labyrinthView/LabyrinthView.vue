@@ -151,7 +151,7 @@ export default class LabyrinthView extends Vue {
     }
 
     private generateLabyrinth() {
-        this.labyrinth?.displayBorderCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+        this.labyrinth?.displayBorderCells<LabyrinthCell>(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
     }
 
     private changeLabyrinthDisplayState(state: LabyrinthViewDisplayType) {

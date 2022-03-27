@@ -16,10 +16,10 @@ import {Options, prop, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
 import CellDisplayType from "@/data/enums/CellDisplayType";
-import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/LabyrinthGeneratorRepository";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
 import Point from "@/data/models/Point";
+import Cell from "@/data/models/cell/Cell";
+import AntCellType from "@/data/enums/AntCellType";
 
 class Props {
     labyrinthSizing: SidebarLinkEntity = prop({
@@ -32,6 +32,8 @@ class Props {
 })
 export default class Labyrinth extends Vue.with(Props) {
     cells = document.getElementsByClassName(CellDisplayType.CELL)
+
+    foodNutritionalValue = 0
 
     private updateCellsCollection() {
         this.cells = document.getElementsByClassName(CellDisplayType.CELL)
@@ -64,6 +66,16 @@ export default class Labyrinth extends Vue.with(Props) {
         this.removeFinishListener()
     }
 
+    private foodPickingListener = (event: Event) => {
+        let cell = (event.target as Element)
+
+        cell.classList.remove(CellDisplayType.START_CELL)
+        cell.classList.remove(CellDisplayType.BORDER_CELL)
+        cell.classList.add(CellDisplayType.FINISH_CELL)
+
+        cell.setAttribute('data-nutritionalValue', this.foodNutritionalValue.toString())
+    }
+
     private borderPickingListener = (event: Event) => {
         let cell = (event.target as Element)
 
@@ -76,7 +88,7 @@ export default class Labyrinth extends Vue.with(Props) {
         return this.labyrinthSizing
     }
 
-    displayBorderCells(cells: LabyrinthCell[][]) {
+    displayBorderCells<T extends Cell>(cells: T[][]) {
         this.removeBorderListener()
 
         this.resetCellsClasses()
@@ -85,7 +97,7 @@ export default class Labyrinth extends Vue.with(Props) {
                 subArray.forEach((cell) => {
                     let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
-                    if (cell.type === LabyrinthCellType.BORDER_CELL) {
+                    if (cell.type === LabyrinthCellType.BORDER_CELL || cell.type === AntCellType.BORDER_CELL) {
                         documentCell?.setAttribute("class", CellDisplayType.CELL + " " + CellDisplayType.BORDER_CELL)
                     }
                 })
@@ -122,6 +134,7 @@ export default class Labyrinth extends Vue.with(Props) {
             cell.classList.add(CellDisplayType.STARTABLE_CELL)
             cell.classList.remove(CellDisplayType.START_CELL)
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+            cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
 
             cell.addEventListener('click', this.startPickingListener)
         })
@@ -134,6 +147,15 @@ export default class Labyrinth extends Vue.with(Props) {
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
             cell.addEventListener('click', this.finishPickingListener)
+        })
+    }
+
+    makeCellsSelectableForFood() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.classList.add(CellDisplayType.FINISHABLE_CELL)
+            cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
+
+            cell.addEventListener('click', this.foodPickingListener)
         })
     }
 
@@ -155,6 +177,8 @@ export default class Labyrinth extends Vue.with(Props) {
     resetCellsClasses() {
         Array.from(this.cells).forEach((cell) => {
             cell.setAttribute("class", CellDisplayType.CELL)
+
+            cell.removeAttribute("data-nutritionalValue")
         })
     }
 
@@ -182,6 +206,12 @@ export default class Labyrinth extends Vue.with(Props) {
     removeFinishListener() {
         Array.from(this.cells).forEach((cell) => {
             cell.removeEventListener('click', this.finishPickingListener)
+        })
+    }
+
+    removeFoodListener() {
+        Array.from(this.cells).forEach((cell) => {
+            cell.removeEventListener('click', this.foodPickingListener)
         })
     }
 
@@ -230,7 +260,7 @@ export default class Labyrinth extends Vue.with(Props) {
 }
 
 .table-cell.table-cell-finish {
-    border: 1px solid #FF4351;
+    border: 1px solid #fc888f;
 
     background-color: #FF4351;
 }

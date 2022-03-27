@@ -1,11 +1,13 @@
-import {Observable} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import AntCell from "@/data/models/ant/AntCell";
 
 abstract class AntBase {
-    abstract mapState: Observable<AntCell[][]>
-    abstract iterationCounter: Observable<number>
+    abstract mapState: BehaviorSubject<AntCell[]>
+    abstract iterationCounter: BehaviorSubject<number>
 
-    abstract provideDataForCalculation(cells: AntCell[][]): void
+    abstract isWorking: boolean
+
+    abstract provideDataForCalculation(cells: AntCell[][], size: number): void
 }
 
 export default AntBase

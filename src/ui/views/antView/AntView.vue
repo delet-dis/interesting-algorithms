@@ -44,19 +44,29 @@
                     <div class="spacer"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-caution activeButton':isConfigEditable===true,
-                            'button-flat nonActiveButton': isConfigEditable===false}"
-                            id="foodPickingButton">
-                        Установить точку еды
-                    </button>
-
-                    <div class="spacer"/>
-
-                    <button class="button button-border button-rounded"
                             :class="{'button-inverse activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="borderPickingButton">
                         Установить границы
+                    </button>
+
+                    <div class="separator"/>
+
+                    <p>
+                        Питательность точки еды
+                    </p>
+
+                    <vue-slider v-model="foodNutritionalValue" :disabled="!isConfigEditable" :dotSize="20" :max="10"
+                                :min="1"
+                                :silent="true"/>
+
+                    <div class="spacer"/>
+
+                    <button class="button button-border button-rounded"
+                            :class="{'button-caution activeButton':isConfigEditable===true,
+                            'button-flat nonActiveButton': isConfigEditable===false}"
+                            id="foodPickingButton">
+                        Установить точку еды
                     </button>
 
                     <div class="separator"/>
@@ -66,6 +76,15 @@
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="startButton">
                         Запустить
+                    </button>
+
+                    <div class="spacer"/>
+
+                    <button class="button button-border button-rounded "
+                            :class="{'button-royal activeButton':isConfigEditable===false,
+                            'button-flat nonActiveButton': isConfigEditable===true}"
+                            id="stopButton">
+                        Остановить
                     </button>
 
                     <div class="spacer"/>
@@ -91,18 +110,23 @@ import AntDescription from "@/ui/views/antView/components/AntDescription.vue";
 import Error from "@/ui/components/error/Error.vue";
 import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
 import AntViewDisplayType from "@/ui/views/antView/enums/AntViewDisplayType";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
+import 'vue-slider-component/theme/antd.css';
 import Point from "@/data/models/Point";
 import CellDisplayType from "@/data/enums/CellDisplayType";
-import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
+import VueSlider from "vue-slider-component";
+import AntCell from "@/data/models/ant/AntCell";
+import AntCellType from "@/data/enums/AntCellType";
+import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
+import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository";
+import {run} from "js-coroutines";
 
 @Options({
     components: {
         Labyrinth,
         Error,
         AntDescription,
-        Card
+        Card,
+        VueSlider
     },
 })
 export default class AntView extends Vue {
@@ -114,13 +138,26 @@ export default class AntView extends Vue {
     private isErrorDisplaying = false
     private isConfigEditable = true
 
-    private labyrinthSizing = 29
+    private labyrinthSizing = 15
+
+    private foodNutritionalValueField = 5
 
     private labyrinth: Labyrinth | null = null
 
     private generateLabyrinth() {
-        // TODO: Add generator
-        // this.labyrinth?.displayBorderCells(LabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+        this.labyrinth?.displayBorderCells<AntCell>(AntLabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
+    }
+
+    private get foodNutritionalValue() {
+        return this.foodNutritionalValueField
+    }
+
+    private set foodNutritionalValue(newValue: number) {
+        this.foodNutritionalValueField = newValue
+
+        if (this.labyrinth) {
+            this.labyrinth.foodNutritionalValue = this.foodNutritionalValueField
+        }
     }
 
     private changeLabyrinthDisplayState(state: AntViewDisplayType) {
@@ -130,6 +167,7 @@ export default class AntView extends Vue {
                 case AntViewDisplayType.CENTER_PICKING: {
                     this.labyrinth?.clearPreviousResult()
                     this.labyrinth?.removeBorderListener()
+                    this.labyrinth?.removeFinishListener()
                 }
             }
 
@@ -140,7 +178,7 @@ export default class AntView extends Vue {
                     break
                 }
                 case AntViewDisplayType.FOOD_PICKING: {
-                    // this.labyrinth?.makeCellsSelectableForFinish()
+                    this.labyrinth?.makeCellsSelectableForFood()
 
                     break
                 }
@@ -171,11 +209,17 @@ export default class AntView extends Vue {
                     break
                 }
             }
+        } else {
+            if (state == AntViewDisplayType.LABYRINTH_STOP_DISPLAYING) {
+                this.isConfigEditable = true
+
+                AntPathFinderRepository.getInstance().isWorking = false
+            }
         }
     }
 
-    private submitCellsToAlgorithm() {
-        let cellsArray: LabyrinthCell[][] = new Array(this.labyrinthSizing)
+    private async submitCellsToAlgorithm() {
+        let cellsArray: AntCell[][] = new Array(this.labyrinthSizing)
 
         for (let i = 0; i < this.labyrinthSizing; i++) {
             cellsArray[i] = new Array(this.labyrinthSizing)
@@ -190,7 +234,7 @@ export default class AntView extends Vue {
 
                 if (cell.classList.contains(CellDisplayType.START_CELL)) {
                     if (point) {
-                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.START_CELL))
+                        cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.CENTER_CELL))
 
                         startCellPoint = point
 
@@ -198,9 +242,17 @@ export default class AntView extends Vue {
                     }
                 }
 
-                if (cell.classList.contains(CellDisplayType.FOOD_CELL)) {
+                if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
                     if (point) {
-                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.FOOD_CELL))
+                        let cellAsHTMLElement = (cell as HTMLElement)
+
+                        let nutritionalValue = 0
+
+                        if (cellAsHTMLElement.dataset.nutritionalvalue) {
+                            nutritionalValue = Number(cellAsHTMLElement.dataset.nutritionalvalue)
+                        }
+
+                        cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.FOOD_CELL, nutritionalValue))
 
                         foodCellPoints.push(point)
 
@@ -210,33 +262,54 @@ export default class AntView extends Vue {
 
                 if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
                     if (point) {
-                        cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.BORDER_CELL))
+                        cellsArray[point.y][point.x] = (new AntCell(point, AntCellType.BORDER_CELL))
 
                         return
                     }
                 }
 
                 if (point) {
-                    cellsArray[point.y][point.x] = (new LabyrinthCell(point, LabyrinthCellType.EMPTY_CELL))
+                    cellsArray[point.y][point.x] = new AntCell(point, AntCellType.EMPTY_CELL)
                 }
             })
 
-            if (startCellPoint && foodCellPoints.length != 0) {
+            if (startCellPoint && foodCellPoints.length > 0) {
                 this.isErrorDisplaying = false
-
-                // let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
-
                 this.isConfigEditable = false
 
-                // this.displayLabyrinthPathsCells(solverRepositoryResult)
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
+                    }, 1000)
+                })
+
+                await this.observeAntPathFinderRepositoryResults()
             } else {
                 this.isErrorDisplaying = true
             }
         }
     }
 
+    private async observeAntPathFinderRepositoryResults() {
+        await run(() => {
+            AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
+                this.labyrinth?.clearCells()
+
+                mapState.forEach((cell) => {
+                    let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
+
+                    documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
+                })
+            })
+        })
+    }
+
     private initLabyrinth() {
         this.labyrinth = this.$refs.labyrinth as Labyrinth
+
+        if (this.labyrinth) {
+            this.labyrinth.foodNutritionalValue = this.foodNutritionalValue
+        }
     }
 
     private initColonyCenterPickingButtonOnclickListener() {
@@ -287,6 +360,16 @@ export default class AntView extends Vue {
         })
     }
 
+    private initStopButtonOnClickListener() {
+        let stopButton = document.getElementById("stopButton")
+
+        stopButton?.addEventListener('click', () => {
+            if (!this.isConfigEditable) {
+                this.changeLabyrinthDisplayState(AntViewDisplayType.LABYRINTH_STOP_DISPLAYING)
+            }
+        })
+    }
+
     mounted() {
         this.initLabyrinth()
         this.initGenerateButtonOnClickListener()
@@ -294,6 +377,7 @@ export default class AntView extends Vue {
         this.initFoodPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()
         this.initStartButtonOnClickListener()
+        this.initStopButtonOnClickListener()
         this.initClearButtonOnClickListener()
     }
 }
