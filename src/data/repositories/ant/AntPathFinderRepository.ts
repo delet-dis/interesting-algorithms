@@ -1,45 +1,44 @@
 import AntBase from "@/data/interfaces/ant/AntBase";
-import {from, Observable, of, tap} from "rxjs";
+import {BehaviorSubject, from, map, Observable, of, tap} from "rxjs";
 import AntCell from "@/data/models/ant/AntCell";
-import Ant from "@/data/models/ant/Ant";
+import Ant from "@/data/classes/ant/Ant";
 import AntCellType from "@/data/enums/AntCellType";
 import point from "@/data/models/Point";
 
-class AntRepository extends AntBase {
-    private static instance: AntRepository
+class AntPathFinderRepository extends AntBase {
+    private static instance: AntPathFinderRepository
 
-    public static getInstance(): AntRepository {
-        if (!AntRepository.instance) {
-            AntRepository.instance = new AntRepository()
+    public static getInstance(): AntPathFinderRepository {
+        if (!AntPathFinderRepository.instance) {
+            AntPathFinderRepository.instance = new AntPathFinderRepository()
         }
 
-        return AntRepository.instance
+        return AntPathFinderRepository.instance
     }
 
-    public mapState: Observable<AntCell[]> = from([])
-    public iterationCounter: Observable<number> = of(0)
+    public mapState: BehaviorSubject<AntCell[]> = new BehaviorSubject<AntCell[]>([])
+    public iterationCounter: BehaviorSubject<number> = new BehaviorSubject<number>(0)
 
-    public provideDataForCalculation(cells: AntCell[][]): void {
-        const size=15
-        const labyrinth:AntCell[][]=cells
-        const colonySize=2000
-        let possDir:AntCell[]=[]
-        const colony:Ant[]=[]
-        let bestWay:AntCell[]=[]
-        let bestWayLength=999
-        let startpos:AntCell=new AntCell(new point(-1,-1),AntCellType.EMPTY_CELL, 0,0)
-        for(let i=0;i<15;i++){
-            for(let j=0;j<15;j++){
-                if(labyrinth[i][j].type==AntCellType.CENTER_CELL){
-                    startpos=labyrinth[i][j]
+    public provideDataForCalculation(cells: AntCell[][], size: number): void {
+        const labyrinth: AntCell[][] = cells
+        const colonySize = 2000
+        let possDir: AntCell[] = []
+        const colony: Ant[] = []
+        let bestWay: AntCell[] = []
+        let bestWayLength = 999
+        let startpos: AntCell = new AntCell(new point(-1, -1), AntCellType.EMPTY_CELL, 0, 0)
+        for (let i = 0; i < 15; i++) {
+            for (let j = 0; j < 15; j++) {
+                if (labyrinth[i][j].type == AntCellType.CENTER_CELL) {
+                    startpos = labyrinth[i][j]
                 }
             }
         }
 
-        for(let i=0;i<colonySize;i++){
-            colony[i]=new Ant(startpos)
+        for (let i = 0; i < colonySize; i++) {
+            colony[i] = new Ant(startpos)
         }
-        for(let s=0;s<100;s++) {
+        for (let s = 0; s < 100; s++) {
             for (let i = 0; i < colony.length; i++) {
                 for (; ;) {
                     possDir = colony[i].FindPossibleWays(labyrinth, size, colony.length)
@@ -54,7 +53,7 @@ class AntRepository extends AntBase {
                         }
                         break
                     }
-                    possDir=[]
+                    possDir = []
                 }
             }
             for (let o = 0; o < size; o++) {
@@ -64,10 +63,10 @@ class AntRepository extends AntBase {
             }
             for (let i = 0; i < colony.length; i++) {
                 // console.log(i, colony[i].way,  colony[i].curPosition)
-                if (colony[i].foodUsefulness>0) {
-                    if(colony[i].way.length<bestWayLength){
-                        bestWayLength=colony[i].way.length
-                        bestWay=colony[i].way
+                if (colony[i].foodUsefulness > 0) {
+                    if (colony[i].way.length < bestWayLength) {
+                        bestWayLength = colony[i].way.length
+                        bestWay = colony[i].way
                     }
                     for (let j = 0; j < colony[i].way.length; j++) {
 
@@ -78,22 +77,14 @@ class AntRepository extends AntBase {
 
             }
 
-                this.mapState.pipe(
-                    tap(mapStateValue => {
-                        mapStateValue = bestWay
-                    })
-                )
+            this.mapState.next(bestWay)
 
-                this.iterationCounter.pipe(
-                    tap(iterationCounterValue => {
-                        iterationCounterValue=s
-                    })
-                )
+            this.iterationCounter.next(s)
 
             for (let i = 0; i < colony.length; i++) {
-                colony[i].foodUsefulness=0
-                colony[i].way=[]
-                colony[i].curPosition=startpos
+                colony[i].foodUsefulness = 0
+                colony[i].way = []
+                colony[i].curPosition = startpos
             }
 
         }
@@ -101,3 +92,5 @@ class AntRepository extends AntBase {
     }
 
 }
+
+export default AntPathFinderRepository

@@ -119,6 +119,7 @@ import VueSlider from "vue-slider-component";
 import AntCell from "@/data/models/ant/AntCell";
 import AntCellType from "@/data/enums/AntCellType";
 import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
+import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository";
 
 @Options({
     components: {
@@ -270,15 +271,21 @@ export default class AntView extends Vue {
             if (startCellPoint && foodCellPoints.length > 0) {
                 this.isErrorDisplaying = false
 
-                // let solverRepositoryResult = LabyrinthSolverRepository.getInstance().getLabyrinthSolution(cellsArray, startCellPoint, finishCellPoint)
+                AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
 
                 this.isConfigEditable = false
 
-                // this.displayLabyrinthPathsCells(solverRepositoryResult)
+                this.observeAntPathFinderRepositoryResults()
             } else {
                 this.isErrorDisplaying = true
             }
         }
+    }
+
+    private async observeAntPathFinderRepositoryResults() {
+        AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
+            console.log(mapState[0].point)
+        })
     }
 
     private initLabyrinth() {
