@@ -33,10 +33,6 @@ void Bank::free(u_int8_t varID) {
 }
 */
 
-u_int8_t Scope::get_local(u_int8_t scopeID) {
-    return local[scopeID].local;
-}
-
 u_int8_t Scope::new_scope(u_int8_t prevID ) {
     u_int8_t newScope = scopeBank.get();
     //TODO: FOR doesn't demand local var, but demands new scope
