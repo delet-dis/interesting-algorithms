@@ -293,6 +293,8 @@ export default class AntView extends Vue {
     private async observeAntPathFinderRepositoryResults() {
         await run(() => {
             AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
+                this.labyrinth?.clearCells()
+
                 mapState.forEach((cell) => {
                     let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
