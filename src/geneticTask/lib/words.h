@@ -1,36 +1,45 @@
-#ifndef WORDS_H
-#define WORDS_H
+#pragma once
 
-enum struct word0: unsigned char {
-    NEW_VAR,
-    EX_VAR,
-    DEF,
-    IF,
-    PRINT,
-    INPUT,
-    FOR
-};
+namespace word0 {
+    enum : u_int8_t {
+        NEW_VAR,
+        DEF,
+        EX_VAR,
+        IF,
+        PRINT,
+        INPUT,
+        FOR
+    };
+}
 
-enum struct prefixes: unsigned char {
-    EX_VAR,
-    CONST,
-    FUNC,
-    IMMUTABLE,
-    OPERATOR,
-    COMP_OPERATOR,
-};
+namespace prefixes{
+    const u_int8_t prefix_mask = 0b11100000;
+    const u_int8_t value_mask = 0b00011111;
+    
+    enum : u_int8_t {
+        EX_VAR = 0b00000000,
+        CONST = 0b00100000,
+        FUNC = 0b01000000,
+        IMMUTABLE = 0b01100000,
+        OPERATOR = 0b10000000,
+        COMP_OPERATOR = 0b10100000,
+    };
+}
 
-enum struct operators: unsigned char {
-    PLUSE,
-    MINUS,
-};
+namespace operators {
+    enum : u_int8_t {
+        PLUS,
+        MINUS,
+    };
+}
 
-enum struct compare_operators: unsigned char {
-    G,
-    L,
-    E,
-    GE,
-    LE,
-};
-
-#endif
+namespace compare_operators {
+    enum : unsigned char {
+        G,
+        L,
+        E,
+        GE,
+        LE,
+    };
+    
+}
