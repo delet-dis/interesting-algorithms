@@ -37,7 +37,7 @@ class AntPathFinderRepository extends AntBase {
         for (let i = 0; i < colonySize; i++) {
             colony[i] = new Ant(startpos)
         }
-        for (let s = 0; s < 100; s++) {
+        for (let s = 0; s < 200; s++) {
             for (let i = 0; i < colony.length; i++) {
                 for (; ;) {
                     possDir = colony[i].FindPossibleWays(labyrinth, size, colony.length)
@@ -47,7 +47,7 @@ class AntPathFinderRepository extends AntBase {
                             if(colony[i].curPosition.nutritionalValue){
                             colony[i].foodUsefulness = colony[i].curPosition.nutritionalValue!
                             }
-                            console.log(colony[i].curPosition.nutritionalValue)
+                            // console.log(colony[i].curPosition.nutritionalValue)
                         }
                         else {
                             colony[i].foodUsefulness = 0
