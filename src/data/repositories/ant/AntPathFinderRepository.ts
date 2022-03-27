@@ -19,6 +19,8 @@ class AntPathFinderRepository extends AntBase {
     public mapState: BehaviorSubject<AntCell[]> = new BehaviorSubject<AntCell[]>([])
     public iterationCounter: BehaviorSubject<number> = new BehaviorSubject<number>(0)
 
+    public isWorking = true
+
     public provideDataForCalculation(cells: AntCell[][], size: number): void {
         const labyrinth: AntCell[][] = cells
         const colonySize = 2000
