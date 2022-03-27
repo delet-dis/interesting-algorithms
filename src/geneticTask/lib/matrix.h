@@ -1,5 +1,4 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#pragma once
 
 template <typename T>
 class Matrix {
@@ -16,7 +15,3 @@ public:
     
     T* operator[](const int pos);
 };
-
-
-
-#endif // MATRIX_H
