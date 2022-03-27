@@ -90,22 +90,7 @@ class AntPathFinderRepository extends AntBase {
             }
 
         }
-        const mas:Array<number>[]=new Array(size)
-        for(let i=0;i<size;i++){
-            mas[i]=new Array(size)
-        }
-        for(let i=0;i<size;i++){
-            for(let j=0;j<size;j++){
-                mas[i][j]=labyrinth[i][j].numberOfPheromones
-            }
-        }
-        const k:string[]=[]
 
-        for(let i=0;i<size;i++){
-            k[i]=mas[i].toString()
-        }
-        for(let i=0;i<size;i++)
-            console.log(k[i])
     }
 
 }
