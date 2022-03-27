@@ -1,13 +1,7 @@
 import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface";
 import Dot from "@/data/models/clustering/Dot";
-import List, {ListNode} from "@/data/models/clustering/DoubleLinkedList";
-
-type Cluster = {
-    points: List<Dot>
-    closest ? : ListNode<Cluster>
-    minDist: number
-    distCol: number
-}
+import LinkedList, {ListNode} from "@/data/models/clustering/DoubleLinkedList";
+import Cluster from "@/data/models/clustering/Cluster";
 
 class HierarchyClusteringRepository implements ClusteringInterface {
     private static instance: HierarchyClusteringRepository
@@ -21,46 +15,48 @@ class HierarchyClusteringRepository implements ClusteringInterface {
     }
 
     public splitByClusters(dots: Dot[], numberOfClusters: number): Dot[] {
-        const clusters: List < Cluster > = new List < Cluster > ()
+        const clusters: LinkedList<Cluster> = new LinkedList<Cluster>()
         for (let i = 0; i < dots.length; i++) {
-            clusters.push_back({
-                points: new List<Dot>(dots[i]),
-                minDist: 99999,
-                distCol: i
-            })
+            clusters.pushBack(new Cluster(new LinkedList<Dot>(dots[i]), null, 99999, i))
         }
 
-
         const distances: number[][] = Array(dots.length)
-        for (let i = 0; i < dots.length; i++)
-            distances[i] = Array(dots.length)
-        let globalMin = 9999
-        let bestCluster!: ListNode<Cluster> // will be init in next cycle
-            let i = 0
 
-        for (const cl1 of clusters) {
-            clusters.iteratorStartNode = cl1.nextNode
+        for (let i = 0; i < dots.length; i++) {
+            distances[i] = Array(dots.length)
+        }
+
+        let globalMin = 9999
+        let bestCluster!: ListNode<Cluster>
+        let i = 0
+
+        for (const firstCluster of clusters) {
+            clusters.iteratorStartNode = firstCluster.nextNode
+
             let j = i + 1
-            for (const cl2 of clusters) {
+
+            for (const secondCluster of clusters) {
                 const distance = Math.sqrt(
                     Math.pow(dots[i].xCoordinate - dots[j].xCoordinate, 2) +
                     Math.pow(dots[i].yCoordinate - dots[j].yCoordinate, 2)
                 )
+
                 distances[i][j] = distance
                 distances[j][i] = distance
 
-                if (distance < cl1.data.minDist) {
-                    cl1.data.minDist = distance
-                    cl1.data.closest = cl2
+                if (distance < firstCluster.data.minimalDistance) {
+                    firstCluster.data.minimalDistance = distance
+                    firstCluster.data.closest = secondCluster
+
                     if (distance < globalMin) {
                         globalMin = distance
-                        bestCluster = cl1
+                        bestCluster = firstCluster
                     }
                 }
 
-                if (distance < cl2.data.minDist) {
-                    cl2.data.minDist = distance
-                    cl2.data.closest = cl1
+                if (distance < secondCluster.data.minimalDistance) {
+                    secondCluster.data.minimalDistance = distance
+                    secondCluster.data.closest = firstCluster
                 }
 
                 j++
@@ -70,51 +66,53 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         }
 
         while (clusters.size != numberOfClusters) {
-            bestCluster.data.points.concat(bestCluster.data.closest!.data.points)
-            bestCluster.data.minDist = 9999
+            bestCluster.data.points.concatenate(bestCluster.data.closest!.data.points)
+            bestCluster.data.minimalDistance = Number.MAX_VALUE
 
             //метод одиночной связи
-            globalMin = 9999
+            globalMin = Number.MAX_VALUE
             const prevBest = bestCluster
-            const bcl: number = bestCluster.data.distCol
-            const cbcl: number = bestCluster.data.closest!.data.distCol
+
+            const bestClusterIndexInDistancesTable: number = bestCluster.data.distCol
+            const closestToBestClusterIndex: number = bestCluster.data.closest!.data.distCol
+
             clusters.remove(bestCluster.data.closest!)
-            for (const cl of clusters) {
-                if (cl === prevBest)
+
+            for (const cluster of clusters) {
+                if (cluster === prevBest)
                     continue
 
-                const ncl: number = cl.data.distCol
-                const newDistance: number = Math.min(distances[bcl][ncl], distances[cbcl][ncl])
-                distances[bcl][ncl] = newDistance
-                distances[ncl][bcl] = newDistance
+                const currentCluster: number = cluster.data.distCol
+                const newDistance: number = Math.min(distances[bestClusterIndexInDistancesTable][currentCluster], distances[closestToBestClusterIndex][currentCluster])
 
-                if (newDistance < prevBest.data.minDist) {
-                    prevBest.data.minDist = newDistance
-                    prevBest.data.closest = cl
+                distances[bestClusterIndexInDistancesTable][currentCluster] = newDistance
+                distances[currentCluster][bestClusterIndexInDistancesTable] = newDistance
+
+                if (newDistance < prevBest.data.minimalDistance) {
+                    prevBest.data.minimalDistance = newDistance
+                    prevBest.data.closest = cluster
                 }
 
-                if (newDistance <= cl.data.minDist) {
-                    cl.data.minDist = newDistance
-                    cl.data.closest = prevBest
+                if (newDistance <= cluster.data.minimalDistance) {
+                    cluster.data.minimalDistance = newDistance
+                    cluster.data.closest = prevBest
                 }
 
-                if (cl.data.minDist < globalMin) {
-                    globalMin = cl.data.minDist
-                    bestCluster = cl
+                if (cluster.data.minimalDistance < globalMin) {
+                    globalMin = cluster.data.minimalDistance
+                    bestCluster = cluster
                 }
             }
-
         }
 
-        let clusterNum = 0
-        for (const cl of clusters) {
-            for (const dot of cl.data.points)
-                dot.data.hierarchyIndex = clusterNum
-            clusterNum++
+        let clusterNumber = 0
+        for (const cluster of clusters) {
+            for (const dot of cluster.data.points)
+                dot.data.hierarchyIndex = clusterNumber
+            clusterNumber++
         }
 
-
-        return dots;
+        return dots
     }
 }
 

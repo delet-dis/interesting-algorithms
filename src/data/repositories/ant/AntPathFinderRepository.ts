@@ -16,6 +16,10 @@ class AntPathFinderRepository extends AntBase {
         return AntPathFinderRepository.instance
     }
 
+    private bestWay: AntCell[] = []
+
+    private bestWayLength = Number.MAX_VALUE
+
     public mapState: BehaviorSubject<AntCell[]> = new BehaviorSubject<AntCell[]>([])
     public iterationCounter: BehaviorSubject<number> = new BehaviorSubject<number>(0)
 
@@ -31,78 +35,85 @@ class AntPathFinderRepository extends AntBase {
         }
     }
 
+    private clearPreviousResult(){
+        this.bestWay = []
+        this.bestWayLength = Number.MAX_VALUE
+        this.mapState.next([])
+        this.iterationCounter.next(0)
+    }
+
     public provideDataForCalculation(cells: AntCell[][], size: number): void {
         const labyrinth: AntCell[][] = cells
+
         const colonySize = 2000
-        let possDir: AntCell[] = []
-        const colony: Ant[] = []
-        let bestWay: AntCell[] = []
-        let bestWayLength = 999
-        let startpos: AntCell = new AntCell(new point(-1, -1), AntCellType.EMPTY_CELL, 0, 0)
-        for (let i = 0; i < 15; i++) {
-            for (let j = 0; j < 15; j++) {
+
+        let possibleDirections: AntCell[] = []
+        const ants: Ant[] = []
+
+        let startingPosition: AntCell = new AntCell(new point(-1, -1), AntCellType.EMPTY_CELL, 0, 0)
+
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
                 if (labyrinth[i][j].type == AntCellType.CENTER_CELL) {
-                    startpos = labyrinth[i][j]
+                    startingPosition = labyrinth[i][j]
                 }
             }
         }
+
         for (let i = 0; i < colonySize; i++) {
-            colony[i] = new Ant(startpos)
+            ants[i] = new Ant(startingPosition)
         }
 
         this.intervalExecutorNumber = (setInterval(() => {
             if (this.isWorking) {
-                for (let i = 0; i < colony.length; i++) {
+                for (let i = 0; i < ants.length; i++) {
                     for (; ;) {
-                        possDir = colony[i].FindPossibleWays(labyrinth, size, colony.length)
-                        if (!colony[i].ChooseDirection(labyrinth, possDir)) {
-                            // console.log( colony[i].curPosition.point.x, colony[i].curPosition.point.y, possDir[0].point.x, possDir[0].point.y)
-                            if (colony[i].curPosition.type == AntCellType.FOOD_CELL) {
-                                if (colony[i].curPosition.nutritionalValue) {
-                                    colony[i].foodUsefulness = colony[i].curPosition.nutritionalValue!
+                        possibleDirections = ants[i].findPossibleWays(labyrinth, size)
+
+                        if (!ants[i].chooseDirection(labyrinth, possibleDirections)) {
+                            if (ants[i].currentPosition.type == AntCellType.FOOD_CELL) {
+                                if (ants[i].currentPosition.nutritionalValue) {
+                                    ants[i].nutritionalValue = ants[i].currentPosition.nutritionalValue!
                                 }
-                                // console.log(colony[i].curPosition.nutritionalValue)
                             } else {
-                                colony[i].foodUsefulness = 0
-
-
+                                ants[i].nutritionalValue = 0
                             }
                             break
                         }
-                        possDir = []
+                        possibleDirections = []
                     }
                 }
+
                 for (let o = 0; o < size; o++) {
                     for (let p = 0; p < size; p++) {
                         labyrinth[o][p].numberOfPheromones = (0.4 * labyrinth[o][p].numberOfPheromones)
                     }
                 }
-                for (let i = 0; i < colony.length; i++) {
-                    // console.log(i, colony[i].way,  colony[i].curPosition)
-                    if (colony[i].foodUsefulness > 0) {
-                        if (colony[i].way.length < bestWayLength) {
-                            bestWayLength = colony[i].way.length
-                            bestWay = colony[i].way
+
+                for (let i = 0; i < ants.length; i++) {
+                    if (ants[i].nutritionalValue > 0) {
+                        if (ants[i].way.length < this.bestWayLength) {
+                            this.bestWayLength = ants[i].way.length
+                            this.bestWay = ants[i].way
                         }
-                        for (let j = 0; j < colony[i].way.length; j++) {
-                            labyrinth[colony[i].way[j].point.y][colony[i].way[j].point.x].numberOfPheromones += ((colony[i].foodUsefulness) / (colony[i].way.length))
-                            // console.log(labyrinth[colony[i].way[j].yCoordinate][colony[i].way[j].xCoordinate].numberOfPheromones, 10 / colony[i].way.length, colony[i].way[j].yCoordinate,colony[i].way[j].xCoordinate)
+                        for (let j = 0; j < ants[i].way.length; j++) {
+                            labyrinth[ants[i].way[j].point.y][ants[i].way[j].point.x].numberOfPheromones += ((ants[i].nutritionalValue) / (ants[i].way.length))
                         }
                     }
-
                 }
 
-                this.mapState.next(bestWay)
+                this.mapState.next(this.bestWay)
 
                 this.iterationCounter.next(this.iterationCounter.value + 1)
 
-                for (let i = 0; i < colony.length; i++) {
-                    colony[i].foodUsefulness = 0
-                    colony[i].way = []
-                    colony[i].curPosition = startpos
+                for (let i = 0; i < ants.length; i++) {
+                    ants[i].nutritionalValue = 0
+                    ants[i].way = []
+                    ants[i].currentPosition = startingPosition
                 }
-            }else{
+            } else {
                 clearInterval(this.intervalExecutorNumber!)
+                this.clearPreviousResult()
             }
         }, 200))
     }
