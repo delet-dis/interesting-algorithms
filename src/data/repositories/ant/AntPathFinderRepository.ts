@@ -35,7 +35,7 @@ class AntPathFinderRepository extends AntBase {
         }
     }
 
-    private clearPreviousResult(){
+    private clearPreviousResult() {
         this.bestWay = []
         this.bestWayLength = Number.MAX_VALUE
         this.mapState.next([])
