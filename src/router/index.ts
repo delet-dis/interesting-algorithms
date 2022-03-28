@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/neuralAlgorithm',
         name: 'test1',
-        component: App
+        component: () => import('../ui/views/neuralView/NeuralView.vue'),
     }
 ]
 

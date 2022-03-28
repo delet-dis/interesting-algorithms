@@ -118,7 +118,6 @@ import AntCell from "@/data/models/ant/AntCell";
 import AntCellType from "@/data/enums/AntCellType";
 import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
 import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository";
-import {run} from "js-coroutines";
 import {Subscription} from "rxjs";
 
 @Options({

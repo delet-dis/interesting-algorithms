@@ -7,7 +7,7 @@
                 </Card>
                 <Error id="error" :class="{'error-displaying':isErrorDisplaying}">
                     <h1>
-                        Ошибка
+                        Я знаю точно – невозможное возможно
                     </h1>
                     <p>
                         Количество точек меньше количества кластеров
@@ -83,7 +83,6 @@
 import {Options, setup, Vue} from 'vue-class-component';
 import Card from "@/ui/components/card/Card.vue";
 import {useMeta} from "vue-meta";
-import "../../../../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 import ClusteringDescription from "@/ui/views/clusteringView/components/ClusteringDescription.vue";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/antd.css'
