@@ -1,4 +1,5 @@
 #pragma once
+#include <sys/types.h>
 
 namespace word0 {
     enum : u_int8_t {

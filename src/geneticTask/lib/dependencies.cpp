@@ -1,4 +1,5 @@
 #include <memory.h>
+#include "words.h"
 #include "dependencies.h"
 #include "source_code.h"
 
