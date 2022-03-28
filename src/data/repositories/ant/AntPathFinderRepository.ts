@@ -15,7 +15,7 @@ class AntPathFinderRepository extends AntBase {
 
         return AntPathFinderRepository.instance
     }
-
+    private bestWayNutritionalValue=0.1
     private currentWay: AntCell[] = []
     private bestWay: AntCell[]=[]
     private labyrinth: AntCell[][]=[]
@@ -95,10 +95,14 @@ class AntPathFinderRepository extends AntBase {
 
                 for (let i = 0; i < ants.length; i++) {
                     if (ants[i].nutritionalValue > 0) {
-                            if(ants[i].way.length<this.bestWayLength){
+
+                            if(ants[i].way.length*(1/ants[i].nutritionalValue)<this.bestWayLength*(1/this.bestWayNutritionalValue)){
+                            this.bestWayNutritionalValue=ants[i].nutritionalValue
                             this.bestWayLength = ants[i].way.length
                             this.bestWay=ants[i].way
+
                             }
+
                             this.currentWay = ants[i].way
                             this.currentWay.splice(0,1)
                         for (let j = 0; j < ants[i].way.length; j++) {
@@ -120,7 +124,7 @@ class AntPathFinderRepository extends AntBase {
                 clearInterval(this.intervalExecutorNumber!)
                 this.clearPreviousResult()
             }
-        }, 50))
+        }, 150))
     }
 
 }
