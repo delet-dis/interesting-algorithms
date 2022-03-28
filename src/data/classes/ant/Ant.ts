@@ -82,15 +82,15 @@ class Ant {
             }
 
             case 3: {
-                const a = Math.pow(possibleDirections[0].numberOfPheromones, 1) /
-                    ((Math.pow(possibleDirections[0].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1)))
+                const a = Math.pow(possibleDirections[0].numberOfPheromones, 2) /
+                    ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[2].numberOfPheromones, 2)))
 
-                const b = a + Math.pow(possibleDirections[1].numberOfPheromones, 1) /
-                    ((Math.pow(possibleDirections[0].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1)))
+                const b = a + Math.pow(possibleDirections[1].numberOfPheromones, 2) /
+                    ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[2].numberOfPheromones, 2)))
 
                 const rand = Math.random()
 
@@ -124,23 +124,23 @@ class Ant {
             }
 
             case 4: {
-                const a = Math.pow(possibleDirections[0].numberOfPheromones, 1) /
-                    ((Math.pow(possibleDirections[0].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[3].numberOfPheromones, 1)))
+                const a = Math.pow(possibleDirections[0].numberOfPheromones, 2) /
+                    ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[2].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[3].numberOfPheromones, 2)))
 
-                const b = a + Math.pow(possibleDirections[1].numberOfPheromones, 1) /
-                    ((Math.pow(possibleDirections[0].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1)) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1))
+                const b = a + Math.pow(possibleDirections[1].numberOfPheromones, 2) /
+                    ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[2].numberOfPheromones, 2)) +
+                        Math.pow(possibleDirections[3].numberOfPheromones, 2))
 
-                const c = a + b + Math.pow(possibleDirections[2].numberOfPheromones, 1) /
-                    ((Math.pow(possibleDirections[0].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 1) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1)) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 1))
+                const c = a + b + Math.pow(possibleDirections[2].numberOfPheromones, 2) /
+                    ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                        Math.pow(possibleDirections[2].numberOfPheromones, 2)) +
+                        Math.pow(possibleDirections[3].numberOfPheromones, 2))
 
                 const rand = Math.random()
 
