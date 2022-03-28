@@ -40,6 +40,7 @@ class AntPathFinderRepository extends AntBase {
         this.bestWay= []
         this.bestWayLength = Number.MAX_VALUE
         this.mapState.next([])
+        this.mapBestState.next([])
         this.iterationCounter.next(0)
     }
 

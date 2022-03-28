@@ -146,6 +146,7 @@ export default class AntView extends Vue {
     private labyrinth: Labyrinth | null = null
 
     private resultFieldSubscription: Subscription | null = null
+    private bestResultFieldSubscription: Subscription | null = null
 
     private generateLabyrinth() {
         this.labyrinth?.displayBorderCells<AntCell>(AntLabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
@@ -304,6 +305,14 @@ export default class AntView extends Vue {
             mapState.forEach((cell) => {
                 let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
+                documentCell?.classList.add(CellDisplayType.WRONG_PATH_CELL)
+            })
+        })
+
+        this.bestResultFieldSubscription = AntPathFinderRepository.getInstance().mapBestState.subscribe((mapBestState) => {
+            mapBestState.forEach((cell) => {
+                let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
+
                 documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
             })
         })
@@ -311,6 +320,7 @@ export default class AntView extends Vue {
 
     private removeSubscription() {
         this.resultFieldSubscription?.unsubscribe()
+        this.bestResultFieldSubscription?.unsubscribe()
     }
 
     private initLabyrinth() {
