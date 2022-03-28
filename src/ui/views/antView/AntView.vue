@@ -119,6 +119,7 @@ import AntCellType from "@/data/enums/AntCellType";
 import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
 import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository";
 import {run} from "js-coroutines";
+import {Subscription} from "rxjs";
 
 @Options({
     components: {
@@ -143,6 +144,8 @@ export default class AntView extends Vue {
     private foodNutritionalValueField = 5
 
     private labyrinth: Labyrinth | null = null
+
+    private resultFieldSubscription: Subscription | null = null
 
     private generateLabyrinth() {
         this.labyrinth?.displayBorderCells<AntCell>(AntLabyrinthGeneratorRepository.getInstance().generateLabyrinth(this.labyrinthSizing))
@@ -214,6 +217,8 @@ export default class AntView extends Vue {
                 this.isConfigEditable = true
 
                 AntPathFinderRepository.getInstance().isWorking = false
+
+                this.removeSubscription()
             }
         }
     }
@@ -283,27 +288,29 @@ export default class AntView extends Vue {
                     }, 1000)
                 })
 
-                await this.observeAntPathFinderRepositoryResults()
+                AntPathFinderRepository.getInstance().isWorking = true
+
+                await this.addSubscription()
             } else {
                 this.isErrorDisplaying = true
             }
         }
     }
 
-    private async observeAntPathFinderRepositoryResults() {
-        await run(() => {
-            AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
-                if(mapState){
-                    this.labyrinth?.clearCells()
+    private addSubscription() {
+        this.resultFieldSubscription = AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
+            this.labyrinth?.clearCells()
 
-                    mapState.forEach((cell) => {
-                        let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
+            mapState.forEach((cell) => {
+                let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cell.point.x + `x` + cell.point.y)
 
-                        documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
-                    })
-                }
+                documentCell?.classList.add(CellDisplayType.CORRECT_PATH_CELL)
             })
         })
+    }
+
+    private removeSubscription() {
+        this.resultFieldSubscription?.unsubscribe()
     }
 
     private initLabyrinth() {
