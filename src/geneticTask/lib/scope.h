@@ -1,44 +1,50 @@
 #pragma once
 #include <sys/types.h>
+#include "line.h"
+
 
 class Bank {
 public:
     union {
-        u_int64_t alParams = 0;
+        u_int64_t allParams = 0;
         struct {
-            u_int8_t varsOccupied[4];
-            u_int8_t totalVars;
+            u_int8_t repository[4];
+            u_int8_t size;
         };
     };
-    
+    Bank();
+    Bank(const Bank &other);
     u_int8_t get();
-    void free(u_int8_t varID);
+    void occupy(u_int8_t ID);
+    u_int8_t operator[](const int pos);
+    void free(u_int8_t ID);
 };
 
 
 class Scope {
 private:
     struct node {
-        u_int8_t parentInd;
-        u_int8_t local;
+        u_int8_t parentScope;
+        u_int8_t var;
         u_int8_t len;
     };
     
     
-    //TODO: vars + bank / local + bank
-    node local[32];
-    u_int8_t global[32];
-    u_int8_t lastVar;
-    Bank varBank;
+    Bank allVarsBank;
+    node locals[32];
+    Bank globalBank;
     Bank funcBank;
     Bank scopeBank;
     
 public:
-    //TODO: free
+    Scope();
     Scope(const Scope &other);
-    u_int8_t new_scope(u_int8_t prevID); //return newScopeId
-    u_int8_t new_global_var(); //var name / func /scope
+    u_int8_t new_scope(u_int8_t prevID);  // return newScopeId
+    u_int8_t new_global_var();
     u_int8_t new_func();
+    u_int8_t get_prev_scope(u_int8_t curScopeID);
     u_int8_t get_rand_var(u_int8_t scopeID);
     u_int8_t get_rand_func();
+    u_int8_t free(Line l);  // return parentScope
+    
 };
