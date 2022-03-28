@@ -16,13 +16,13 @@ class AntPathFinderRepository extends AntBase {
         return AntPathFinderRepository.instance
     }
 
-    private bestWay: AntCell[] = []
+    private currentWay: AntCell[] = []
+    private bestWay: AntCell[]=[]
     private labyrinth: AntCell[][]=[]
     private bestWayLength = Number.MAX_VALUE
-
     public mapState: BehaviorSubject<AntCell[]> = new BehaviorSubject<AntCell[]>([])
     public iterationCounter: BehaviorSubject<number> = new BehaviorSubject<number>(0)
-
+    public mapBestState: BehaviorSubject<AntCell[]>=new BehaviorSubject<AntCell[]>([])
     public isWorking = true
 
     private intervalExecutorNumber: NodeJS.Timer | undefined = undefined
@@ -36,7 +36,8 @@ class AntPathFinderRepository extends AntBase {
     }
 
     private clearPreviousResult() {
-        this.bestWay = []
+        this.currentWay = []
+        this.bestWay= []
         this.bestWayLength = Number.MAX_VALUE
         this.mapState.next([])
         this.iterationCounter.next(0)
@@ -93,18 +94,20 @@ class AntPathFinderRepository extends AntBase {
 
                 for (let i = 0; i < ants.length; i++) {
                     if (ants[i].nutritionalValue > 0) {
-
+                            if(ants[i].way.length<this.bestWayLength){
                             this.bestWayLength = ants[i].way.length
-                            this.bestWay = ants[i].way
-
+                            this.bestWay=ants[i].way
+                            }
+                            this.currentWay = ants[i].way
+                            this.currentWay.splice(0,1)
                         for (let j = 0; j < ants[i].way.length; j++) {
                             this.labyrinth[ants[i].way[j].point.y][ants[i].way[j].point.x].numberOfPheromones += ((Math.pow(ants[i].nutritionalValue,4)) / (Math.pow(ants[i].way.length,4)))
                         }
                     }
                 }
 
-                this.mapState.next(this.bestWay)
-
+                this.mapState.next(this.currentWay)
+                this.mapBestState.next(this.bestWay)
                 this.iterationCounter.next(this.iterationCounter.value + 1)
 
                 for (let i = 0; i < ants.length; i++) {
@@ -116,7 +119,7 @@ class AntPathFinderRepository extends AntBase {
                 clearInterval(this.intervalExecutorNumber!)
                 this.clearPreviousResult()
             }
-        }, 150))
+        }, 50))
     }
 
 }
