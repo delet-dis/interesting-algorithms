@@ -1,34 +1,18 @@
-#include <algorithm>
-#include <list>
 #include "matrix.h"
 #include "words.h"
 #include "gentic_coefficients.h"
-#include "source_code.h"
 #include "utils.h"
+#include "source_code.h"
 
-
-Line::Line(){
-    contentPile = 0;
+SourceCode::~SourceCode() {
+    for(auto line : code) {
+        if(!line->used)
+            delete line;
+    }
 }
-
-bool Line::operator==(const Line other) const {
-        return this->contentPile == other.contentPile;
-}
-
-
-int Line::compare(const Line other) const {
-        int diff = 0;
-        if(this->content.word0 != other.content.word0)
-            return 4;
-        diff += this->content.word1 != other.content.word1;
-        diff += this->content.word2 != other.content.word2;
-        diff += this->content.word3 != other.content.word3;
-        return diff;
-}
-
 
     
-int SourceCode::edit_distance(const SourceCode other) const {
+int SourceCode::edit_distance(const SourceCode &other) const {
     int i, j;
     Matrix<int> t(this->code.size(), other.code.size());
     t[0][0] = this->code.front() == other.code.front();
@@ -45,35 +29,70 @@ int SourceCode::edit_distance(const SourceCode other) const {
         j = 1;
         for (auto iter2 = ++other.code.begin(); iter2 != other.code.end(); ++iter2, ++j) {
             t[i][j] = std::min(t[i-1][j], t[j-1][i]) + 4;
-            t[i][j] = std::min(t[i][j], t[i-1][j-1] + iter1->compare(*iter2));
+            t[i][j] = std::min(t[i][j], t[i-1][j-1] + (*iter1)->difference(**iter2));
         }
     }
     
     return t[i][j];
 }
 
+void SourceCode::copy_code(SourceCode &other) {
+    LinePtr line;
+    
+    for (line = other.code.begin(); line != other.placeToDeclareVars; ++line) {
+        this->code.insert(this->placeToDeclareVars, *line);
+        (*line)->used++;
+    }
+    
+    for (++line; line != other.placeToDeclareFuncs; ++line) {
+        this->code.insert(this->placeToDeclareFuncs, *line);
+        (*line)->used++;
+    }
+    
+    for (++line; line != other.code.end(); ++line) {
+        this->code.push_back(*line);
+        (*line)->used++;
+    }
+        
+    
+}
+
+
 
 SourceCode* SourceCode::give_birth() {
     SourceCode *child = new SourceCode();
     child->deps = this->deps;
-    int choise = randint(0, 7);
+    child->scope = this->scope;
     
+    int choise = randint(0, 7);
     bool codeCopied = false;
-    int deletedID[3][32]; //scope / var / func 
-    // delete 
+    
+    //delete
     if (choise & 1) {
         codeCopied = true;
+        LinePtr placeToInsert = child->placeToDeclareVars;
         for (LinePtr line = code.begin(); line != code.end(); ++line){
-            if(!deps.get_deps(*line) && randint(0, 1)){ //TODO: skip coeff
-                if(line->content.word0 == word0::DEF ||
-                   line->content.word0 == word0::FOR
-                )
-                    deletedID[0] 
+            
+            if(line == this->placeToDeclareVars)
+                placeToInsert = child->placeToDeclareFuncs;
+            if(line == this->placeToDeclareVars)
+                placeToInsert = child->code.end();
+            
+                
+            if (!child->deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
+                if((*line)->content.word0 <= word0::IF)
+                    child->scope.free(*line);
             } 
-            else
-                child->code.push_back(*line); //TODO: line can be deleted
+            
+            else {
+                child->code.insert(placeToInsert, *line);
+                (*line)->used++;
+            }
         }
     }
+    
+    if(!codeCopied)
+        child->copy_code(*this);
     
     // add
     if (choise & 2) {
@@ -81,7 +100,7 @@ SourceCode* SourceCode::give_birth() {
     }
     // edit
     if (choise & 4) {
-        //edit
+        
     }
         
     //apply mutation
@@ -89,7 +108,7 @@ SourceCode* SourceCode::give_birth() {
 
 
 void SourceCode::add_line_mutation(LinePtr from, const u_int8_t word) {
-    
+    /*
     switch (word) {
         case word0::NEW_VAR :
             LinePtr declLine = code.emplace(scopesStarts[from->scope]);
@@ -105,5 +124,6 @@ void SourceCode::add_line_mutation(LinePtr from, const u_int8_t word) {
         case word0::INPUT :
         case word0::FOR :
     }
+    */
 }
 
