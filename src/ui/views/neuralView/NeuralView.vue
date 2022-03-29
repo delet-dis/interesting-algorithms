@@ -37,6 +37,14 @@
                         Очистить
                     </button>
                 </Card>
+                <Card class="resultCard" :class="{'result-displaying':!isErrorDisplaying && calculationResult!=null}">
+                    <h1>
+                        Результат:
+                    </h1>
+                    <p>
+                        {{ this.calculationResult }}
+                    </p>
+                </Card>
             </div>
         </div>
     </div>
@@ -49,7 +57,7 @@ import {useMeta} from "vue-meta";
 import NeuralDescription from "@/ui/views/neuralView/components/NeuralDescription.vue";
 import Error from "@/ui/components/error/Error.vue";
 import DrawingState from "@/ui/views/neuralView/enums/DrawingState";
-import AntViewDisplayType from "@/ui/views/antView/enums/AntViewDisplayType";
+import NeuralAlgorithmRepository from "@/data/repositories/neural/NeuralAlgorithmRepository";
 
 
 @Options({
@@ -74,6 +82,8 @@ export default class NeuralView extends Vue {
     private startX = 0
     private startY = 0
 
+    private calculationResult: number | null = null
+
     private static updateCardSize(card: HTMLElement | null) {
         if (card) {
             card.style.height = card.clientWidth + `px`
@@ -95,6 +105,10 @@ export default class NeuralView extends Vue {
                 this.canvas.style.height = clusteringCardOffsetHeight + "px"
             }
         }
+    }
+
+    private displayResult(result: number) {
+        this.calculationResult = result
     }
 
     private changeCanvasDrawingState(state: DrawingState, event: MouseEvent) {
@@ -180,7 +194,6 @@ export default class NeuralView extends Vue {
         this.canvas = document.getElementById("neuralCanvas") as HTMLCanvasElement
         this.canvasContext = this.canvas.getContext("2d")
 
-
         this.updateCanvasSize()
     }
 
@@ -224,7 +237,12 @@ export default class NeuralView extends Vue {
 
         submitButton?.addEventListener('click', () => {
             this.isErrorDisplaying = this.isCanvasBlank()
-            console.log(this.canvas?.toDataURL())
+
+            let canvasAsDataUrl = this.canvas?.toDataURL()
+
+            if (canvasAsDataUrl) {
+                this.displayResult(NeuralAlgorithmRepository.getInstance().detectDisplayingNumber(canvasAsDataUrl))
+            }
         })
     }
 
@@ -251,5 +269,19 @@ export default class NeuralView extends Vue {
     border-radius: 0.5em;
 
     border: 3px solid #808080;
+}
+
+.resultCard {
+    background: #8bc220;
+    color: white;
+
+    opacity: 0;
+
+    display: none;
+}
+
+.resultCard.result-displaying {
+    display: block;
+    opacity: 1;
 }
 </style>
