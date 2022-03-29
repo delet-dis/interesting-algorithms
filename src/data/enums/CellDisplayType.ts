@@ -7,8 +7,7 @@ enum CellDisplayType {
     FINISH_CELL = "table-cell-finish",
     BORDER_CELL = "table-cell-border",
     WRONG_PATH_CELL = "table-cell-wrong-path",
-    CORRECT_PATH_CELL = "table-cell-correct-path",
-    FOOD_CELL = "table-cell-food"
+    CORRECT_PATH_CELL = "table-cell-correct-path"
 }
 
 export default CellDisplayType
