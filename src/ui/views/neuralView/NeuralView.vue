@@ -41,9 +41,9 @@
                     <h1>
                         Результат:
                     </h1>
-                    <p>
+                    <h2>
                         {{ this.calculationResult }}
-                    </p>
+                    </h2>
                 </Card>
             </div>
         </div>
