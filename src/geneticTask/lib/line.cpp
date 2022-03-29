@@ -1,15 +1,11 @@
 #include "line.h"
 
-Line::Line(){
-    contentPile = 0;
-}
-
-bool Line::operator==(const Line other) const {
+bool Line::operator==(const Line &other) const {
         return this->contentPile == other.contentPile;
 }
 
 
-int Line::difference(const Line other) const {
+int Line::difference(const Line &other) const {
         int diff = 0;
         if(this->content.word0 != other.content.word0)
             return 4;

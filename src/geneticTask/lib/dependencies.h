@@ -16,10 +16,10 @@ private:
     u_int8_t scopes[32];
     
 public:
-    Deps();
+    Deps() = default;
     Deps(const Deps &other);
     void inc_deps(const u_int8_t ID, dep_type type);
     void dec_deps(const u_int8_t ID, dep_type type);
-    int get_deps(const Line l) const;
+    int get_deps(const Line *l) const;
 };
 
