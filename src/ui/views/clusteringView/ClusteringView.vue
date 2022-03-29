@@ -114,7 +114,7 @@ export default class ClusteringView extends Vue {
     }))
 
     private dotsToDisplayField: Dot[] = []
-    private numberOfClustersField = 6
+    private numberOfClustersField = 2
 
     private canvas: HTMLCanvasElement | null = null
     private canvasContext: CanvasRenderingContext2D | null = null
@@ -144,6 +144,8 @@ export default class ClusteringView extends Vue {
 
     private set numberOfClusters(newValue: number) {
         this.numberOfClustersField = newValue
+
+        this.isAbleToProcessWorkWithDots = this.dotsToDisplayField.length >= this.numberOfClusters
     }
 
     private static areDotsNearby(firstDot: Dot, secondDot: Dot): boolean {

@@ -222,6 +222,8 @@ export default class AntView extends Vue {
                 this.removeSubscription()
             }
         }
+
+        this.isAbleToStart = this.isStartAndFinishAvailable()
     }
 
     private async submitCellsToAlgorithm() {
@@ -365,8 +367,6 @@ export default class AntView extends Vue {
 
         colonyCenterPickingButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.CENTER_PICKING)
-
-            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -375,8 +375,6 @@ export default class AntView extends Vue {
 
         foodPickingButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.FOOD_PICKING)
-
-            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -385,8 +383,6 @@ export default class AntView extends Vue {
 
         borderButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.BORDERS_PICKING)
-
-            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 

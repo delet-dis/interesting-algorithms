@@ -177,6 +177,8 @@ export default class NeuralView extends Vue {
         } else {
             if (state == DrawingState.CLEANING) {
                 this.clearCanvas()
+
+                this.isAbleToStart = false
             }
         }
     }
