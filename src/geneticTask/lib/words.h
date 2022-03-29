@@ -3,19 +3,20 @@
 
 namespace word0 {
     enum : u_int8_t {
+        /* do NOT change the order*/
         NEW_VAR,
         DEF,
-        EX_VAR,
+        FOR,
         IF,
+        EX_VAR,
         PRINT,
-        INPUT,
-        FOR
+        INPUT
     };
 }
 
 namespace prefixes{
     const u_int8_t prefix_mask = 0b11100000;
-    const u_int8_t value_mask = 0b00011111;
+    const u_int8_t value_mask  = 0b00011111;
     
     enum : u_int8_t {
         EX_VAR = 0b00000000,
