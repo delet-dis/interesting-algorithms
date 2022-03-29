@@ -2,7 +2,8 @@ enum DrawingState {
     MOUSE_DOWN,
     MOUSE_UP,
     MOUSE_OUT,
-    MOUSE_MOVE
+    MOUSE_MOVE,
+    CLEANING
 }
 
 export default DrawingState

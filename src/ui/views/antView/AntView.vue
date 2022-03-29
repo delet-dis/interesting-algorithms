@@ -72,7 +72,7 @@
                     <div class="separator"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-highlight activeButton':isConfigEditable===true,
+                            :class="{'button-highlight activeButton':isConfigEditable===true && isAbleToStart,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="startButton">
                         Запустить
@@ -137,6 +137,7 @@ export default class AntView extends Vue {
 
     private isErrorDisplaying = false
     private isConfigEditable = true
+    private isAbleToStart = false
 
     private labyrinthSizing = 15
 
@@ -297,6 +298,26 @@ export default class AntView extends Vue {
         }
     }
 
+    private isStartAndFinishAvailable(): boolean {
+        let isStartAvailable = false
+        let isFinishAvailable = false
+
+        if (this.labyrinth) {
+            Array.from(this.labyrinth.cells).forEach((cell) => {
+
+                if (cell.classList.contains(CellDisplayType.START_CELL)) {
+                    isStartAvailable = true
+                }
+
+                if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
+                    isFinishAvailable = true
+                }
+            })
+        }
+
+        return isStartAvailable && isFinishAvailable
+    }
+
     private addSubscription() {
         this.resultFieldSubscription = AntPathFinderRepository.getInstance().mapState.subscribe((mapState) => {
             this.labyrinth?.clearCells()
@@ -330,11 +351,22 @@ export default class AntView extends Vue {
         }
     }
 
+    private initLabyrinthOnClick() {
+        if (this.labyrinth) {
+            (this.labyrinth.$el as HTMLElement).addEventListener('click', () => {
+                    this.isAbleToStart = this.isStartAndFinishAvailable()
+                }
+            )
+        }
+    }
+
     private initColonyCenterPickingButtonOnclickListener() {
         let colonyCenterPickingButton = document.getElementById("colonyCenterPickingButton")
 
         colonyCenterPickingButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.CENTER_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -343,6 +375,8 @@ export default class AntView extends Vue {
 
         foodPickingButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.FOOD_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -351,6 +385,8 @@ export default class AntView extends Vue {
 
         borderButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.BORDERS_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -390,6 +426,7 @@ export default class AntView extends Vue {
 
     mounted() {
         this.initLabyrinth()
+        this.initLabyrinthOnClick()
         this.initGenerateButtonOnClickListener()
         this.initColonyCenterPickingButtonOnclickListener()
         this.initFoodPickingButtonOnclickListener()

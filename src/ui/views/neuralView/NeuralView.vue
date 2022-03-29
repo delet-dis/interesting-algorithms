@@ -25,7 +25,9 @@
                         Конфигуратор алгоритма
                     </h1>
 
-                    <button class="button button-border button-rounded button-action"
+                    <button class="button button-border button-rounded"
+                            :class="{'button-action activeButton':isAbleToStart===true,
+                            'button-flat nonActiveButton': isAbleToStart===false}"
                             id="submitButton">
                         Запустить алгоритм
                     </button>
@@ -74,6 +76,7 @@ export default class NeuralView extends Vue {
     }))
 
     private isErrorDisplaying = false
+    private isAbleToStart = false
 
     private canvas: HTMLCanvasElement | null = null
     private canvasContext: CanvasRenderingContext2D | null = null
@@ -111,61 +114,69 @@ export default class NeuralView extends Vue {
         this.calculationResult = result
     }
 
-    private changeCanvasDrawingState(state: DrawingState, event: MouseEvent) {
-        switch (state) {
-            case DrawingState.MOUSE_DOWN: {
-                let canvasRect = (event.target as Element).getBoundingClientRect()
+    private changeCanvasDrawingState(state: DrawingState, event: MouseEvent | null = null) {
+        this.isAbleToStart = !this.isCanvasBlank()
 
-                this.isLineDrawing = true
-
-                event.preventDefault()
-
-                this.startX = event.clientX - canvasRect.left
-                this.startY = event.clientY - canvasRect.top
-
-                break
-            }
-
-            case DrawingState.MOUSE_UP: {
-                event.preventDefault()
-
-                this.isLineDrawing = false
-
-                break
-            }
-
-            case DrawingState.MOUSE_OUT: {
-                event.preventDefault()
-
-                this.isLineDrawing = false
-
-                break
-            }
-
-            case DrawingState.MOUSE_MOVE: {
-                if (this.isLineDrawing) {
+        if (event) {
+            switch (state) {
+                case DrawingState.MOUSE_DOWN: {
                     let canvasRect = (event.target as Element).getBoundingClientRect()
+
+                    this.isLineDrawing = true
 
                     event.preventDefault()
 
-                    let mouseX = event.clientX - canvasRect.left
-                    let mouseY = event.clientY - canvasRect.top
+                    this.startX = event.clientX - canvasRect.left
+                    this.startY = event.clientY - canvasRect.top
 
-                    this.canvasContext?.beginPath()
-
-                    this.canvasContext!.lineWidth = 15
-                    this.canvasContext!.lineCap = "round"
-
-                    this.canvasContext?.moveTo(this.startX, this.startY)
-                    this.canvasContext?.lineTo(mouseX, mouseY)
-
-                    this.canvasContext?.stroke()
-
-                    this.startX = mouseX
-                    this.startY = mouseY
+                    break
                 }
 
-                break
+                case DrawingState.MOUSE_UP: {
+                    event.preventDefault()
+
+                    this.isLineDrawing = false
+
+                    break
+                }
+
+                case DrawingState.MOUSE_OUT: {
+                    event.preventDefault()
+
+                    this.isLineDrawing = false
+
+                    break
+                }
+
+                case DrawingState.MOUSE_MOVE: {
+                    if (this.isLineDrawing) {
+                        let canvasRect = (event.target as Element).getBoundingClientRect()
+
+                        event.preventDefault()
+
+                        let mouseX = event.clientX - canvasRect.left
+                        let mouseY = event.clientY - canvasRect.top
+
+                        this.canvasContext?.beginPath()
+
+                        this.canvasContext!.lineWidth = 15
+                        this.canvasContext!.lineCap = "round"
+
+                        this.canvasContext?.moveTo(this.startX, this.startY)
+                        this.canvasContext?.lineTo(mouseX, mouseY)
+
+                        this.canvasContext?.stroke()
+
+                        this.startX = mouseX
+                        this.startY = mouseY
+                    }
+
+                    break
+                }
+            }
+        } else {
+            if (state == DrawingState.CLEANING) {
+                this.clearCanvas()
             }
         }
     }
@@ -250,7 +261,7 @@ export default class NeuralView extends Vue {
         let clearButton = document.getElementById("clearButton")
 
         clearButton?.addEventListener('click', () => {
-            this.clearCanvas()
+            this.changeCanvasDrawingState(DrawingState.CLEANING)
         })
     }
 
