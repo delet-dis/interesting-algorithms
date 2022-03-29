@@ -37,23 +37,28 @@ void Deps::dec_deps(const u_int8_t ID, dep_type type) {
     }
 }
 
-int Deps::get_deps(const Line l) const {
-    if((l.content.word1 & prefixes::prefix_mask) != prefixes::IMMUTABLE && 
-        l.content.word0 != word0::IF)
+int Deps::get_deps(const Line *l) const {
+    if (l->content.word0 > word0::IF)
         return 0;
     
     int ID;
     int deps = 0;
-    //TODO: scope check
-    if(l.content.word0 == word0::DEF){
-        ID = l.content.word1 & prefixes::value_mask;
-        deps += funcs[ID];
-        ID = l.content.word2 & prefixes::value_mask;
-    } 
-    else
-       ID = l.content.word1 & prefixes::value_mask;
+
+    deps += scopes[l->scope]; //scope
     
-    deps += vars[ID];
+    if(l->content.word0 <= word0::FOR) {
+        
+        if(l->content.word0 == word0::DEF){  // func
+            ID = l->content.word1 & prefixes::value_mask;
+            deps += funcs[ID];
+            ID = l->content.word2 & prefixes::value_mask;
+        }  
+        else
+            ID = l->content.word1 & prefixes::value_mask;
+        
+        deps += vars[ID];  // var
+    }
+    
     return deps;
 }
 
