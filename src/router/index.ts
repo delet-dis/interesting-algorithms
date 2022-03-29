@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/treeAlgorithm',
         name: 'test',
-        component: App
+        component: () => import('../ui/views/treeView/TreeView.vue'),
     },
     {
         path: '/neuralAlgorithm',

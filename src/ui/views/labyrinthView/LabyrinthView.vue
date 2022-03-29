@@ -71,7 +71,7 @@
                     <div class="separator"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-highlight activeButton':isConfigEditable===true,
+                            :class="{'button-highlight activeButton':isConfigEditable===true && isAbleToStart,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="startButton">
                         Запустить
@@ -129,6 +129,7 @@ export default class LabyrinthView extends Vue {
     private isConfigEditable = true
     private labyrinthSizingField = 10
     private isErrorDisplaying = false
+    private isAbleToStart = false
 
     private labyrinth: Labyrinth | null = null
 
@@ -235,11 +236,22 @@ export default class LabyrinthView extends Vue {
         this.labyrinth = this.$refs.labyrinth as Labyrinth
     }
 
+    private initLabyrinthOnClick() {
+        if (this.labyrinth) {
+            (this.labyrinth.$el as HTMLElement).addEventListener('click', () => {
+                    this.isAbleToStart = this.isStartAndFinishAvailable()
+                }
+            )
+        }
+    }
+
     private initStartPickingButtonOnclickListener() {
         let startButton = document.getElementById("startPickingButton")
 
         startButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.START_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -248,6 +260,8 @@ export default class LabyrinthView extends Vue {
 
         finishButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.FINISH_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -256,6 +270,8 @@ export default class LabyrinthView extends Vue {
 
         borderButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.BORDERS_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
         })
     }
 
@@ -281,6 +297,27 @@ export default class LabyrinthView extends Vue {
         generateButton?.addEventListener('click', () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_GENERATING)
         })
+    }
+
+    private isStartAndFinishAvailable(): boolean {
+        let isStartAvailable = false
+        let isFinishAvailable = false
+
+        if (this.labyrinth) {
+            Array.from(this.labyrinth.cells).forEach((cell) => {
+
+                if (cell.classList.contains(CellDisplayType.START_CELL)) {
+                    isStartAvailable = true
+
+                }
+
+                if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
+                    isFinishAvailable = true
+                }
+            })
+        }
+
+        return isStartAvailable && isFinishAvailable
     }
 
     private submitCellsToSolver() {
@@ -346,6 +383,7 @@ export default class LabyrinthView extends Vue {
 
     mounted() {
         this.initLabyrinth()
+        this.initLabyrinthOnClick()
         this.initStartPickingButtonOnclickListener()
         this.initFinishPickingButtonOnclickListener()
         this.initBorderPickingButtonOnclickListener()

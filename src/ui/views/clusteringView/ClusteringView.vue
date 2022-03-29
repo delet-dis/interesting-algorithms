@@ -44,7 +44,7 @@
 
                     <div class="spacer"/>
 
-                    <button class="button button-border button-rounded button-caution"
+                    <button class="button button-border button-rounded button-caution activeButton"
                             id="removeDotButton">
                         Удалить точки
                     </button>
@@ -55,21 +55,27 @@
                         Тип кластеризации
                     </p>
 
-                    <button class="button button-border button-rounded button-royal"
+                    <button class="button button-border button-rounded"
+                            :class="{'button-royal activeButton':isAbleToProcessWorkWithDots===true,
+                            'button-flat nonActiveButton': isAbleToProcessWorkWithDots===false}"
                             id="kMeansButton">
                         К-Средних
                     </button>
 
                     <div class="spacer"/>
 
-                    <button class="button button-border button-rounded button-royal"
+                    <button class="button button-border button-rounded"
+                            :class="{'button-royal activeButton':isAbleToProcessWorkWithDots===true,
+                            'button-flat nonActiveButton': isAbleToProcessWorkWithDots===false}"
                             id="hierarchyButton">
                         Иерархический
                     </button>
 
                     <div class="spacer"/>
 
-                    <button class="button button-border button-rounded button-primary button-glow"
+                    <button class="button button-border button-rounded"
+                            :class="{'button-primary button-glow activeButton':isAbleToProcessWorkWithDots===true,
+                            'button-flat nonActiveButton': isAbleToProcessWorkWithDots===false}"
                             id="comparisonButton">
                         Сравнение алгоритмов
                     </button>
@@ -108,19 +114,22 @@ export default class ClusteringView extends Vue {
     }))
 
     private dotsToDisplayField: Dot[] = []
-    private numberOfClustersField = 6
+    private numberOfClustersField = 2
 
     private canvas: HTMLCanvasElement | null = null
     private canvasContext: CanvasRenderingContext2D | null = null
 
     private clusteringDisplayState: ClusteringDisplayState | null = null
     private isErrorDisplaying = false
+    private isAbleToProcessWorkWithDots = false
 
     private kMeansColorsArray: string[] | null = null
     private hierarchyColorsArray: string[] | null = null
 
     private set dotsToDisplay(newValue: Dot[]) {
         this.dotsToDisplayField = newValue
+
+        this.isAbleToProcessWorkWithDots = newValue.length >= this.numberOfClusters
 
         this.drawDots()
     }
@@ -135,6 +144,8 @@ export default class ClusteringView extends Vue {
 
     private set numberOfClusters(newValue: number) {
         this.numberOfClustersField = newValue
+
+        this.isAbleToProcessWorkWithDots = this.dotsToDisplayField.length >= this.numberOfClusters
     }
 
     private static areDotsNearby(firstDot: Dot, secondDot: Dot): boolean {
