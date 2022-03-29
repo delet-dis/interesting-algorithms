@@ -66,7 +66,9 @@ class HierarchyClusteringRepository implements ClusteringInterface {
         }
 
         while (clusters.size != numberOfClusters) {
-            bestCluster.data.points.concatenate(bestCluster.data.closest!.data.points)
+            if(bestCluster.data.closest){
+                bestCluster.data.points.concatenate(bestCluster.data.closest.data.points)
+            }
             bestCluster.data.minimalDistance = Number.MAX_VALUE
 
             //метод одиночной связи

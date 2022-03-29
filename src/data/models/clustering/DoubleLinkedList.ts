@@ -32,20 +32,27 @@ class LinkedList<T> implements Iterable <ListNode<T>> {
         let notRemoved = true
 
         if (node === this.backNode) {
-            if (node.prevNode)
-                node.prevNode!.nextNode = null
+            if (node.prevNode) {
+                node.prevNode.nextNode = null
+            }
             this.backNode = node.prevNode
             notRemoved = false
         }
 
         if (node === this.frontNode) {
-            if (node.nextNode)
-                node.nextNode!.prevNode = null
+            if (node.nextNode) {
+                node.nextNode.prevNode = null
+            }
             this.frontNode = node.nextNode
             this.iteratorStartNode = this.frontNode
         } else if (notRemoved) {
-            node.prevNode!.nextNode = node.nextNode
-            node.nextNode!.prevNode = node.prevNode
+            if (node.prevNode){
+                node.prevNode.nextNode = node.nextNode
+            }
+
+            if(node.nextNode){
+                node.nextNode.prevNode = node.prevNode
+            }
         }
 
         this.size--
@@ -53,7 +60,10 @@ class LinkedList<T> implements Iterable <ListNode<T>> {
 
     public concatenate(anotherList: LinkedList<T>): void {
         if (this.size && anotherList.size) {
-            this.backNode!.nextNode = anotherList.frontNode
+            if(this.backNode){
+                this.backNode.nextNode = anotherList.frontNode
+            }
+
             anotherList.frontNode!.prevNode = this.backNode
             this.backNode = anotherList.backNode
 

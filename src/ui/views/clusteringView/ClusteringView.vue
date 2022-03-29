@@ -345,8 +345,8 @@ export default class ClusteringView extends Vue {
 
         if (clusteringCard) {
             if (this.canvas) {
-                let clusteringCardOffsetWidth = clusteringCard!.offsetWidth - 30
-                let clusteringCardOffsetHeight = clusteringCard!.offsetHeight - 40
+                let clusteringCardOffsetWidth = clusteringCard.offsetWidth - 30
+                let clusteringCardOffsetHeight = clusteringCard.offsetHeight - 40
 
                 this.canvas.width = clusteringCardOffsetWidth
                 this.canvas.height = clusteringCardOffsetHeight

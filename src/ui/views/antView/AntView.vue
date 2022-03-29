@@ -285,7 +285,7 @@ export default class AntView extends Vue {
                 this.isErrorDisplaying = false
                 this.isConfigEditable = false
 
-                new Promise((resolve, reject) => {
+                new Promise(() => {
                     setTimeout(() => {
                         AntPathFinderRepository.getInstance().provideDataForCalculation(cellsArray, this.labyrinthSizing)
                     }, 1000)

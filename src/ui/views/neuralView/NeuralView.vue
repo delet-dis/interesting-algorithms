@@ -98,8 +98,8 @@ export default class NeuralView extends Vue {
 
         if (clusteringCard) {
             if (this.canvas) {
-                let clusteringCardOffsetWidth = clusteringCard!.offsetWidth - 30
-                let clusteringCardOffsetHeight = clusteringCard!.offsetHeight - 40
+                let clusteringCardOffsetWidth = clusteringCard.offsetWidth - 30
+                let clusteringCardOffsetHeight = clusteringCard.offsetHeight - 40
 
                 this.canvas.width = clusteringCardOffsetWidth
                 this.canvas.height = clusteringCardOffsetHeight
@@ -157,15 +157,17 @@ export default class NeuralView extends Vue {
                         let mouseX = event.clientX - canvasRect.left
                         let mouseY = event.clientY - canvasRect.top
 
-                        this.canvasContext?.beginPath()
+                        if(this.canvasContext){
+                            this.canvasContext.beginPath()
 
-                        this.canvasContext!.lineWidth = 15
-                        this.canvasContext!.lineCap = "round"
+                            this.canvasContext.lineWidth = 15
+                            this.canvasContext.lineCap = "round"
 
-                        this.canvasContext?.moveTo(this.startX, this.startY)
-                        this.canvasContext?.lineTo(mouseX, mouseY)
+                            this.canvasContext.moveTo(this.startX, this.startY)
+                            this.canvasContext.lineTo(mouseX, mouseY)
 
-                        this.canvasContext?.stroke()
+                            this.canvasContext.stroke()
+                        }
 
                         this.startX = mouseX
                         this.startY = mouseY

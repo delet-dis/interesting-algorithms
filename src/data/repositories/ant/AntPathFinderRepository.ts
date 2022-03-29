@@ -1,5 +1,5 @@
 import AntBase from "@/data/interfaces/ant/AntBase";
-import {BehaviorSubject, from, map, Observable, of, tap} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import AntCell from "@/data/models/ant/AntCell";
 import Ant from "@/data/classes/ant/Ant";
 import AntCellType from "@/data/enums/AntCellType";
@@ -67,7 +67,6 @@ class AntPathFinderRepository extends AntBase {
         }
 
         this.intervalExecutorNumber = (setInterval(() => {
-            console.log(1)
             if (this.isWorking) {
                 for (let i = 0; i < ants.length; i++) {
                     for (; ;) {
