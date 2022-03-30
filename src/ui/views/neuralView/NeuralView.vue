@@ -124,8 +124,6 @@ export default class NeuralView extends Vue {
 
                     this.isLineDrawing = true
 
-                    // event.preventDefault()
-
                     this.startX = event.clientX - canvasRect.left
                     this.startY = event.clientY - canvasRect.top
 
@@ -133,7 +131,6 @@ export default class NeuralView extends Vue {
                 }
 
                 case DrawingState.MOUSE_UP: {
-                    // event.preventDefault()
 
                     this.isLineDrawing = false
 
@@ -141,7 +138,6 @@ export default class NeuralView extends Vue {
                 }
 
                 case DrawingState.MOUSE_OUT: {
-                    // event.preventDefault()
 
                     this.isLineDrawing = false
 
@@ -151,8 +147,6 @@ export default class NeuralView extends Vue {
                 case DrawingState.MOUSE_MOVE: {
                     if (this.isLineDrawing) {
                         let canvasRect = (event.target as Element).getBoundingClientRect()
-
-                        // event.preventDefault()
 
                         let mouseX = event.clientX - canvasRect.left
                         let mouseY = event.clientY - canvasRect.top
