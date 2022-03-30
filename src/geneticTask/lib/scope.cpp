@@ -107,14 +107,14 @@ u_int8_t Scope::free(const Line *l) {
     
     switch (l->content.word0) {
         case word0::NEW_VAR:
-            var = l->content.word1 & prefixes::value_mask;
+            var = l->content.word1 & prefixes::valueMask;
             globalBank.free(var);
             allVarsBank.free(var);
             break;
             
         case word0::DEF:
-            func = l->content.word1 & prefixes::value_mask;
-            var = l->content.word2 & prefixes::value_mask;
+            func = l->content.word1 & prefixes::valueMask;
+            var = l->content.word2 & prefixes::valueMask;
             funcBank.free(func);
             allVarsBank.free(var);
             scopeBank.free(l->scope);
@@ -127,7 +127,7 @@ u_int8_t Scope::free(const Line *l) {
             break;
         
         case word0::FOR:
-            var = l->content.word1 & prefixes::value_mask;
+            var = l->content.word1 & prefixes::valueMask;
             allVarsBank.free(var);
             scopeBank.free(l->scope);
             break;

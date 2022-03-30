@@ -18,7 +18,7 @@ public:
     union {
         raw_line content;
         u_int8_t words[4];
-        int32_t contentPile;
+        int32_t contentPile = 0;
     };
     Line() = default;
     bool operator==(const Line &other) const; 
