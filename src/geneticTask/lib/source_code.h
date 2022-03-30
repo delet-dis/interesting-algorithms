@@ -9,15 +9,17 @@ private:
     Deps deps;
     LinePtr placeToDeclareVars; // blank line
     LinePtr placeToDeclareFuncs; // blank line
+    void copy_code(const SourceCode &src);
     void fill_template(Line *line,  u_int8_t curScope);
+    void mutate_line(Line *line, u_int8_t wordsMask);
     void copy_code_and_delete_some_lines(const SourceCode &parent);
     void add_some_lines();
+    void edit_some_lines();
 public:
     std::list<Line *> code;
     
     SourceCode();
     ~SourceCode();
     int edit_distance(const SourceCode &other) const;     
-    void copy_code(const SourceCode &src);
     SourceCode* give_birth();
 };

@@ -66,10 +66,11 @@ void SourceCode::copy_code(const SourceCode &src) {
     
 }
 
+
 void SourceCode::fill_template(Line* line, u_int8_t curScope) {
     deps.scopes[curScope]++;
-    if(line->content.word0 <= 3)
-        curScope = scope.new_scope(curScope); 
+    if(line->content.word0 <= 2)
+        curScope = scope.new_scope(curScope, line->content.word0 <= 1); 
 
     line->scope = curScope;
     
@@ -78,13 +79,12 @@ void SourceCode::fill_template(Line* line, u_int8_t curScope) {
     if (line->content.word0 == word0::DEF) {
         func = scope.new_func();
         local = scope.get_local(curScope);
-        var = scope.get_rand_var(curScope);
-        deps.vars[var] += local != var;
+        var = scope.get_rand_var(curScope, true);
+        deps.vars[var]++;
         
         line->content.word1 |= func;
         line->content.word2 |= local;
         line->content.word3 |= var;
-        
         return;
     }
     
@@ -97,9 +97,9 @@ void SourceCode::fill_template(Line* line, u_int8_t curScope) {
     
     if (line->content.word0 == word0::FOR) {
         local = scope.get_local(curScope);
-        if((line->content.word2 & prefixes::prefixMask) == prefixes::EX_VAR) {
-            var = scope.get_rand_var(curScope);
-            deps.vars[var] += local != var;
+        if((line->content.word2 & prefixes::prefixMask) == prefixes::EX_VAR_EXCEPT_LOCAL) {
+            var = scope.get_rand_var(curScope, true);
+            deps.vars[var]++;
         }
         else
             var = randint(0, 31);
@@ -140,35 +140,51 @@ void SourceCode::fill_template(Line* line, u_int8_t curScope) {
 }
 
 
-
-SourceCode* SourceCode::give_birth() {
-    SourceCode *child = new SourceCode();
-    child->deps = this->deps;
-    child->scope = this->scope;
-    
-    int choise = randint(0, 7);
-    bool codeCopied = false;
-
-    
-    //delete
-    if (choise & 1) {
-        codeCopied = true;
-        child->copy_code_and_delete_some_lines(*this);
-    }
-    
-    if(!codeCopied)
-        child->copy_code(*this);
-    
-    // add
-    if (choise & 2) {
-        child->add_some_lines();
-    }
-    // edit
-    if (choise & 4) {
+void SourceCode::mutate_line(Line *line, u_int8_t wordsMask) {
+    for (int i = 1; i < 4; i++) {
         
-    }
+        if(!(wordsMask >> i & 1))
+            continue;
         
-    return child;
+        u_int8_t prefix = line->words[i] & prefixes::prefixMask;
+        if(prefix == prefixes::IMMUTABLE)
+            continue;
+        
+        u_int8_t value = line->words[i] & prefixes::valueMask;
+        line->words[i] &= prefixes::prefixMask; //clear value
+        
+        switch(prefix) {
+            case prefixes::EX_VAR:
+                deps.vars[value]--;
+                value = scope.get_rand_var(line->scope);
+                deps.vars[value]++;
+                line->words[i] |= value;
+                break;
+            case prefixes::EX_VAR_EXCEPT_LOCAL:
+                deps.vars[value]--;
+                value = scope.get_rand_var(line->scope, true);
+                deps.vars[value]++;
+                line->words[i] |= value;
+                break;
+            case prefixes::FUNC:
+                deps.funcs[value]--;
+                value = scope.get_rand_func();
+                deps.funcs[value]++;
+                line->words[i] |= value;
+                break;
+            case prefixes::CONST:
+                line->words[i] |= randint(0, 32);
+                break;
+            case prefixes::OPERATOR:
+                line->words[i] |= randint(0, 2);
+                break;
+            case prefixes::COMP_OPERATOR:
+                line->words[i] |= randint(0, 4);
+                break;
+            case prefixes::NOTHING:
+                return;
+        }        
+    }
 }
 
 
@@ -189,7 +205,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
             
         if (!deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
             curScope = (*line)->scope;
-            if((*line)->content.word0 <= word0::IF) //lines that affect scope
+            if((*line)->content.word0 <= 3) //lines that affect scope
                 curScope = scope.free(*line);
 
             deps.free(*line, curScope);
@@ -201,6 +217,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
         }
     }
 }
+
 
 void SourceCode::add_some_lines() {
     
@@ -246,5 +263,50 @@ void SourceCode::add_some_lines() {
         
     } while (curLine != code.end());
 }
+
+
+void SourceCode::edit_some_lines() {
+    for (LinePtr curLine = code.begin(); curLine != code.end(); ++curLine) {
+        
+        if(randint(0, 1)) //TODO: skip coeff
+            continue;
+        
+        u_int8_t mutationMask = randint(0, 15);
+        mutate_line(*curLine, mutationMask);
+    }
+    
+    
+}
+
+
+SourceCode* SourceCode::give_birth() {
+    SourceCode *child = new SourceCode();
+    child->deps = this->deps;
+    child->scope = this->scope;
+    
+    int choise = randint(0, 7);
+    bool codeCopied = false;
+
+
+    if (choise & 1) {
+        codeCopied = true;
+        child->copy_code_and_delete_some_lines(*this);
+    }
+    
+    if(!codeCopied)
+        child->copy_code(*this);
+    
+    // add
+    if (choise & 2) {
+        child->add_some_lines();
+    }
+    // edit
+    if (choise & 4) {
+        child->edit_some_lines();
+    }
+        
+    return child;
+}
+
 
 
