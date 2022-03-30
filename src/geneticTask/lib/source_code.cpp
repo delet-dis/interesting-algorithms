@@ -203,10 +203,26 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
 }
 
 void SourceCode::add_some_lines() {
-    //declare new vars
-    //declare new funcs
     
-    LinePtr curLine = placeToDeclareVars;
+    //declare new vars
+    int quantity = randint(0, 3);//TODO: coeff
+    for (int i = 0; i < quantity; i++) {
+        Line *newLine = new Line();
+        newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
+        fill_template(newLine, 0); 
+        code.insert(placeToDeclareVars, newLine);
+    } 
+    
+    //declare new funcs
+    quantity = randint(0, 3);//TODO: coeff
+    for (int i = 0; i < quantity; i++) {
+        Line *newLine = new Line();
+        newLine->contentPile = prefixes::get_template(word0::DEF);
+        fill_template(newLine, 0); 
+        code.insert(placeToDeclareFuncs, newLine);
+    } 
+    
+    LinePtr curLine = placeToDeclareFuncs;
     u_int8_t curScope;
     
     do  {
