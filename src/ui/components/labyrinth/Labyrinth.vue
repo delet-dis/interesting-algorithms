@@ -1,5 +1,5 @@
 <template>
-    <table class="table cardCenterChild">
+    <table class="table cardCenterChild" id="table">
         <tbody>
         <tr v-for="firstIterator in getLabyrinthSizing" :key="firstIterator">
             <td v-for="secondIterator in getLabyrinthSizing" :key="secondIterator"
@@ -85,6 +85,8 @@ export default class Labyrinth extends Vue.with(Props) {
     }
 
     private get getLabyrinthSizing() {
+        Labyrinth.updateCardSize()
+
         return this.labyrinthSizing
     }
 
@@ -113,19 +115,21 @@ export default class Labyrinth extends Vue.with(Props) {
         return new Point(Number(matches[0][1]), Number(matches[0][2]))
     }
 
-    private static updateCardSize(card: HTMLElement | null) {
-        if (card) {
+    private static updateCardSize() {
+        let card = document.getElementById("labyrinthCard")
+        let table = document.getElementById("table")
+
+        if (card && table) {
             card.style.height = card.clientWidth + `px`
+            card.style.height = table.clientHeight + 20 + `px`
         }
     }
 
     private static initCardWidthListener() {
-        let card = document.getElementById("labyrinthCard")
+        Labyrinth.updateCardSize()
 
-        Labyrinth.updateCardSize(card)
-
-        card?.addEventListener('resize', () => {
-            Labyrinth.updateCardSize(card)
+        window?.addEventListener('resize', () => {
+            Labyrinth.updateCardSize()
         })
     }
 
