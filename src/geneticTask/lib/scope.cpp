@@ -67,11 +67,14 @@ Scope::Scope(const Scope &other) {
 }
 
 
-u_int8_t Scope::new_scope(u_int8_t prevID) {
+u_int8_t Scope::new_scope(u_int8_t prevID, bool demandsLocal) {
+    u_int8_t var = 255;
+    u_int8_t newLen = locals[prevID].len;
     u_int8_t newScope = scopeBank.get();
-    //TODO: IF doesn't demand local var, but demands new scope
-    u_int8_t var = allVarsBank.get();
-    u_int8_t newLen = locals[prevID].len + 1;
+    if(demandsLocal) {
+        var = allVarsBank.get();
+        newLen++;
+    }
     locals[newScope] = {prevID, var, newLen};
     
     return newScope;
@@ -92,19 +95,26 @@ u_int8_t Scope::new_func() {
 }
 
 u_int8_t Scope::get_prev_scope(u_int8_t curScopeID) {
-    if(!curScopeID)
-        return 0;
     return locals[curScopeID].parentScope;
 }
 
-u_int8_t Scope::get_rand_var(u_int8_t scopeID) {
+u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
     int choise = randint(-locals[scopeID].len, globalBank.size-1);
+    int ind = scopeID;
+
+    if(excludeCurLocal) {
+        choise++;
+        ind = locals[ind].parentScope;
+    }
+    
     if (choise >= 0)
         return globalBank[choise];
-
-    int ind = scopeID;
-    while (++choise)  // TODO: it can go wrong
+    
+    choise += locals[ind].var != 255;
+    while (choise) {  // TODO: it can go wrong
         ind = locals[ind].parentScope;
+        choise += locals[ind].var != 255;
+    }
     return locals[ind].var;
 }
 
@@ -132,8 +142,6 @@ u_int8_t Scope::free(const Line *l) {
             break;
             
         case word0::IF:
-            var = locals[l->scope].var;
-            allVarsBank.free(var);
             scopeBank.free(l->scope);
             break;
         

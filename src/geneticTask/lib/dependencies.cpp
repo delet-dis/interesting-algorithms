@@ -11,7 +11,7 @@ Deps::Deps(const Deps &other) {
 
 
 int Deps::get_deps(const Line *l) const {
-    if (l->content.word0 > word0::IF)
+    if (l->content.word0 > 3)
         return 0;
     
     int ID;

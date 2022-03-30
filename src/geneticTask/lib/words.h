@@ -4,10 +4,10 @@
 namespace word0 {
     enum : u_int8_t {
         /* do NOT change the order*/
-        NEW_VAR,
         DEF,
         FOR,
         IF,
+        NEW_VAR,
         EX_VAR,
         PRINT,
         INPUT
@@ -40,7 +40,7 @@ namespace prefixes{
         {{IMMUTABLE, 0}, {CONST,               0}, {NOTHING,              0}},  //NEW_VAR
         {{IMMUTABLE, 0}, {IMMUTABLE,           0}, {EX_VAR_EXCEPT_LOCAL,  0}},  //DEF
         {{IMMUTABLE, 0}, {EX_VAR_EXCEPT_LOCAL, 1}, {NOTHING,              0}},  //FOR  
-        {{EX_VAR,    0}, {COMP_OPERATOR,       0}, {EX_VAR_EXCEPT_LOCAL,  1}},  //IF
+        {{EX_VAR,    0}, {COMP_OPERATOR,       0}, {EX_VAR,               1}},  //IF
         {{OPERATOR,  0}, {CONST,               2}, {EX_VAR,               0}},  //EX_VAR third needs to additional check
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //PRINT 
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //INPUT
