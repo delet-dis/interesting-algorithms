@@ -13,7 +13,7 @@ struct raw_line {
 class Line {
 public:
     int used = 0;
-    u_int8_t scope;
+    u_int8_t scope = 0;
     
     union {
         raw_line content;
@@ -27,3 +27,4 @@ public:
 
 
 using LinePtr = std::list<Line *>::iterator;
+using LinePtrConst = std::list<Line *>::const_iterator;

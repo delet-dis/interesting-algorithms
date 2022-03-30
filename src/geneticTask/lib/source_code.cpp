@@ -4,6 +4,14 @@
 #include "utils.h"
 #include "source_code.h"
 
+SourceCode::SourceCode() {
+    code.push_back(new Line);
+    placeToDeclareVars = code.end();
+    code.push_back(new Line);
+    placeToDeclareFuncs = code.end();
+}
+
+
 SourceCode::~SourceCode() {
     for(auto line : code) {
         if(!line->used)
@@ -36,24 +44,98 @@ int SourceCode::edit_distance(const SourceCode &other) const {
     return t[i][j];
 }
 
-void SourceCode::copy_code(SourceCode &other) {
-    LinePtr line;
+
+void SourceCode::copy_code(const SourceCode &src) {
+    LinePtrConst line;
     
-    for (line = other.code.begin(); line != other.placeToDeclareVars; ++line) {
+    for (line = src.code.begin(); line != src.placeToDeclareVars; ++line) {
         this->code.insert(this->placeToDeclareVars, *line);
         (*line)->used++;
     }
     
-    for (++line; line != other.placeToDeclareFuncs; ++line) {
+    for (++line; line != src.placeToDeclareFuncs; ++line) {
         this->code.insert(this->placeToDeclareFuncs, *line);
         (*line)->used++;
     }
     
-    for (++line; line != other.code.end(); ++line) {
+    for (++line; line != src.code.end(); ++line) {
         this->code.push_back(*line);
         (*line)->used++;
     }
         
+    
+}
+
+void SourceCode::fill_template(Line* line, u_int8_t curScope) {
+    deps.scopes[curScope]++;
+    if(line->content.word0 <= 3)
+        curScope = scope.new_scope(curScope); 
+
+    line->scope = curScope;
+    
+    u_int8_t var, func, local;
+    
+    if (line->content.word0 == word0::DEF) {
+        func = scope.new_func();
+        local = scope.get_local(curScope);
+        var = scope.get_rand_var(curScope);
+        deps.vars[var] += local != var;
+        
+        line->content.word1 |= func;
+        line->content.word2 |= local;
+        line->content.word3 |= var;
+        
+        return;
+    }
+    
+    if (line->content.word0 == word0::NEW_VAR) {
+        line->content.word1 = scope.new_global_var();
+        line->content.word2 = randint(0, 31);
+        return;
+    }
+    
+    
+    if (line->content.word0 == word0::FOR) {
+        local = scope.get_local(curScope);
+        if((line->content.word2 & prefixes::prefixMask) == prefixes::EX_VAR) {
+            var = scope.get_rand_var(curScope);
+            deps.vars[var] += local != var;
+        }
+        else
+            var = randint(0, 31);
+        
+        line->content.word1 |= local;
+        line->content.word2 |= var;
+        return;
+    }
+    
+    for (int i = 1; i < 4; i++) {
+        u_int8_t prefix = line->words[i] & prefixes::prefixMask;
+        switch (prefix) {
+            case prefixes::EX_VAR:
+                var = scope.get_rand_var(curScope);
+                deps.vars[var]++;
+                line->words[i] |= var;
+                break;
+            case prefixes::FUNC:
+                func = scope.get_rand_func();
+                deps.funcs[func]++;
+                line->words[i] |= func;
+                break;
+            case prefixes::CONST:
+                line->words[i] |= randint(0, 31);
+                break;
+            case prefixes::OPERATOR:
+                line->words[i] |= randint(0, 2);
+                break;
+            case prefixes::COMP_OPERATOR:
+                line->words[i] |= randint(0, 4);
+                break;
+            case prefixes::NOTHING:
+                return;
+                
+        }
+    }
     
 }
 
@@ -63,43 +145,15 @@ SourceCode* SourceCode::give_birth() {
     SourceCode *child = new SourceCode();
     child->deps = this->deps;
     child->scope = this->scope;
-    child->mainCodeSize = this->mainCodeSize;
     
     int choise = randint(0, 7);
     bool codeCopied = false;
+
     
     //delete
     if (choise & 1) {
         codeCopied = true;
-        LinePtr placeToInsert = child->placeToDeclareVars;
-        
-        for (LinePtr line = code.begin(); line != code.end(); ++line){
-            
-            if(line == this->placeToDeclareVars) {
-                placeToInsert = child->placeToDeclareFuncs;
-                continue;
-            }
-            if(line == this->placeToDeclareVars) {
-                placeToInsert = child->code.end();
-                continue;
-            }
-                
-            if (!child->deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
-                if((*line)->content.word0 <= word0::IF) {
-                    u_int8_t prevScope = child->scope.free(*line);
-                    child->deps.free(*line, prevScope);
-                }
-                else 
-                    child->deps.free(*line);
-                
-                child->mainCodeSize--;
-            } 
-            
-            else {
-                child->code.insert(placeToInsert, *line);
-                (*line)->used++;
-            }
-        }
+        child->copy_code_and_delete_some_lines(*this);
     }
     
     if(!codeCopied)
@@ -107,7 +161,7 @@ SourceCode* SourceCode::give_birth() {
     
     // add
     if (choise & 2) {
-        
+        child->add_some_lines();
     }
     // edit
     if (choise & 4) {
@@ -116,4 +170,65 @@ SourceCode* SourceCode::give_birth() {
         
     return child;
 }
+
+
+void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
+    LinePtr placeToInsert = placeToDeclareVars;
+    u_int8_t curScope;
+    
+    for (LinePtrConst line = parent.code.begin(); line != parent.code.end(); ++line){
+        
+        if(line == placeToDeclareVars) {
+            placeToInsert = placeToDeclareFuncs;
+            continue;
+        }
+        if(line == placeToDeclareVars) {
+            placeToInsert = code.end();
+            continue;
+        }
+            
+        if (!deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
+            curScope = (*line)->scope;
+            if((*line)->content.word0 <= word0::IF) //lines that affect scope
+                curScope = scope.free(*line);
+
+            deps.free(*line, curScope);
+        } 
+        
+        else {
+            code.insert(placeToInsert, *line);
+            (*line)->used++;
+        }
+    }
+}
+
+void SourceCode::add_some_lines() {
+    //declare new vars
+    //declare new funcs
+    
+    LinePtr curLine = placeToDeclareVars;
+    u_int8_t curScope;
+    
+    do  {
+        curScope = (*curLine)->scope;
+        ++curLine;
+
+        if(randint(0, 1)) //TODO: skip coeff
+            continue;
+        
+        //TODO: scope termination coeff
+        if ((curLine == code.end() || (*curLine)->scope != curScope) && randint(0, 1))
+            curScope = scope.get_prev_scope(curScope);
+        
+        
+        u_int8_t word0 = randint(2, 6);
+        Line *newLine = new Line();
+        newLine->contentPile = prefixes::get_template(word0);
+        fill_template(newLine, curScope);
+        
+        code.insert(curLine, newLine);
+        
+    } while (curLine != code.end());
+}
+
 

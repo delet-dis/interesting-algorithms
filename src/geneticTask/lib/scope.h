@@ -47,9 +47,10 @@ private:
     Bank scopeBank;
     
 public:
-    Scope() = default;
+    Scope();
     Scope(const Scope &other);
     u_int8_t new_scope(u_int8_t prevID);  // return newScopeId
+    u_int8_t get_local(u_int8_t scopeID);
     u_int8_t new_global_var();
     u_int8_t new_func();
     u_int8_t get_prev_scope(u_int8_t curScopeID);

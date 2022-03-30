@@ -49,6 +49,14 @@ Bank::Bank(const Bank& other) {
 
 
 /* Scope methods declaration */
+Scope::Scope() {
+    scopeBank.occupy(0);
+    allVarsBank.occupy(0);
+    locals[0].len = 0;
+    locals[0].var = 0;
+    locals[0].parentScope = 0;
+    
+}
 
 Scope::Scope(const Scope &other) {
     memcpy(this->locals, other.locals, sizeof locals);
@@ -59,7 +67,7 @@ Scope::Scope(const Scope &other) {
 }
 
 
-u_int8_t Scope::new_scope(u_int8_t prevID ) {
+u_int8_t Scope::new_scope(u_int8_t prevID) {
     u_int8_t newScope = scopeBank.get();
     //TODO: IF doesn't demand local var, but demands new scope
     u_int8_t var = allVarsBank.get();
@@ -69,6 +77,9 @@ u_int8_t Scope::new_scope(u_int8_t prevID ) {
     return newScope;
 }
 
+u_int8_t Scope::get_local(u_int8_t scopeID) {
+    return locals[scopeID].var;
+}
 
 u_int8_t Scope::new_global_var() {
     u_int8_t var = allVarsBank.get();

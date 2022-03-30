@@ -52,6 +52,7 @@ namespace operators {
     enum : u_int8_t {
         PLUS,
         MINUS,
+        ASSIGN
     };
 }
 
@@ -61,7 +62,7 @@ namespace compare_operators {
         L,
         E,
         GE,
-        LE,
+        LE
     };
     
 }
