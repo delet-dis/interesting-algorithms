@@ -114,7 +114,7 @@ export default class NeuralView extends Vue {
         this.calculationResult = result
     }
 
-    private changeCanvasDrawingState(state: DrawingState, event: MouseEvent | null = null) {
+    private changeCanvasDrawingState(state: DrawingState, event: MouseEvent | Touch | null = null) {
         this.isAbleToStart = !this.isCanvasBlank()
 
         if (event) {
@@ -124,7 +124,7 @@ export default class NeuralView extends Vue {
 
                     this.isLineDrawing = true
 
-                    event.preventDefault()
+                    // event.preventDefault()
 
                     this.startX = event.clientX - canvasRect.left
                     this.startY = event.clientY - canvasRect.top
@@ -133,7 +133,7 @@ export default class NeuralView extends Vue {
                 }
 
                 case DrawingState.MOUSE_UP: {
-                    event.preventDefault()
+                    // event.preventDefault()
 
                     this.isLineDrawing = false
 
@@ -141,7 +141,7 @@ export default class NeuralView extends Vue {
                 }
 
                 case DrawingState.MOUSE_OUT: {
-                    event.preventDefault()
+                    // event.preventDefault()
 
                     this.isLineDrawing = false
 
@@ -152,12 +152,12 @@ export default class NeuralView extends Vue {
                     if (this.isLineDrawing) {
                         let canvasRect = (event.target as Element).getBoundingClientRect()
 
-                        event.preventDefault()
+                        // event.preventDefault()
 
                         let mouseX = event.clientX - canvasRect.left
                         let mouseY = event.clientY - canvasRect.top
 
-                        if(this.canvasContext){
+                        if (this.canvasContext) {
                             this.canvasContext.beginPath()
 
                             this.canvasContext.lineWidth = 15
@@ -240,11 +240,33 @@ export default class NeuralView extends Vue {
         this.changeCanvasDrawingState(DrawingState.MOUSE_MOVE, event)
     }
 
+    private canvasTouchStartListener(event: TouchEvent) {
+        event.preventDefault()
+
+        this.changeCanvasDrawingState(DrawingState.MOUSE_DOWN, event.touches[0])
+    }
+
+    private canvasTouchMoveListener(event: TouchEvent) {
+        event.preventDefault()
+
+        this.changeCanvasDrawingState(DrawingState.MOUSE_MOVE, event.touches[0])
+    }
+
+    private canvasTouchEndListener(event: TouchEvent) {
+        event.preventDefault()
+
+        this.changeCanvasDrawingState(DrawingState.MOUSE_UP, event.touches[0])
+    }
+
     private initCanvasMouseEvents() {
         this.canvas?.addEventListener('mousedown', this.canvasMouseDownListener)
         this.canvas?.addEventListener('mouseup', this.canvasMouseUpListener)
         this.canvas?.addEventListener('mouseout', this.canvasMouseOutListener)
         this.canvas?.addEventListener('mousemove', this.canvasMouseMoveListener)
+
+        this.canvas?.addEventListener('touchstart', this.canvasTouchStartListener)
+        this.canvas?.addEventListener('touchmove', this.canvasTouchMoveListener)
+        this.canvas?.addEventListener('touchend', this.canvasTouchEndListener)
     }
 
     private initSubmitButtonOnClickListener() {
