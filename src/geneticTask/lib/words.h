@@ -15,8 +15,8 @@ namespace word0 {
 }
 
 namespace prefixes{
-    const u_int8_t prefix_mask = 0b11100000;
-    const u_int8_t value_mask  = 0b00011111;
+    const u_int8_t prefixMask = 0b11100000;
+    const u_int8_t valueMask  = 0b00011111;
     
     enum : u_int8_t {
         NOTHING         = 0b00000000,
