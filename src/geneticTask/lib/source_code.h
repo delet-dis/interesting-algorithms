@@ -9,10 +9,11 @@ private:
     Deps deps;
     LinePtr placeToDeclareVars; // blank line
     LinePtr placeToDeclareFuncs; // blank line
-    void add_line_mutation(LinePtr from, const u_int8_t word);
-    void edit_mutation(SourceCode *child);
+
 public:
+    int mainCodeSize;
     std::list<Line *> code;
+    
     SourceCode();
     ~SourceCode();
     int edit_distance(const SourceCode &other) const;     

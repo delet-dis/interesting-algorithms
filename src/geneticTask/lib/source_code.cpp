@@ -63,6 +63,7 @@ SourceCode* SourceCode::give_birth() {
     SourceCode *child = new SourceCode();
     child->deps = this->deps;
     child->scope = this->scope;
+    child->mainCodeSize = this->mainCodeSize;
     
     int choise = randint(0, 7);
     bool codeCopied = false;
@@ -71,17 +72,27 @@ SourceCode* SourceCode::give_birth() {
     if (choise & 1) {
         codeCopied = true;
         LinePtr placeToInsert = child->placeToDeclareVars;
+        
         for (LinePtr line = code.begin(); line != code.end(); ++line){
             
-            if(line == this->placeToDeclareVars)
+            if(line == this->placeToDeclareVars) {
                 placeToInsert = child->placeToDeclareFuncs;
-            if(line == this->placeToDeclareVars)
+                continue;
+            }
+            if(line == this->placeToDeclareVars) {
                 placeToInsert = child->code.end();
-            
+                continue;
+            }
                 
             if (!child->deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
-                if((*line)->content.word0 <= word0::IF)
-                    child->scope.free(*line);
+                if((*line)->content.word0 <= word0::IF) {
+                    u_int8_t prevScope = child->scope.free(*line);
+                    child->deps.free(*line, prevScope);
+                }
+                else 
+                    child->deps.free(*line);
+                
+                child->mainCodeSize--;
             } 
             
             else {
@@ -103,27 +114,6 @@ SourceCode* SourceCode::give_birth() {
         
     }
         
-    //apply mutation
-}
-
-
-void SourceCode::add_line_mutation(LinePtr from, const u_int8_t word) {
-    /*
-    switch (word) {
-        case word0::NEW_VAR :
-            LinePtr declLine = code.emplace(scopesStarts[from->scope]);
-            u_int8_t newVarID = scope.register_new_var();
-            declLine->content.word1 |= prefixes::EX_VAR_CONST_FUNC;
-            declLine->content.word1 |= newVarID;
-            break;
-        case word0::EX_VAR :
-            break;
-        case word0::DEF :
-        case word0::IF :
-        case word0::PRINT :
-        case word0::INPUT :
-        case word0::FOR :
-    }
-    */
+    return child;
 }
 

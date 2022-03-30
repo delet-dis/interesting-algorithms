@@ -17,6 +17,7 @@ public:
     
     union {
         raw_line content;
+        u_int8_t words[4];
         int32_t contentPile;
     };
     Line() = default;

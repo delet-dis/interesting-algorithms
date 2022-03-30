@@ -21,5 +21,7 @@ public:
     void inc_deps(const u_int8_t ID, dep_type type);
     void dec_deps(const u_int8_t ID, dep_type type);
     int get_deps(const Line *l) const;
+    void free(const Line *l);
+    void free(const Line *l, const u_int8_t parentScope);
 };
 
