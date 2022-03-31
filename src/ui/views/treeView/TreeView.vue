@@ -60,6 +60,9 @@ import Card from "@/ui/components/card/Card.vue";
 import Error from "@/ui/components/error/Error.vue";
 import TreeDescription from "@/ui/views/treeView/components/TreeDescription.vue";
 import Modal from "@/ui/components/modal/Modal.vue";
+import TreeCreatorRepository from "@/data/repositories/tree/TreeCreatorRepository";
+import TreeExpressionExecutorRepository from "@/data/repositories/tree/TreeExpressionExecutorRepository";
+import Node from "@/data/models/tree/Node";
 
 @Options({
     components: {
@@ -75,6 +78,8 @@ export default class TreeView extends Vue {
 
     private modal: Modal | null = null
 
+    private displayingTree: Node[] | null = null
+
     private showModalForDataLoading() {
         if (this.modal) {
             this.modal.header = "Ввод обучающей выборки в .csv формате"
@@ -88,7 +93,9 @@ export default class TreeView extends Vue {
                     this.submitDataToBuildTree(inputString)
                 }
 
-                this.modal!.isDisplaying = false
+                if (this.modal) {
+                    this.modal.isDisplaying = false
+                }
             })
         }
     }
@@ -104,17 +111,21 @@ export default class TreeView extends Vue {
                     this.submitDataToExecuteQuery(inputString)
                 }
 
-                this.modal!.isDisplaying = false
+                if (this.modal) {
+                    this.modal.isDisplaying = false
+                }
             })
         }
     }
 
     private submitDataToBuildTree(inputString: string) {
-        console.log('submit')
+        this.displayingTree = TreeCreatorRepository.getInstance().createTree(inputString)
     }
 
     private submitDataToExecuteQuery(inputString: string) {
-        console.log('execute')
+        if (this.displayingTree) {
+            this.displayingTree = TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTree)
+        }
     }
 
     private initModal() {
