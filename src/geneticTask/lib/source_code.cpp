@@ -379,7 +379,7 @@ char* SourceCode::render_text() {
             buf[1][1] = 97 + value % 26;
             buf[1][2] = 0;
             
-            value = line->content.word2 & valueMask;
+            value = line->content.word3 & valueMask;
             return_str[7] = 97 + value / 26;
             return_str[8] = 97 + value % 26;
             
