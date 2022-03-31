@@ -130,10 +130,10 @@ void SourceCode::fill_template(Line* line, u_int8_t curScope) {
                 line->words[i] |= randint(0, 31);
                 break;
             case prefixes::OPERATOR:
-                line->words[i] |= randint(0, 2);
+                line->words[i] |= randint(0, operators::last);
                 break;
             case prefixes::COMP_OPERATOR:
-                line->words[i] |= randint(0, 4);
+                line->words[i] |= randint(0, compare_operators::last);
                 break;
             case prefixes::NOTHING:
                 return;
@@ -180,10 +180,10 @@ void SourceCode::mutate_line(Line *line, u_int8_t wordsMask) {
                 line->words[i] |= randint(0, 32);
                 break;
             case prefixes::OPERATOR:
-                line->words[i] |= randint(0, 2);
+                line->words[i] |= randint(0, operators::last);
                 break;
             case prefixes::COMP_OPERATOR:
-                line->words[i] |= randint(0, 4);
+                line->words[i] |= randint(0, compare_operators::last);
                 break;
             case prefixes::NOTHING:
                 return;

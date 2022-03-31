@@ -12,7 +12,7 @@ int32_t prefixes::get_template(const u_int8_t word0) {
         words[i + 1] = curTemplate.startPrefix - minDiff * randint(0, curTemplate.availableSteps); 
     }
     
-    if (word0 == word0::EX_VAR) {
+    if (word0 == word0::ASSIGN) {
         if(words[2] == FUNC)
             words[3] = EX_VAR;
         else
