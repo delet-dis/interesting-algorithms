@@ -12,6 +12,16 @@ namespace word0 {
         PRINT,
         INPUT
     };
+    
+    static const char* str[7] = {
+        "def %s(%s):",
+        "for %s in range(%s):",
+        "if %s %s %s:",
+        "%s = %s",
+        "%s = %s", // or func()
+        "print(%s)",
+        "input(%s)"
+    };
 }
 
 namespace prefixes{
@@ -55,6 +65,14 @@ namespace operators {
         MINUS,
         ASSIGN
     };
+    
+    static const char *str[3] = {
+        "+=",
+        "-=",
+        "=",
+    };
+    
+    
 }
 
 namespace compare_operators {
@@ -66,6 +84,16 @@ namespace compare_operators {
         LE
     };
     
+    static const char *str[5] = {
+        ">",
+        "<",
+        "==",
+        ">=",
+        "<=",
+    };
+    
 }
+
+
 
 

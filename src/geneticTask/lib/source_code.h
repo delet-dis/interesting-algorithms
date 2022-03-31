@@ -15,6 +15,7 @@ private:
     void copy_code_and_delete_some_lines(const SourceCode &parent);
     void add_some_lines();
     void edit_some_lines();
+    
 public:
     std::list<Line *> code;
     
@@ -22,4 +23,5 @@ public:
     ~SourceCode();
     int edit_distance(const SourceCode &other) const;     
     SourceCode* give_birth();
+    char* render_text();
 };

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "matrix.h"
 #include "words.h"
 #include "gentic_coefficients.h"
@@ -16,6 +17,8 @@ SourceCode::~SourceCode() {
     for(auto line : code) {
         if(!line->used)
             delete line;
+        else
+            line->used--;
     }
 }
 
@@ -308,5 +311,107 @@ SourceCode* SourceCode::give_birth() {
     return child;
 }
 
+
+char* SourceCode::render_text() {
+    using namespace prefixes;
+    
+    char *codeTXT = new char[32 * code.size()];
+    int c = 0;
+    int indents = 0;
+    int prevScope = 0, curScope;
+    char return_str[10] = "return ab";
+    int funcScopeID = 0;
+    char buf[4][12];
+    const char *args[3];
+    
+    u_int8_t prefix, value;
+    
+    for (Line *line : code) {
+        
+        if (line == *placeToDeclareVars)
+            continue;
+        if (line == *placeToDeclareFuncs)
+            continue;
+        
+        //TODO: scopes and indentation;
+        curScope = line->scope;
+        if (curScope != prevScope) {
+            if(line->content.word0 <= 2) 
+                indents++;
+            else
+                indents--;
+        }
+        
+        
+        for (int i = 0; i < indents; i++)
+            codeTXT[c++] = '\t';
+        
+        int j = 0;
+        if(line->content.word0 == word0::DEF) {
+            value = line->content.word1 & valueMask;
+            sprintf(buf[0], "func_");
+            buf[0][5] = 97 + value / 26;
+            buf[0][6] = 97 + value % 26;
+            buf[0][7] = 0;
+            
+            value = line->content.word2 & valueMask;
+            buf[1][0] = 97 + value / 26;
+            buf[1][1] = 97 + value % 26;
+            buf[1][2] = 0;
+            
+            args[0] = buf[0];
+            args[1] = buf[1];
+            j = 3; //skip next cycle
+        }
+        
+        for (; j < 3; j++) {
+            prefix = line->words[j+1] & prefixMask;
+            value = line->words[j+1] & valueMask;
+            
+
+            if (prefix == EX_VAR || prefix == EX_VAR_EXCEPT_LOCAL || prefix == IMMUTABLE) {
+                buf[j][0] = 97 + value / 26;
+                buf[j][1] = 97 + value % 26;
+                buf[j][2] = 0;
+            }
+                
+            else if (prefix == CONST) {
+                sprintf(buf[j], "%d", value);
+                args[j] = buf[j];
+            }
+            
+            else if (prefix == OPERATOR) 
+                args[j] = operators::str[value];
+            
+            else if (prefix == COMP_OPERATOR)
+                args[j] = compare_operators::str[value];
+            
+            else if (prefix == FUNC) {
+                buf[j+1][0] = 97 + value / 26;
+                buf[j+1][1] = 97 + value % 26;
+                buf[j+1][2] = 0;
+                
+                value = line->words[j+2] & valueMask;
+                buf[j+2][0] = 97 + value / 26;
+                buf[j+2][1] = 97 + value % 26;
+                buf[j+2][2] = 0;
+                
+                sprintf(buf[j], "func_%s(%s)", buf[j+1], buf[j+2]);
+                
+                args[j] = buf[j];                
+                break;
+            }
+        }
+
+        
+        c += sprintf(&codeTXT[c], word0::str[line->content.word0], args[0], args[1], args[2]);
+        codeTXT[c++] = '\n';
+        prevScope = curScope;
+    }
+    
+    codeTXT[c] = 0;
+    
+    return codeTXT;    
+}
 
 
