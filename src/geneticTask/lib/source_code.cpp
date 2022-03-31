@@ -226,7 +226,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
 void SourceCode::add_some_lines() {
     
     //declare new vars
-    int quantity = randint(0, 3);//TODO: coeff
+    int quantity = randint(1, 3);//TODO: coeff IF there is no vars yet, MAKE new by all means
     for (int i = 0; i < quantity; i++) {
         Line *newLine = new Line();
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
@@ -270,7 +270,7 @@ void SourceCode::add_some_lines() {
         
         u_int8_t word0 = availabelWords[randint(0, 5)];
         Line *newLine = new Line();
-        newLine->contentPile = prefixes::get_template(word0);
+        newLine->contentPile = prefixes::get_template(word0, scope.func_available());
         fill_template(newLine, curScope);
         
         code.insert(curLine, newLine);

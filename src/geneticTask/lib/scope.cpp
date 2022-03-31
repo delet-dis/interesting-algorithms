@@ -27,6 +27,7 @@ void Bank::free(u_int8_t ID) {
 
 void Bank::occupy(u_int8_t ID) {
     repository[ID / 8] |= 1 << (ID % 8);
+    size++;
 }
 
 
@@ -120,8 +121,14 @@ u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
 }
 u_int8_t Scope::get_rand_func() {
     int choise = randint(0, funcBank.size - 1);
+    //TODO: when no funcs
     return funcBank[choise];
 }
+
+bool Scope::func_available() {
+    return funcBank.size;
+}
+
 
 u_int8_t Scope::free(const Line *l) {
     u_int8_t var, func;

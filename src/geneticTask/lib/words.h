@@ -14,6 +14,8 @@ namespace word0 {
         INPUT
     };
     
+    const int last = INPUT;
+    
     static const char* str[8] = {
         "def %s(%s):",
         "for %s in range(%s):",
@@ -22,7 +24,7 @@ namespace word0 {
         "%s %s %s",
         "%s = %s", // or func()
         "print(%s)",
-        "input(%s)"
+        "%s = int(input())"
     };
 }
 
@@ -48,18 +50,18 @@ namespace prefixes{
         u_int8_t availableSteps;
     };
     
-    const prefTemplate templates[8][3] = {
+    static const prefTemplate templates[8][3] = {
         {{IMMUTABLE, 0}, {IMMUTABLE,           0}, {EX_VAR_EXCEPT_LOCAL,  0}},  //DEF
         {{IMMUTABLE, 0}, {EX_VAR_EXCEPT_LOCAL, 1}, {NOTHING,              0}},  //FOR  
         {{EX_VAR,    0}, {COMP_OPERATOR,       0}, {EX_VAR,               1}},  //IF
         {{IMMUTABLE, 0}, {CONST,               0}, {NOTHING,              0}},  //NEW_VAR
         {{EX_VAR,    0}, {OPERATOR,            0}, {CONST,                1}},  //ARITHMETIC
-        {{EX_VAR,    0}, {CONST,               2}, {EX_VAR,               0}},  //ASSIGN  third needs to additional check
+        {{EX_VAR,    0}, {CONST,               2}, {NOTHING,              0}},  //ASSIGN  third needs to additional check
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //PRINT 
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //INPUT
     };
     
-    int32_t get_template(const u_int8_t word0);
+    int32_t get_template(const u_int8_t word0, bool noFuncs = false);
 }
 
 namespace operators {

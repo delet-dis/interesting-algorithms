@@ -1,7 +1,7 @@
 #include "words.h"
 #include "utils.h"
 
-int32_t prefixes::get_template(const u_int8_t word0) {
+int32_t prefixes::get_template(const u_int8_t word0, bool noFuncs) {
     union {
         u_int8_t words[4];
         int32_t content = 0;
@@ -12,12 +12,12 @@ int32_t prefixes::get_template(const u_int8_t word0) {
         words[i + 1] = curTemplate.startPrefix - minDiff * randint(0, (int)curTemplate.availableSteps); 
     }
     
-    if (word0 == word0::ASSIGN) {
-        if(words[2] == FUNC)
+    if(word0 == word0::ASSIGN && words[2] == FUNC) {
+        if(noFuncs)
+            words[2] += minDiff * randint(1, 2);
+        else 
             words[3] = EX_VAR;
-        else
-            words[3] = NOTHING;
-    }
+    }    
     
     return content;
 }
