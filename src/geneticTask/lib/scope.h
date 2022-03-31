@@ -36,7 +36,8 @@ private:
     struct node {
         u_int8_t parentScope;
         u_int8_t var;
-        u_int8_t len;
+        u_int8_t qOfVars;
+        u_int8_t depth;
     };
     
     
@@ -47,6 +48,8 @@ private:
     Bank scopeBank;
     
 public:
+    
+    
     Scope();
     Scope(const Scope &other);
     u_int8_t new_scope(u_int8_t prevID, bool demandsLocal);  // return newScopeId
@@ -58,5 +61,6 @@ public:
     u_int8_t get_rand_func();
     bool func_available();
     u_int8_t free(const Line *l);  // return parentScope
+    int get_indent(u_int8_t scopeID);
     
 };

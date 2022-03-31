@@ -50,12 +50,14 @@ Bank::Bank(const Bank& other) {
 
 
 /* Scope methods declaration */
+
 Scope::Scope() {
     scopeBank.occupy(0);
-    allVarsBank.occupy(0);
-    locals[0].len = 0;
-    locals[0].var = 0;
+    //allVarsBank.occupy(0); 
     locals[0].parentScope = 0;
+    locals[0].var = 0;
+    locals[0].qOfVars = 0;
+    locals[0].depth = 0;
     
 }
 
@@ -70,13 +72,14 @@ Scope::Scope(const Scope &other) {
 
 u_int8_t Scope::new_scope(u_int8_t prevID, bool demandsLocal) {
     u_int8_t var = 255;
-    u_int8_t newLen = locals[prevID].len;
+    u_int8_t qOfVars = locals[prevID].qOfVars;
     u_int8_t newScope = scopeBank.get();
+    u_int8_t depth = locals[prevID].depth + 1;
     if(demandsLocal) {
         var = allVarsBank.get();
-        newLen++;
+        qOfVars++;
     }
-    locals[newScope] = {prevID, var, newLen};
+    locals[newScope] = {prevID, var, qOfVars, depth};
     
     return newScope;
 }
@@ -100,7 +103,7 @@ u_int8_t Scope::get_prev_scope(u_int8_t curScopeID) {
 }
 
 u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
-    int choise = randint(-locals[scopeID].len, globalBank.size-1);
+    int choise = randint(-locals[scopeID].qOfVars, globalBank.size-1);
     int ind = scopeID;
 
     if(excludeCurLocal) {
@@ -121,7 +124,6 @@ u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
 }
 u_int8_t Scope::get_rand_func() {
     int choise = randint(0, funcBank.size - 1);
-    //TODO: when no funcs
     return funcBank[choise];
 }
 
@@ -161,3 +163,8 @@ u_int8_t Scope::free(const Line *l) {
     
     return locals[l->scope].parentScope;
 }
+
+int Scope::get_indent(u_int8_t scopeID) {
+    return locals[scopeID].depth;
+}
+

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <algorithm>
 #include "matrix.h"
 #include "words.h"
 #include "gentic_coefficients.h"
@@ -6,9 +7,9 @@
 #include "source_code.h"
 
 SourceCode::SourceCode() {
-    code.push_back(new Line);
+    code.push_back(new Line());
+    code.push_back(new Line());
     placeToDeclareVars = code.begin();
-    code.push_back(new Line);
     placeToDeclareFuncs = code.begin();
     placeToDeclareFuncs++;
 }
@@ -226,7 +227,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
 void SourceCode::add_some_lines() {
     
     //declare new vars
-    int quantity = randint(1, 3);//TODO: coeff IF there is no vars yet, MAKE new by all means
+    int quantity = randint(1, 1);//TODO: coeff IF there is no vars yet, MAKE new by all means
     for (int i = 0; i < quantity; i++) {
         Line *newLine = new Line();
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
@@ -260,7 +261,7 @@ void SourceCode::add_some_lines() {
         curScope = (*curLine)->scope;
         ++curLine;
 
-        if(randint(0, 1)) //TODO: skip coeff
+        if(randint(0, 3) / 3) //TODO: skip coeff
             continue;
         
         //TODO: scope termination coeff
@@ -329,9 +330,10 @@ char* SourceCode::render_text() {
     char *codeTXT = new char[32 * code.size()];
     int c = 0;
     int indents = 0;
-    int prevScope = 0, curScope;
+    int curScope;
     char return_str[10] = "return ab";
-    int funcScopeID = 0;
+    int lastFuncIndent = 0;
+    bool inFunc = false;
     char buf[4][12];
     const char *args[3];
     
@@ -346,18 +348,25 @@ char* SourceCode::render_text() {
         
         //TODO: scopes and indentation;
         curScope = line->scope;
-        if (curScope != prevScope) {
-            if(line->content.word0 <= 2) 
-                indents++;
-            else
-                indents--;
-        }
+        indents = scope.get_indent(curScope);
+        if (line->content.word0 <= 2)
+            indents--;
         
+        //write return 
+        if(inFunc && indents <= lastFuncIndent) {
+            for (int i = 0; i <= indents; i++)
+                codeTXT[c++] = '\t';
+            for (int i = 0; i < 9; i++)
+                codeTXT[c++] = return_str[i];
+            codeTXT[c++] = '\n';
+            
+            inFunc = false;
+        }
         
         for (int i = 0; i < indents; i++)
             codeTXT[c++] = '\t';
         
-        int j = 0;
+        
         if(line->content.word0 == word0::DEF) {
             value = line->content.word1 & valueMask;
             sprintf(buf[0], "func_");
@@ -370,55 +379,59 @@ char* SourceCode::render_text() {
             buf[1][1] = 97 + value % 26;
             buf[1][2] = 0;
             
+            value = line->content.word2 & valueMask;
+            return_str[7] = 97 + value / 26;
+            return_str[8] = 97 + value % 26;
+            
             args[0] = buf[0];
             args[1] = buf[1];
-            j = 3; //skip next cycle
+            inFunc = true;
+            goto FLUSH_BUFER;
         }
         
-        for (; j < 3; j++) {
-            prefix = line->words[j+1] & prefixMask;
-            value = line->words[j+1] & valueMask;
+        for (int i = 0; i < 3; i++) {
+            prefix = line->words[i+1] & prefixMask;
+            value = line->words[i+1] & valueMask;
             
 
             if (prefix == EX_VAR || prefix == EX_VAR_EXCEPT_LOCAL || prefix == IMMUTABLE) {
-                buf[j][0] = 97 + value / 26;
-                buf[j][1] = 97 + value % 26;
-                buf[j][2] = 0;
-                args[j] = buf[j];
+                buf[i][0] = 97 + value / 26;
+                buf[i][1] = 97 + value % 26;
+                buf[i][2] = 0;
+                args[i] = buf[i];
             }
                 
             else if (prefix == CONST) {
-                sprintf(buf[j], "%d", value);
-                args[j] = buf[j];
+                sprintf(buf[i], "%d", value);
+                args[i] = buf[i];
             }
             
             else if (prefix == OPERATOR) 
-                args[j] = operators::str[value];
+                args[i] = operators::str[value];
             
             else if (prefix == COMP_OPERATOR)
-                args[j] = compare_operators::str[value];
+                args[i] = compare_operators::str[value];
             
             else if (prefix == FUNC) {
-                buf[j+1][0] = 97 + value / 26;
-                buf[j+1][1] = 97 + value % 26;
-                buf[j+1][2] = 0;
+                buf[i+1][0] = 97 + value / 26;
+                buf[i+1][1] = 97 + value % 26;
+                buf[i+1][2] = 0;
                 
-                value = line->words[j+2] & valueMask;
-                buf[j+2][0] = 97 + value / 26;
-                buf[j+2][1] = 97 + value % 26;
-                buf[j+2][2] = 0;
+                value = line->words[i+2] & valueMask;
+                buf[i+2][0] = 97 + value / 26;
+                buf[i+2][1] = 97 + value % 26;
+                buf[i+2][2] = 0;
                 
-                sprintf(buf[j], "func_%s(%s)", buf[j+1], buf[j+2]);
+                sprintf(buf[i], "func_%s(%s)", buf[i+1], buf[i+2]);
                 
-                args[j] = buf[j];                
+                args[i] = buf[i];                
                 break;
             }
         }
 
-        
+    FLUSH_BUFER:
         c += sprintf(&codeTXT[c], word0::str[line->content.word0], args[0], args[1], args[2]);
         codeTXT[c++] = '\n';
-        prevScope = curScope;
     }
     
     codeTXT[c] = 0;
