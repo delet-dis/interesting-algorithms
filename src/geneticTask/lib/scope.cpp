@@ -11,7 +11,7 @@ u_int8_t Bank::get() {
     for (ID = 0; ID < 4; ID++)
         if(repository[ID] != 255)
             break;
-    while (!(repository[ID] & (1 << add)))
+    while (repository[ID] & (1 << add))
         add++;
     repository[ID] |= 1 << add;
     size++;
@@ -116,8 +116,8 @@ u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
         choise += locals[ind].var != 255;
     }
     return locals[ind].var;
-}
 
+}
 u_int8_t Scope::get_rand_func() {
     int choise = randint(0, funcBank.size - 1);
     return funcBank[choise];
