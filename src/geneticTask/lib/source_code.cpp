@@ -93,8 +93,8 @@ void SourceCode::fill_template(Line* line, u_int8_t curScope) {
     }
     
     if (line->content.word0 == word0::NEW_VAR) {
-        line->content.word1 = scope.new_global_var();
-        line->content.word2 = randint(0, 31);
+        line->content.word1 |= scope.new_global_var();
+        line->content.word2 |= randint(0, 31);
         return;
     }
     
@@ -198,11 +198,11 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
     
     for (LinePtrConst line = parent.code.begin(); line != parent.code.end(); ++line){
         
-        if(line == placeToDeclareVars) {
+        if(line == parent.placeToDeclareVars) {
             placeToInsert = placeToDeclareFuncs;
             continue;
         }
-        if(line == placeToDeclareVars) {
+        if(line == parent.placeToDeclareVars) {
             placeToInsert = code.end();
             continue;
         }
