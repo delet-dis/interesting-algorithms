@@ -7,9 +7,10 @@
 
 SourceCode::SourceCode() {
     code.push_back(new Line);
-    placeToDeclareVars = code.end();
+    placeToDeclareVars = code.begin();
     code.push_back(new Line);
-    placeToDeclareFuncs = code.end();
+    placeToDeclareFuncs = code.begin();
+    placeToDeclareFuncs++;
 }
 
 
