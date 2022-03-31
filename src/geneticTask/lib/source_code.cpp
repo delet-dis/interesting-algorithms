@@ -202,7 +202,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
             placeToInsert = placeToDeclareFuncs;
             continue;
         }
-        if(line == parent.placeToDeclareVars) {
+        if(line == parent.placeToDeclareFuncs) {
             placeToInsert = code.end();
             continue;
         }
@@ -243,8 +243,18 @@ void SourceCode::add_some_lines() {
         code.insert(placeToDeclareFuncs, newLine);
     } 
     
+    //TODO: insert into functions
     LinePtr curLine = placeToDeclareFuncs;
     u_int8_t curScope;
+    u_int8_t availabelWords[6] = {
+        word0::FOR,
+        word0::IF,
+        word0::ARITHMETIC,
+        word0::ASSIGN,
+        word0::PRINT,
+        word0::INPUT
+    };
+        
     
     do  {
         curScope = (*curLine)->scope;
@@ -255,10 +265,10 @@ void SourceCode::add_some_lines() {
         
         //TODO: scope termination coeff
         if ((curLine == code.end() || (*curLine)->scope != curScope) && randint(0, 1))
-            curScope = scope.get_prev_scope(curScope);
+            curScope = scope.get_prev_scope(curScope); //TODO:get_rand_prev_scope()
         
         
-        u_int8_t word0 = randint(2, 6);
+        u_int8_t word0 = availabelWords[randint(0, 5)];
         Line *newLine = new Line();
         newLine->contentPile = prefixes::get_template(word0);
         fill_template(newLine, curScope);
@@ -374,6 +384,7 @@ char* SourceCode::render_text() {
                 buf[j][0] = 97 + value / 26;
                 buf[j][1] = 97 + value % 26;
                 buf[j][2] = 0;
+                args[j] = buf[j];
             }
                 
             else if (prefix == CONST) {
