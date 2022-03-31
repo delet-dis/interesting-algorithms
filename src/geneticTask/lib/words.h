@@ -47,10 +47,10 @@ namespace prefixes{
     };
     
     const prefTemplate templates[7][3] = {
-        {{IMMUTABLE, 0}, {CONST,               0}, {NOTHING,              0}},  //NEW_VAR
         {{IMMUTABLE, 0}, {IMMUTABLE,           0}, {EX_VAR_EXCEPT_LOCAL,  0}},  //DEF
         {{IMMUTABLE, 0}, {EX_VAR_EXCEPT_LOCAL, 1}, {NOTHING,              0}},  //FOR  
         {{EX_VAR,    0}, {COMP_OPERATOR,       0}, {EX_VAR,               1}},  //IF
+        {{IMMUTABLE, 0}, {CONST,               0}, {NOTHING,              0}},  //NEW_VAR
         {{OPERATOR,  0}, {CONST,               2}, {EX_VAR,               0}},  //EX_VAR third needs to additional check
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //PRINT 
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //INPUT
