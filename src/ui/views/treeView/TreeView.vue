@@ -33,8 +33,8 @@
                     <div class="separator"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-primary button-glow activeButton':isTreeLoaded===true,
-                            'button-flat nonActiveButton': isTreeLoaded===false}"
+                            :class="{'button-primary button-glow activeButton':displayingTree,
+                            'button-flat nonActiveButton': displayingTree}"
                             id="reduceTreeButton">
                         Сократить дерево
                     </button>
@@ -42,8 +42,8 @@
                     <div class="separator"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-royal activeButton':isTreeLoaded===true,
-                            'button-flat nonActiveButton': isTreeLoaded===false}"
+                            :class="{'button-royal activeButton':displayingTree,
+                            'button-flat nonActiveButton': displayingTree}"
                             id="executeQuery">
                         Исполнить запрос
                     </button>
@@ -63,6 +63,7 @@ import Modal from "@/ui/components/modal/Modal.vue";
 import TreeCreatorRepository from "@/data/repositories/tree/TreeCreatorRepository";
 import TreeExpressionExecutorRepository from "@/data/repositories/tree/TreeExpressionExecutorRepository";
 import Node from "@/data/models/tree/Node";
+import TreeReducerRepository from "@/data/repositories/tree/TreeReducerRepository";
 
 @Options({
     components: {
@@ -74,7 +75,6 @@ import Node from "@/data/models/tree/Node";
 })
 export default class TreeView extends Vue {
     private isErrorDisplaying = false
-    private isTreeLoaded = false
 
     private modal: Modal | null = null
 
@@ -91,6 +91,7 @@ export default class TreeView extends Vue {
                     this.isErrorDisplaying = false
 
                     this.submitDataToBuildTree(inputString)
+                    this.validateReceivedData()
                 }
 
                 if (this.modal) {
@@ -120,11 +121,25 @@ export default class TreeView extends Vue {
 
     private submitDataToBuildTree(inputString: string) {
         this.displayingTree = TreeCreatorRepository.getInstance().createTree(inputString)
+
+        this.validateReceivedData()
     }
 
     private submitDataToExecuteQuery(inputString: string) {
         if (this.displayingTree) {
             this.displayingTree = TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTree)
+        }
+    }
+
+    private validateReceivedData() {
+        if (!this.displayingTree) {
+            this.isErrorDisplaying = true
+        }
+    }
+
+    private reduceTree() {
+        if (this.displayingTree) {
+            this.displayingTree = TreeReducerRepository.getInstance().reduceTree(this.displayingTree)
         }
     }
 
@@ -144,7 +159,7 @@ export default class TreeView extends Vue {
         let executeQueryButton = document.getElementById('executeQuery')
 
         executeQueryButton?.addEventListener('click', () => {
-            if (this.isTreeLoaded) {
+            if (this.displayingTree) {
                 this.showModalForQueryExecuting()
 
                 this.isErrorDisplaying = false
@@ -154,10 +169,26 @@ export default class TreeView extends Vue {
         })
     }
 
+    private initReduceTreeButtonOnClick() {
+        let reduceTreeButton = document.getElementById('reduceTreeButton')
+
+        reduceTreeButton?.addEventListener('click', () => {
+            if (this.displayingTree) {
+                this.reduceTree()
+
+                this.isErrorDisplaying = false
+            } else {
+                this.isErrorDisplaying = true
+            }
+        })
+
+    }
+
     mounted() {
         this.initModal()
         this.initLoadDataButtonOnClick()
         this.initExecuteQueryButtonOnClick()
+        this.initReduceTreeButtonOnClick()
     }
 }
 </script>

@@ -12,8 +12,8 @@ class TreeCreatorRepository implements TreeCreatorInterface {
         return TreeCreatorRepository.instance
     }
 
-    createTree(inputData: string): Node[] {
-        return []
+    createTree(inputData: string): Node[] | null {
+        return null
     }
 }
 

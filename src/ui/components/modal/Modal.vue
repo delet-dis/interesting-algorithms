@@ -8,14 +8,23 @@
                             {{ header }}
                         </h3>
 
-                        <textarea class="inputField" id="inputField"/>
+                        <textarea class="inputField" id="inputField" autofocus/>
 
                         <div class="spacer"/>
 
-                        <button class="button button-border button-rounded button-action activeButton"
-                                id="submitButton">
-                            Подтвердить
-                        </button>
+                        <div class="buttonWrapper">
+                            <button class="button button-border button-rounded"
+                                    :class="{'button-action activeButton':isAvailableToSubmitData===true,
+                                            'button-flat nonActiveButton': isAvailableToSubmitData===false}"
+                                    id="submitButton">
+                                Подтвердить
+                            </button>
+
+                            <button class="button button-border button-rounded button-caution activeButton"
+                                    id="cancelButton">
+                                Отменить
+                            </button>
+                        </div>
                     </Card>
                 </div>
             </div>
@@ -35,16 +44,22 @@ export default class Modal extends Vue {
 
     isDisplaying = false
 
+    private isAvailableToSubmitData = false
+
     private inputField: HTMLInputElement | null = null
 
     setSubmitButtonOnClick(functionToInvoke: (inputString: string) => (void)) {
         let submitButton = document.getElementById('submitButton')
 
         submitButton?.addEventListener('click', () => {
-            if (this.inputField) {
-                functionToInvoke(this.inputField.value)
+            if (this.isAvailableToSubmitData) {
+                if (this.inputField) {
+                    functionToInvoke(this.inputField.value)
 
-                this.inputField.value = ""
+                    this.inputField.value = ""
+
+                    this.isAvailableToSubmitData = false
+                }
             }
         })
     }
@@ -53,8 +68,26 @@ export default class Modal extends Vue {
         this.inputField = document.getElementById('inputField') as HTMLInputElement
     }
 
+    private initCancelButtonOnClick() {
+        let cancelButton = document.getElementById('cancelButton')
+
+        cancelButton?.addEventListener('click', () => {
+            this.isDisplaying = false
+        })
+    }
+
+    private initInputFieldTextChangeListener() {
+        this.inputField?.addEventListener('input', () => {
+            if (this.inputField) {
+                this.isAvailableToSubmitData = this.inputField.value.length > 0;
+            }
+        })
+    }
+
     mounted() {
         this.initInputField()
+        this.initCancelButtonOnClick()
+        this.initInputFieldTextChangeListener()
     }
 }
 </script>
@@ -118,8 +151,14 @@ export default class Modal extends Vue {
 }
 
 .button {
-    width: 40%;
-    margin-left: 30%;
-    margin-right: 30%;
+    width: 50%;
+}
+
+.buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 </style>
