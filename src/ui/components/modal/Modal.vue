@@ -56,12 +56,20 @@ export default class Modal extends Vue {
                 if (this.inputField) {
                     functionToInvoke(this.inputField.value)
 
-                    this.inputField.value = ""
-
-                    this.isAvailableToSubmitData = false
+                    this.clearEnteredData()
                 }
             }
         })
+    }
+
+    private clearEnteredData() {
+        if (this.inputField) {
+            this.inputField.value = ""
+        }
+
+        this.isAvailableToSubmitData = false
+
+        this.isDisplaying = false
     }
 
     private initInputField() {
@@ -72,7 +80,7 @@ export default class Modal extends Vue {
         let cancelButton = document.getElementById('cancelButton')
 
         cancelButton?.addEventListener('click', () => {
-            this.isDisplaying = false
+            this.clearEnteredData()
         })
     }
 
