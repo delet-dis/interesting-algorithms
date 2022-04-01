@@ -15,8 +15,8 @@
                 </Error>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card class="cardCenter treeCard" id="treeCard">
-                    Дерево
+                <Card class="treeCard" id="treeCard">
+                    <Tree/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -64,9 +64,11 @@ import TreeCreatorRepository from "@/data/repositories/tree/TreeCreatorRepositor
 import TreeExpressionExecutorRepository from "@/data/repositories/tree/TreeExpressionExecutorRepository";
 import Node from "@/data/models/tree/Node";
 import TreeReducerRepository from "@/data/repositories/tree/TreeReducerRepository";
+import Tree from "@/ui/components/tree/Tree.vue";
 
 @Options({
     components: {
+        Tree,
         TreeDescription,
         Card,
         Error,
@@ -194,5 +196,7 @@ export default class TreeView extends Vue {
 </script>
 
 <style scoped>
-
+.treeCard{
+    overflow: auto;
+}
 </style>
