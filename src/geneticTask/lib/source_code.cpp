@@ -66,7 +66,7 @@ void SourceCode::fill_template(Line &line, u_int8_t curScope) {
     if (line.content.word0 == word0::DEF) {
         func = scope.new_func();
         local = scope.get_local(curScope);
-        var = scope.get_rand_var(curScope, true);
+        var = scope.get_rand_var(curScope);
         deps.vars[var]++;
         
         line.content.word1 |= func;
@@ -216,7 +216,7 @@ void SourceCode::add_some_lines() {
     } 
     
     //declare new funcs
-    quantity = randint(0, 3);//TODO: coeff
+    quantity = randint(0, 1);//TODO: coeff
     for (int i = 0; i < quantity; i++) {
         LinePtr newLine = code.emplace(placeToDeclareFuncs);
         newLine->contentPile = prefixes::get_template(word0::DEF);

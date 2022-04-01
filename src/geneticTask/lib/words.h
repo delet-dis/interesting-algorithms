@@ -51,9 +51,9 @@ namespace prefixes{
     };
     
     static const prefTemplate templates[8][3] = {
-        {{IMMUTABLE, 0}, {IMMUTABLE,           0}, {EX_VAR_EXCEPT_LOCAL,  0}},  //DEF
+        {{IMMUTABLE, 0}, {IMMUTABLE,           0}, {EX_VAR,               0}},  //DEF
         {{IMMUTABLE, 0}, {EX_VAR_EXCEPT_LOCAL, 1}, {NOTHING,              0}},  //FOR  
-        {{EX_VAR,    0}, {COMP_OPERATOR,       0}, {EX_VAR,               1}},  //IF
+        {{EX_VAR,    0}, {COMP_OPERATOR,       0}, {CONST,                1}},  //IF
         {{IMMUTABLE, 0}, {CONST,               0}, {NOTHING,              0}},  //NEW_VAR
         {{EX_VAR,    0}, {OPERATOR,            0}, {CONST,                1}},  //ARITHMETIC
         {{EX_VAR,    0}, {CONST,               2}, {NOTHING,              0}},  //ASSIGN  third needs to additional check
