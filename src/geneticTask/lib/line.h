@@ -12,7 +12,6 @@ struct raw_line {
 
 class Line {
 public:
-    int used = 0;
     u_int8_t scope = 0;
     
     union {
@@ -21,10 +20,11 @@ public:
         int32_t contentPile = 0;
     };
     Line() = default;
+    Line(const Line &other);
     bool operator==(const Line &other) const; 
     int difference(const Line &other) const;
 };
 
 
-using LinePtr = std::list<Line *>::iterator;
-using LinePtrConst = std::list<Line *>::const_iterator;
+using LinePtr = std::list<Line>::iterator;
+using LinePtrConst = std::list<Line>::const_iterator;

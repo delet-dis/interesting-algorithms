@@ -60,7 +60,7 @@ public:
     u_int8_t get_rand_var(u_int8_t scopeID, bool excludeCurLocal = false);
     u_int8_t get_rand_func();
     bool func_available();
-    u_int8_t free(const Line *l);  // return parentScope
+    u_int8_t free(const Line &l);  // return parentScope
     int get_indent(u_int8_t scopeID);
     
 };

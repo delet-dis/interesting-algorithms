@@ -7,21 +7,10 @@
 #include "source_code.h"
 
 SourceCode::SourceCode() {
-    code.push_back(new Line());
-    code.push_back(new Line());
+    code.emplace_back();
+    code.emplace_back();
     placeToDeclareVars = code.begin();
-    placeToDeclareFuncs = code.begin();
-    placeToDeclareFuncs++;
-}
-
-
-SourceCode::~SourceCode() {
-    for(auto line : code) {
-        if(!line->used)
-            delete line;
-        else
-            line->used--;
-    }
+    placeToDeclareFuncs = ++code.begin();
 }
 
     
@@ -42,7 +31,7 @@ int SourceCode::edit_distance(const SourceCode &other) const {
         j = 1;
         for (auto iter2 = ++other.code.begin(); iter2 != other.code.end(); ++iter2, ++j) {
             t[i][j] = std::min(t[i-1][j], t[j-1][i]) + 4;
-            t[i][j] = std::min(t[i][j], t[i-1][j-1] + (*iter1)->difference(**iter2));
+            t[i][j] = std::min(t[i][j], t[i-1][j-1] + iter1->difference(*iter2));
         }
     }
     
@@ -53,88 +42,81 @@ int SourceCode::edit_distance(const SourceCode &other) const {
 void SourceCode::copy_code(const SourceCode &src) {
     LinePtrConst line;
     
-    for (line = src.code.begin(); line != src.placeToDeclareVars; ++line) {
+    for (line = src.code.begin(); line != src.placeToDeclareVars; ++line)
         this->code.insert(this->placeToDeclareVars, *line);
-        (*line)->used++;
-    }
+
     
-    for (++line; line != src.placeToDeclareFuncs; ++line) {
+    for (++line; line != src.placeToDeclareFuncs; ++line)
         this->code.insert(this->placeToDeclareFuncs, *line);
-        (*line)->used++;
-    }
     
-    for (++line; line != src.code.end(); ++line) {
+    for (++line; line != src.code.end(); ++line)
         this->code.push_back(*line);
-        (*line)->used++;
-    }
-        
-    
 }
 
 
-void SourceCode::fill_template(Line* line, u_int8_t curScope) {
+void SourceCode::fill_template(Line &line, u_int8_t curScope) {
     deps.scopes[curScope]++;
-    if(line->content.word0 <= 2)
-        curScope = scope.new_scope(curScope, line->content.word0 <= 1); 
+    if(line.content.word0 <= 2)
+        curScope = scope.new_scope(curScope, line.content.word0 <= 1); 
 
-    line->scope = curScope;
+    line.scope = curScope;
     
     u_int8_t var, func, local;
     
-    if (line->content.word0 == word0::DEF) {
+    if (line.content.word0 == word0::DEF) {
         func = scope.new_func();
         local = scope.get_local(curScope);
         var = scope.get_rand_var(curScope, true);
         deps.vars[var]++;
         
-        line->content.word1 |= func;
-        line->content.word2 |= local;
-        line->content.word3 |= var;
+        line.content.word1 |= func;
+        line.content.word2 |= local;
+        line.content.word3 |= var;
         return;
     }
     
-    if (line->content.word0 == word0::NEW_VAR) {
-        line->content.word1 |= scope.new_global_var();
-        line->content.word2 |= randint(0, 31);
+    if (line.content.word0 == word0::NEW_VAR) {
+        line.content.word1 |= scope.new_global_var();
+        line.content.word2 |= randint(0, 31);
         return;
     }
     
     
-    if (line->content.word0 == word0::FOR) {
+    if (line.content.word0 == word0::FOR) {
         local = scope.get_local(curScope);
-        if((line->content.word2 & prefixes::prefixMask) == prefixes::EX_VAR_EXCEPT_LOCAL) {
+        if((line.content.word2 & prefixes::prefixMask) == prefixes::EX_VAR_EXCEPT_LOCAL) {
             var = scope.get_rand_var(curScope, true);
             deps.vars[var]++;
         }
         else
             var = randint(0, 31);
         
-        line->content.word1 |= local;
-        line->content.word2 |= var;
+        line.content.word1 |= local;
+        line.content.word2 |= var;
         return;
     }
     
     for (int i = 1; i < 4; i++) {
-        u_int8_t prefix = line->words[i] & prefixes::prefixMask;
+        u_int8_t prefix = line.words[i] & prefixes::prefixMask;
         switch (prefix) {
             case prefixes::EX_VAR:
                 var = scope.get_rand_var(curScope);
                 deps.vars[var]++;
-                line->words[i] |= var;
+                line.words[i] |= var;
                 break;
             case prefixes::FUNC:
                 func = scope.get_rand_func();
                 deps.funcs[func]++;
-                line->words[i] |= func;
+                line.words[i] |= func;
                 break;
             case prefixes::CONST:
-                line->words[i] |= randint(0, 31);
+                line.words[i] |= randint(0, 31);
                 break;
             case prefixes::OPERATOR:
-                line->words[i] |= randint(0, operators::last);
+                line.words[i] |= randint(0, operators::last);
                 break;
             case prefixes::COMP_OPERATOR:
-                line->words[i] |= randint(0, compare_operators::last);
+                line.words[i] |= randint(0, compare_operators::last);
                 break;
             case prefixes::NOTHING:
                 return;
@@ -145,46 +127,46 @@ void SourceCode::fill_template(Line* line, u_int8_t curScope) {
 }
 
 
-void SourceCode::mutate_line(Line *line, u_int8_t wordsMask) {
+void SourceCode::mutate_line(Line &line, u_int8_t wordsMask) {
     for (int i = 1; i < 4; i++) {
         
         if(!(wordsMask >> i & 1))
             continue;
         
-        u_int8_t prefix = line->words[i] & prefixes::prefixMask;
+        u_int8_t prefix = line.words[i] & prefixes::prefixMask;
         if(prefix == prefixes::IMMUTABLE)
             continue;
         
-        u_int8_t value = line->words[i] & prefixes::valueMask;
-        line->words[i] &= prefixes::prefixMask; //clear value
+        u_int8_t value = line.words[i] & prefixes::valueMask;
+        line.words[i] &= prefixes::prefixMask; //clear value
         
         switch(prefix) {
             case prefixes::EX_VAR:
                 deps.vars[value]--;
-                value = scope.get_rand_var(line->scope);
+                value = scope.get_rand_var(line.scope);
                 deps.vars[value]++;
-                line->words[i] |= value;
+                line.words[i] |= value;
                 break;
             case prefixes::EX_VAR_EXCEPT_LOCAL:
                 deps.vars[value]--;
-                value = scope.get_rand_var(line->scope, true);
+                value = scope.get_rand_var(line.scope, true);
                 deps.vars[value]++;
-                line->words[i] |= value;
+                line.words[i] |= value;
                 break;
             case prefixes::FUNC:
                 deps.funcs[value]--;
                 value = scope.get_rand_func();
                 deps.funcs[value]++;
-                line->words[i] |= value;
+                line.words[i] |= value;
                 break;
             case prefixes::CONST:
-                line->words[i] |= randint(0, 32);
+                line.words[i] |= randint(0, 32);
                 break;
             case prefixes::OPERATOR:
-                line->words[i] |= randint(0, operators::last);
+                line.words[i] |= randint(0, operators::last);
                 break;
             case prefixes::COMP_OPERATOR:
-                line->words[i] |= randint(0, compare_operators::last);
+                line.words[i] |= randint(0, compare_operators::last);
                 break;
             case prefixes::NOTHING:
                 return;
@@ -208,18 +190,17 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
             continue;
         }
             
+            
         if (!deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
-            curScope = (*line)->scope;
-            if((*line)->content.word0 <= 3) //lines that affect scope
+            curScope = line->scope;
+            if(line->content.word0 <= 3) //lines that affect scope
                 curScope = scope.free(*line);
 
             deps.free(*line, curScope);
         } 
         
-        else {
+        else 
             code.insert(placeToInsert, *line);
-            (*line)->used++;
-        }
     }
 }
 
@@ -229,19 +210,17 @@ void SourceCode::add_some_lines() {
     //declare new vars
     int quantity = randint(1, 1);//TODO: coeff IF there is no vars yet, MAKE new by all means
     for (int i = 0; i < quantity; i++) {
-        Line *newLine = new Line();
+        LinePtr newLine = code.emplace(placeToDeclareVars);
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
-        fill_template(newLine, 0); 
-        code.insert(placeToDeclareVars, newLine);
+        fill_template(*newLine, 0); 
     } 
     
     //declare new funcs
     quantity = randint(0, 3);//TODO: coeff
     for (int i = 0; i < quantity; i++) {
-        Line *newLine = new Line();
+        LinePtr newLine = code.emplace(placeToDeclareFuncs);
         newLine->contentPile = prefixes::get_template(word0::DEF);
-        fill_template(newLine, 0); 
-        code.insert(placeToDeclareFuncs, newLine);
+        fill_template(*newLine, 0); 
     } 
     
     //TODO: insert into functions
@@ -258,23 +237,23 @@ void SourceCode::add_some_lines() {
         
     
     do  {
-        curScope = (*curLine)->scope;
+        curScope = curLine->scope;
         ++curLine;
 
         if(randint(0, 3) / 3) //TODO: skip coeff
             continue;
         
         //TODO: scope termination coeff
-        if ((curLine == code.end() || (*curLine)->scope != curScope) && randint(0, 1))
+        if ((curLine == code.end() || curLine->scope != curScope) && randint(0, 1))
             curScope = scope.get_prev_scope(curScope); //TODO:get_rand_prev_scope()
         
         
         u_int8_t word0 = availabelWords[randint(0, 5)];
-        Line *newLine = new Line();
-        newLine->contentPile = prefixes::get_template(word0, scope.func_available());
-        fill_template(newLine, curScope);
         
-        code.insert(curLine, newLine);
+        LinePtr newLine = code.emplace(curLine);
+        newLine->contentPile = prefixes::get_template(word0, scope.func_available());
+        fill_template(*newLine, curScope);
+        
         
     } while (curLine != code.end());
 }
@@ -339,17 +318,16 @@ char* SourceCode::render_text() {
     
     u_int8_t prefix, value;
     
-    for (Line *line : code) {
+    for (Line &line : code) {
         
-        if (line == *placeToDeclareVars)
+        if (&line == &*placeToDeclareVars)
             continue;
-        if (line == *placeToDeclareFuncs)
+        if (&line == &*placeToDeclareFuncs)
             continue;
         
-        //TODO: scopes and indentation;
-        curScope = line->scope;
+        curScope = line.scope;
         indents = scope.get_indent(curScope);
-        if (line->content.word0 <= 2)
+        if (line.content.word0 <= 2)
             indents--;
         
         //write return 
@@ -367,19 +345,19 @@ char* SourceCode::render_text() {
             codeTXT[c++] = '\t';
         
         
-        if(line->content.word0 == word0::DEF) {
-            value = line->content.word1 & valueMask;
+        if(line.content.word0 == word0::DEF) {
+            value = line.content.word1 & valueMask;
             sprintf(buf[0], "func_");
             buf[0][5] = 97 + value / 26;
             buf[0][6] = 97 + value % 26;
             buf[0][7] = 0;
             
-            value = line->content.word2 & valueMask;
+            value = line.content.word2 & valueMask;
             buf[1][0] = 97 + value / 26;
             buf[1][1] = 97 + value % 26;
             buf[1][2] = 0;
             
-            value = line->content.word3 & valueMask;
+            value = line.content.word3 & valueMask;
             return_str[7] = 97 + value / 26;
             return_str[8] = 97 + value % 26;
             
@@ -390,8 +368,8 @@ char* SourceCode::render_text() {
         }
         
         for (int i = 0; i < 3; i++) {
-            prefix = line->words[i+1] & prefixMask;
-            value = line->words[i+1] & valueMask;
+            prefix = line.words[i+1] & prefixMask;
+            value = line.words[i+1] & valueMask;
             
 
             if (prefix == EX_VAR || prefix == EX_VAR_EXCEPT_LOCAL || prefix == IMMUTABLE) {
@@ -417,7 +395,7 @@ char* SourceCode::render_text() {
                 buf[i+1][1] = 97 + value % 26;
                 buf[i+1][2] = 0;
                 
-                value = line->words[i+2] & valueMask;
+                value = line.words[i+2] & valueMask;
                 buf[i+2][0] = 97 + value / 26;
                 buf[i+2][1] = 97 + value % 26;
                 buf[i+2][2] = 0;
@@ -430,7 +408,7 @@ char* SourceCode::render_text() {
         }
 
     FLUSH_BUFER:
-        c += sprintf(&codeTXT[c], word0::str[line->content.word0], args[0], args[1], args[2]);
+        c += sprintf(&codeTXT[c], word0::str[line.content.word0], args[0], args[1], args[2]);
         codeTXT[c++] = '\n';
     }
     

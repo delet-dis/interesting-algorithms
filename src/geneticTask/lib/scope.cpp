@@ -132,36 +132,36 @@ bool Scope::func_available() {
 }
 
 
-u_int8_t Scope::free(const Line *l) {
+u_int8_t Scope::free(const Line &l) {
     u_int8_t var, func;
     
-    switch (l->content.word0) {
+    switch (l.content.word0) {
         case word0::NEW_VAR:
-            var = l->content.word1 & prefixes::valueMask;
+            var = l.content.word1 & prefixes::valueMask;
             globalBank.free(var);
             allVarsBank.free(var);
             break;
             
         case word0::DEF:
-            func = l->content.word1 & prefixes::valueMask;
-            var = l->content.word2 & prefixes::valueMask;
+            func = l.content.word1 & prefixes::valueMask;
+            var = l.content.word2 & prefixes::valueMask;
             funcBank.free(func);
             allVarsBank.free(var);
-            scopeBank.free(l->scope);
+            scopeBank.free(l.scope);
             break;
             
         case word0::IF:
-            scopeBank.free(l->scope);
+            scopeBank.free(l.scope);
             break;
         
         case word0::FOR:
-            var = l->content.word1 & prefixes::valueMask;
+            var = l.content.word1 & prefixes::valueMask;
             allVarsBank.free(var);
-            scopeBank.free(l->scope);
+            scopeBank.free(l.scope);
             break;
     }
     
-    return locals[l->scope].parentScope;
+    return locals[l.scope].parentScope;
 }
 
 int Scope::get_indent(u_int8_t scopeID) {
