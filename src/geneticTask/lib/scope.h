@@ -58,6 +58,7 @@ public:
     u_int8_t new_global_var();
     u_int8_t new_func();
     u_int8_t get_prev_scope(u_int8_t curScopeID);
+    u_int8_t get_rand_prev_scope(u_int8_t curScopeID, u_int8_t nextScopeID);
     u_int8_t get_rand_var(u_int8_t scopeID, bool excludeCurLocal = false);
     u_int8_t get_rand_func();
     bool func_available();

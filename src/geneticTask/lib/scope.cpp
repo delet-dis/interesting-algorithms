@@ -108,6 +108,16 @@ u_int8_t Scope::get_prev_scope(u_int8_t curScopeID) {
     return locals[curScopeID].parentScope;
 }
 
+u_int8_t Scope::get_rand_prev_scope(u_int8_t curScopeID, u_int8_t nextScopeID) {
+    int range = locals[curScopeID].depth - locals[nextScopeID].depth;
+    int choise = randint(0, range);
+    int scope = curScopeID;
+    for (int i = 0; i < choise; i++)
+        scope = locals[scope].parentScope;
+    return scope;
+}
+
+
 u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
     int choise = randint(-locals[scopeID].qOfVars, globalBank.size-1);
     int ind = scopeID;

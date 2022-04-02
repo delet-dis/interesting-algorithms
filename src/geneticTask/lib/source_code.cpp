@@ -189,7 +189,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
         }
             
             
-        if (!deps.get_deps(*line) && randint(0, 1)) { //TODO: skip coeff
+        if (!deps.get_deps(*line) && randint(0, 2)) { //TODO: skip coeff
             curScope = line->scope;
             if(line->content.word0 <= 3) //lines that affect scope
                 curScope = scope.free(*line);
@@ -209,6 +209,7 @@ void SourceCode::add_some_lines() {
     int threshold = scope.free_vars_available();
     int needVar = !scope.global_var_available();
     int quantity = randint(needVar, threshold / 3);
+    
     for (int i = 0; i < quantity; i++) {
         LinePtr newLine = code.emplace(placeToDeclareVars);
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
@@ -218,16 +219,21 @@ void SourceCode::add_some_lines() {
     //declare new funcs
     threshold = std::min(scope.free_funcs_available(), scope.free_scopes_available());
     threshold = std::min(threshold, scope.free_vars_available());
-    quantity = randint(0, threshold / 3);//TODO: coeff scope 
+    quantity = randint(0, threshold / 3);
+    
     for (int i = 0; i < quantity; i++) {
         LinePtr newLine = code.emplace(placeToDeclareFuncs);
         newLine->contentPile = prefixes::get_template(word0::DEF);
         fill_template(*newLine, 0); 
     } 
     
+    
     //TODO: insert into functions
-    LinePtr curLine = placeToDeclareFuncs;
-    u_int8_t curScope;
+    LinePtr curLine = placeToDeclareVars;
+    curLine++;
+    u_int8_t curScope, lastScope;
+    bool inFunctionSegment = true;
+    
     int firstAvailableWord;
     u_int8_t availableWords[6] = {
         word0::FOR,
@@ -240,16 +246,30 @@ void SourceCode::add_some_lines() {
         
     
     do  {
+        
         curScope = curLine->scope;
         ++curLine;
+        
+        if(curLine == placeToDeclareFuncs)
+            continue;
+        
 
         if(randint(0, 3) / 3) //TODO: skip coeff
             continue;
         
         //TODO: scope termination coeff
-        if ((curLine == code.end() || curLine->scope != curScope) && randint(0, 1))
+       /* if ((curLine == code.end() || curLine->scope != curScope) && randint(0, 1) && !inFunctionSegment)
             curScope = scope.get_prev_scope(curScope); //TODO:get_rand_prev_scope()
-            
+        */
+        if(curLine == code.end())
+            lastScope = 0;
+        else if(curLine->words[0] == word0::IF || curLine->words[0] == word0::FOR)
+            lastScope = scope.get_prev_scope(curLine->scope);
+        else
+            lastScope = curLine->scope;
+        
+        curScope = scope.get_rand_prev_scope(curScope, lastScope);
+       
         firstAvailableWord = 0;
         if(!scope.free_vars_available())
             firstAvailableWord = 1;   //FOR is impossible
