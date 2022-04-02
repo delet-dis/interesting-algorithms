@@ -15,8 +15,8 @@
                 </Error>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card class="treeCard" id="treeCard">
-                    <Tree/>
+                <Card class="treeCard" id="treeCard" v-if="displayingTreeAsArray">
+                    <Tree ref="tree"/>
                 </Card>
             </div>
             <div class="col-lg-3 col-md-12">
@@ -33,8 +33,8 @@
                     <div class="separator"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-primary button-glow activeButton':displayingTree,
-                            'button-flat nonActiveButton': displayingTree}"
+                            :class="{'button-primary button-glow activeButton':displayingTreeAsArray,
+                            'button-flat nonActiveButton': displayingTreeAsArray}"
                             id="reduceTreeButton">
                         Сократить дерево
                     </button>
@@ -42,8 +42,8 @@
                     <div class="separator"/>
 
                     <button class="button button-border button-rounded"
-                            :class="{'button-royal activeButton':displayingTree,
-                            'button-flat nonActiveButton': displayingTree}"
+                            :class="{'button-royal activeButton':displayingTreeAsArray,
+                            'button-flat nonActiveButton': displayingTreeAsArray}"
                             id="executeQuery">
                         Исполнить запрос
                     </button>
@@ -80,7 +80,9 @@ export default class TreeView extends Vue {
 
     private modal: Modal | null = null
 
-    private displayingTree: Node[] | null = null
+    private displayingTreeAsArray: Node[] | null = null
+
+    private displayingTree: Tree | null = null
 
     private showModalForDataLoading() {
         if (this.modal) {
@@ -93,7 +95,7 @@ export default class TreeView extends Vue {
                     this.isErrorDisplaying = false
 
                     this.submitDataToBuildTree(inputString)
-                    this.validateReceivedData()
+                    this.displayReceivedData()
                 }
 
                 if (this.modal) {
@@ -122,26 +124,32 @@ export default class TreeView extends Vue {
     }
 
     private submitDataToBuildTree(inputString: string) {
-        this.displayingTree = TreeCreatorRepository.getInstance().createTree(inputString)
+        this.displayingTreeAsArray = TreeCreatorRepository.getInstance().createTree(inputString)
 
-        this.validateReceivedData()
+        this.displayReceivedData()
     }
 
     private submitDataToExecuteQuery(inputString: string) {
-        if (this.displayingTree) {
-            this.displayingTree = TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTree)
+        if (this.displayingTreeAsArray) {
+            this.displayingTreeAsArray = TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray)
         }
     }
 
-    private validateReceivedData() {
-        if (!this.displayingTree) {
+    private displayReceivedData() {
+        if (!this.displayingTreeAsArray) {
             this.isErrorDisplaying = true
+        } else {
+            if (this.displayingTree) {
+                this.displayingTree.displayingTree = this.displayingTreeAsArray
+            }
         }
     }
 
     private reduceTree() {
-        if (this.displayingTree) {
-            this.displayingTree = TreeReducerRepository.getInstance().reduceTree(this.displayingTree)
+        if (this.displayingTreeAsArray) {
+            this.displayingTreeAsArray = TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray)
+
+            this.displayReceivedData()
         }
     }
 
@@ -161,7 +169,7 @@ export default class TreeView extends Vue {
         let executeQueryButton = document.getElementById('executeQuery')
 
         executeQueryButton?.addEventListener('click', () => {
-            if (this.displayingTree) {
+            if (this.displayingTreeAsArray) {
                 this.showModalForQueryExecuting()
 
                 this.isErrorDisplaying = false
@@ -175,7 +183,7 @@ export default class TreeView extends Vue {
         let reduceTreeButton = document.getElementById('reduceTreeButton')
 
         reduceTreeButton?.addEventListener('click', () => {
-            if (this.displayingTree) {
+            if (this.displayingTreeAsArray) {
                 this.reduceTree()
 
                 this.isErrorDisplaying = false
@@ -183,10 +191,14 @@ export default class TreeView extends Vue {
                 this.isErrorDisplaying = true
             }
         })
+    }
 
+    private initTree() {
+        this.displayingTree = this.$refs.tree as Tree
     }
 
     mounted() {
+        this.initTree()
         this.initModal()
         this.initLoadDataButtonOnClick()
         this.initExecuteQueryButtonOnClick()
@@ -196,7 +208,9 @@ export default class TreeView extends Vue {
 </script>
 
 <style scoped>
-.treeCard{
+.treeCard {
     overflow: auto;
+    display: flex;
+    justify-content: center;
 }
 </style>

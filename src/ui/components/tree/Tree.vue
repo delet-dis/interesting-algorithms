@@ -1,56 +1,81 @@
 <template>
-    <div class="tree">
-        <ul>
-            <li>
-                <a href="#">Parent</a>
-                <ul>
-                    <li>
-                        <a href="#">Child</a>
-                        <ul>
-                            <li>
-                                <a href="#">Grand Child</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Child</a>
-                        <ul>
-                            <li><a href="#">Grand Child</a></li>
-                            <li>
-                                <a href="#">Grand Child</a>
-                                <ul>
-                                    <li>
-                                        <a href="#">Great Grand Child</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Great Grand Child</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Great Grand Child</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li><a href="#">Grand Child</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+    <div class="tree" id="tree">
+
     </div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import Node from "@/data/models/tree/Node";
 
 @Options({
     components: {},
 })
 export default class Tree extends Vue {
+    private displayingTreeField: Node[] | null = null
+
+    set displayingTree(newValue: Node[] | null) {
+        this.displayingTreeField = newValue
+
+        this.drawDisplayingTree()
+    }
+
+    get displayingTree(): Node[] | null {
+        return this.displayingTreeField
+    }
+
+    private drawDisplayingTree() {
+        if (this.displayingTree) {
+            let displayingTreeUl = document.createElement('ul')
+            let displayingTreeLi = document.createElement('li')
+
+            let tree = document.getElementById('tree')
+
+            this.displayingTree.forEach((node) => {
+                this.createNode(node, displayingTreeLi)
+            })
+
+            displayingTreeUl.appendChild(displayingTreeLi)
+
+            if (tree) {
+                tree.appendChild(displayingTreeUl)
+            }
+        }
+    }
+
+    private createNode(node: Node, parentElement: HTMLElement) {
+        let nodeWrapper = document.createElement('div')
+        let nodeHeader = document.createElement('a')
+
+        if (node.data.condition) {
+            nodeHeader.innerText = "Условие:\n" + node.data.condition
+        }
+
+        if (node.data.result) {
+            nodeHeader.innerText = "Результат:\n" + node.data.result
+        }
+
+        nodeWrapper.appendChild(nodeHeader)
+
+        if (node.nestedNodes) {
+            let nestedNodesUl = document.createElement('ul')
+
+            node.nestedNodes.forEach((node) => {
+                let nestedNodeLi = document.createElement('li')
+                this.createNode(node, nestedNodeLi)
+                nestedNodesUl.appendChild(nestedNodeLi)
+            })
+
+            nodeWrapper.appendChild(nestedNodesUl)
+        }
+
+        parentElement.appendChild(nodeWrapper)
+    }
 }
 </script>
 
-<style scoped>
-* {
+<style>
+.tree * {
     margin: 0;
     padding: 0;
 }
