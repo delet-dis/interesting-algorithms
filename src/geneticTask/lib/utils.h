@@ -1,4 +1,3 @@
 #pragma once
-#include <experimental/random>
-using std::experimental::randint;
 
+int randint(int a, int b);
