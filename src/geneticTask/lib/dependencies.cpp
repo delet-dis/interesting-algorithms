@@ -9,6 +9,12 @@ Deps::Deps(const Deps &other) {
     memcpy(this->scopes, other.scopes, sizeof scopes);
 }
 
+void Deps::zero_init() {
+    memset(vars, 0, sizeof vars);
+    memset(funcs, 0, sizeof funcs);
+    memset(scopes, 0, sizeof scopes);
+}
+
 
 int Deps::get_deps(const Line &l) const {
     if (l.content.word0 > 3)

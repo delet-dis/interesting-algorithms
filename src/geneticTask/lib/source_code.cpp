@@ -7,6 +7,7 @@
 #include "source_code.h"
 
 SourceCode::SourceCode() {
+    deps.zero_init();
     code.emplace_back();
     code.emplace_back();
     placeToDeclareVars = code.begin();
