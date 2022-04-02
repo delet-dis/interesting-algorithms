@@ -1,7 +1,7 @@
 #pragma once
 #include <sys/types.h>
 #include "line.h"
-
+#define noVar 255
 
 class Bank {
 public:
@@ -18,6 +18,7 @@ public:
     void occupy(u_int8_t ID);
     u_int8_t operator[](const int pos);
     void free(u_int8_t ID);
+    int free_available();
 };
 
 
@@ -60,6 +61,10 @@ public:
     u_int8_t get_rand_var(u_int8_t scopeID, bool excludeCurLocal = false);
     u_int8_t get_rand_func();
     bool func_available();
+    bool global_var_available();
+    int free_scopes_available();
+    int free_funcs_available();
+    int free_vars_available();
     u_int8_t free(const Line &l);  // return parentScope
     int get_indent(u_int8_t scopeID);
     

@@ -12,7 +12,6 @@ SourceCode::SourceCode() {
     placeToDeclareVars = code.begin();
     placeToDeclareFuncs = ++code.begin();
 }
-
     
 int SourceCode::edit_distance(const SourceCode &other) const {
     int i, j;
@@ -41,12 +40,10 @@ int SourceCode::edit_distance(const SourceCode &other) const {
 
 void SourceCode::copy_code(const SourceCode &src) {
     LinePtrConst line;
-    
-    for (line = src.code.begin(); line != src.placeToDeclareVars; ++line)
+    for (line = src.code.begin(); line != src.placeToDeclareVars; ++line) 
         this->code.insert(this->placeToDeclareVars, *line);
-
     
-    for (++line; line != src.placeToDeclareFuncs; ++line)
+    for (++line; line != src.placeToDeclareFuncs; ++line) 
         this->code.insert(this->placeToDeclareFuncs, *line);
     
     for (++line; line != src.code.end(); ++line)
@@ -208,7 +205,9 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
 void SourceCode::add_some_lines() {
     
     //declare new vars
-    int quantity = randint(1, 1);//TODO: coeff IF there is no vars yet, MAKE new by all means
+    int threshold = scope.free_vars_available();
+    int needVar = !scope.global_var_available();
+    int quantity = randint(needVar, threshold / 3);
     for (int i = 0; i < quantity; i++) {
         LinePtr newLine = code.emplace(placeToDeclareVars);
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
@@ -216,7 +215,9 @@ void SourceCode::add_some_lines() {
     } 
     
     //declare new funcs
-    quantity = randint(0, 1);//TODO: coeff
+    threshold = std::min(scope.free_funcs_available(), scope.free_scopes_available());
+    threshold = std::min(threshold, scope.free_vars_available());
+    quantity = randint(0, threshold / 3);//TODO: coeff scope 
     for (int i = 0; i < quantity; i++) {
         LinePtr newLine = code.emplace(placeToDeclareFuncs);
         newLine->contentPile = prefixes::get_template(word0::DEF);
@@ -226,7 +227,8 @@ void SourceCode::add_some_lines() {
     //TODO: insert into functions
     LinePtr curLine = placeToDeclareFuncs;
     u_int8_t curScope;
-    u_int8_t availabelWords[6] = {
+    int firstAvailableWord;
+    u_int8_t availableWords[6] = {
         word0::FOR,
         word0::IF,
         word0::ARITHMETIC,
@@ -246,9 +248,15 @@ void SourceCode::add_some_lines() {
         //TODO: scope termination coeff
         if ((curLine == code.end() || curLine->scope != curScope) && randint(0, 1))
             curScope = scope.get_prev_scope(curScope); //TODO:get_rand_prev_scope()
+            
+        firstAvailableWord = 0;
+        if(!scope.free_vars_available())
+            firstAvailableWord = 1;   //FOR is impossible
+        if(!scope.free_scopes_available())
+            firstAvailableWord = 2; //IF and FOR is impossible
         
         
-        u_int8_t word0 = availabelWords[randint(0, 5)];
+        u_int8_t word0 = availableWords[randint(firstAvailableWord, 5)];
         
         LinePtr newLine = code.emplace(curLine);
         newLine->contentPile = prefixes::get_template(word0, scope.func_available());
