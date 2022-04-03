@@ -267,16 +267,32 @@ export default class NeuralView extends Vue {
         this.canvas?.addEventListener('touchend', this.canvasTouchEndListener)
     }
 
+    private static resizeCanvas(canvas: HTMLCanvasElement, sizing: number) {
+        const resizedCanvas = document.createElement('canvas')
+        const resizedCanvasContext = resizedCanvas.getContext('2d')
+
+        resizedCanvas.width = sizing
+        resizedCanvas.height = sizing
+
+        if (resizedCanvasContext) {
+            resizedCanvasContext.drawImage(canvas, 0, 0, sizing, sizing)
+        }
+
+        return resizedCanvas
+    }
+
     private initSubmitButtonOnClickListener() {
         let submitButton = document.getElementById("submitButton")
 
         submitButton?.addEventListener('click', () => {
             this.isErrorDisplaying = this.isCanvasBlank()
 
-            let canvasAsDataUrl = this.canvas?.toDataURL()
+            if (this.canvas) {
+                let canvasAsDataUrl = NeuralView.resizeCanvas(this.canvas, 25).toDataURL()
 
-            if (canvasAsDataUrl) {
-                this.displayResult(NeuralAlgorithmRepository.getInstance().detectDisplayingNumber(canvasAsDataUrl))
+                if (canvasAsDataUrl) {
+                    this.displayResult(NeuralAlgorithmRepository.getInstance().detectDisplayingNumber(canvasAsDataUrl))
+                }
             }
         })
     }
