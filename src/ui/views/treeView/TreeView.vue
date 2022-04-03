@@ -95,7 +95,6 @@ export default class TreeView extends Vue {
                     this.isErrorDisplaying = false
 
                     this.submitDataToBuildTree(inputString)
-                    this.displayReceivedData()
                 }
 
                 if (this.modal) {
@@ -124,32 +123,34 @@ export default class TreeView extends Vue {
     }
 
     private submitDataToBuildTree(inputString: string) {
-        this.displayingTreeAsArray = TreeCreatorRepository.getInstance().createTree(inputString)
-
-        this.displayReceivedData()
+        this.displayResult(TreeCreatorRepository.getInstance().createTree(inputString))
     }
 
     private submitDataToExecuteQuery(inputString: string) {
         if (this.displayingTreeAsArray) {
-            this.displayingTreeAsArray = TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray)
+            this.displayResult(TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray))
+        } else {
+            this.isErrorDisplaying = true
         }
     }
 
-    private displayReceivedData() {
-        if (!this.displayingTreeAsArray) {
-            this.isErrorDisplaying = true
-        } else {
+    private displayResult(result: Node[] | null) {
+        if (result) {
+            this.displayingTreeAsArray = result
+
             if (this.displayingTree) {
                 this.displayingTree.displayingTree = this.displayingTreeAsArray
             }
+        } else {
+            this.isErrorDisplaying = true
         }
     }
 
     private reduceTree() {
         if (this.displayingTreeAsArray) {
-            this.displayingTreeAsArray = TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray)
-
-            this.displayReceivedData()
+            this.displayResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
+        } else {
+            this.isErrorDisplaying = true
         }
     }
 

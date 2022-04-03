@@ -12,7 +12,7 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
         return TreeExpressionExecutorRepository.instance
     }
 
-    executeExpressionInTree(expression: string, tree: Node[]): Node[] {
+    executeExpressionInTree(expression: string, tree: Node[]): Node[] | null{
         return []
     }
 }
