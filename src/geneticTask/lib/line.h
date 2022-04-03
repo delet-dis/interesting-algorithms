@@ -22,7 +22,7 @@ public:
     Line() = default;
     Line(const Line &other);
     bool operator==(const Line &other) const; 
-    int difference(const Line &other) const;
+    [[nodiscard]] int difference(const Line &other) const;
 };
 
 

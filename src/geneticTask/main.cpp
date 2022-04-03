@@ -1,10 +1,8 @@
-#include <stdio.h>
+#include <cstdio>
 #include <algorithm>
 #include "lib/source_code.h"
-#include <time.h>
-#include "lib/utils.h"
-#include <stdlib.h>
-#include <random>
+#include <ctime>
+#include <cstdlib>
 
 int fib_code[] = {
     6348803,
@@ -27,36 +25,36 @@ int fib_code[] = {
     17158
 };
 
-struct individ {
+struct individual {
     SourceCode *it;
     int fitness;
 };
 
-void sift(individ *arr, int pos, int len){
-    int chld = pos * 2 + 1;
+void sift(individual *arr, int pos, int len){
+    int child = pos * 2 + 1;
     
-    while(chld < len){
+    while(child < len){
         
-        if(chld + 1 < len && arr[chld+1].fitness < arr[chld].fitness)
-            chld++;
+        if(child + 1 < len && arr[child + 1].fitness < arr[child].fitness)
+            child++;
         
-        if(arr[pos].fitness > arr[chld].fitness)
-            std::swap(arr[pos], arr[chld]);
+        if(arr[pos].fitness > arr[child].fitness)
+            std::swap(arr[pos], arr[child]);
         else //НЕ ФАКТ
             break;
-        pos = chld;
-        chld = pos * 2 + 1;
+        pos = child;
+        child = pos * 2 + 1;
     }
 }
 
-void build_heap(individ *arr, int len) {
+void build_heap(individual *arr, int len) {
     for(int i = len / 2; i >= 0; i--)
         sift(arr, i, len);
 }
 
-individ* find_min(individ *arr, int len) {
+individual* find_min(individual *arr, int len) {
     int min = INT32_MAX;
-    individ *minInd;
+    individual *minInd;
     for(int i = 0; i < len; i++) {
         if(arr[i].fitness < min) {
             minInd = &arr[i];
@@ -76,7 +74,7 @@ void print(SourceCode *src) {
 
 
 int main() {
-    int seed = time(0); //overflow 1648922503
+    int seed = time(nullptr); //overflow 1648922503
     printf("seed: %d\n", seed);
     srand(seed);
     FILE *log = fopen("log.txt", "w");
@@ -87,35 +85,34 @@ int main() {
     const int numOfGenerations = 500;
     const int numOfParents = 7;
     const int fertility = 500;
-    const int numOFChilds = numOfParents * fertility;
+    const int numOfChildren = numOfParents * fertility;
     
-    individ parents[numOfParents];
-    individ childs[numOFChilds];
+    individual parents[numOfParents];
+    individual children[numOfChildren];
     
-    for (int i = 0; i < numOfParents; i++){
-        parents[i].it = new SourceCode();
-        parents[i].fitness = 100;
+    for (auto & parent : parents){
+        parent.it = new SourceCode();
+        parent.fitness = 100;
     }
-    for (int i = 0; i < numOFChilds; i++)
-        childs[i].it = 0;
+    for (auto & child : children)
+        child.it = nullptr;
     
     for (int j = 0; j < numOfGenerations; j++) {
-        for (int i = 0; i < numOFChilds; i++) {
-            if (childs[i].it != 0)
-                delete childs[i].it;
-            childs[i].it = parents[i / fertility].it->give_birth();
-            childs[i].fitness = childs[i].it->edit_distance(fib);
+        for (int i = 0; i < numOfChildren; i++) {
+            delete children[i].it;
+            children[i].it = parents[i / fertility].it->give_birth();
+            children[i].fitness = children[i].it->edit_distance(fib);
         }
         
-        build_heap(childs, numOFChilds);
+        build_heap(children, numOfChildren);
         //int choise = 0;
         for (int i = 0; i < numOfParents; i++) {
-            //build_heap(&childs[fertility * i], fertility);
+            //build_heap(&children[fertility * i], fertility);
             //choise  = randint(0, 2);
             delete parents[i].it;
-            parents[i].it = childs[i].it;
-            parents[i].fitness = childs[i].fitness;
-            childs[i].it = 0;
+            parents[i].it = children[i].it;
+            parents[i].fitness = children[i].fitness;
+            children[i].it = nullptr;
         }
         
         fprintf(log, "%d\n", parents[0].fitness);

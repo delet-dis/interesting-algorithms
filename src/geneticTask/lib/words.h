@@ -61,7 +61,7 @@ namespace prefixes{
         {{EX_VAR,    0}, {NOTHING,             0}, {NOTHING,              0}},  //INPUT
     };
     
-    int32_t get_template(const u_int8_t word0, bool funcAvailable = false);
+    int32_t get_template(u_int8_t word0, bool funcAvailable = false);
 }
 
 namespace operators {

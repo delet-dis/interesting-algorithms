@@ -16,9 +16,9 @@ public:
     Bank(const Bank &other);
     u_int8_t get();
     void occupy(u_int8_t ID);
-    u_int8_t operator[](const int pos);
+    u_int8_t operator[](int pos);
     void free(u_int8_t ID);
-    int free_available();
+    int free_available() const;
 };
 
 
@@ -61,8 +61,8 @@ public:
     u_int8_t get_rand_prev_scope(u_int8_t curScopeID, u_int8_t nextScopeID);
     u_int8_t get_rand_var(u_int8_t scopeID, bool excludeCurLocal = false);
     u_int8_t get_rand_func();
-    bool func_available();
-    bool global_var_available();
+    bool func_available() const;
+    bool global_var_available() const;
     int free_scopes_available();
     int free_funcs_available();
     int free_vars_available();

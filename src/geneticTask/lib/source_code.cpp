@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <algorithm>
 #include "matrix.h"
 #include "words.h"
@@ -16,7 +16,7 @@ SourceCode::SourceCode() {
 
 void SourceCode::set_const_code(int* begin, int* end) {
     bool inVarSegment = true, inFuncSegment = false;
-    LinePtr placeToInsert = placeToDeclareVars;
+    auto placeToInsert = placeToDeclareVars;
     
     for (int *line = begin; line != end; ++line) {
         
@@ -31,7 +31,7 @@ void SourceCode::set_const_code(int* begin, int* end) {
             continue;
         }
         
-        LinePtr newLine = code.emplace(placeToInsert);
+        auto newLine = code.emplace(placeToInsert);
         newLine->contentPile = *line;
     }
 }
@@ -197,10 +197,10 @@ void SourceCode::mutate_line(Line &line, u_int8_t wordsMask) {
 
 
 void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
-    LinePtr placeToInsert = placeToDeclareVars;
+    auto placeToInsert = placeToDeclareVars;
     u_int8_t curScope;
     
-    for (LinePtrConst line = parent.code.begin(); line != parent.code.end(); ++line){
+    for (auto line = parent.code.begin(); line != parent.code.end(); ++line){
         
         if(line == parent.placeToDeclareVars) {
             placeToInsert = placeToDeclareFuncs;
@@ -234,7 +234,7 @@ void SourceCode::add_some_lines() {
     int quantity = randint(needVar, threshold / 3);
     
     for (int i = 0; i < quantity; i++) {
-        LinePtr newLine = code.emplace(placeToDeclareVars);
+        auto newLine = code.emplace(placeToDeclareVars);
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
         fill_template(*newLine, 0); 
     } 
@@ -245,17 +245,16 @@ void SourceCode::add_some_lines() {
     quantity = randint(0, threshold / 5);
     
     for (int i = 0; i < quantity; i++) {
-        LinePtr newLine = code.emplace(placeToDeclareFuncs);
+        auto newLine = code.emplace(placeToDeclareFuncs);
         newLine->contentPile = prefixes::get_template(word0::DEF);
         fill_template(*newLine, 0); 
     } 
     
     
     //TODO: insert into functions
-    LinePtr curLine = placeToDeclareVars;
+    auto curLine = placeToDeclareVars;
     curLine++;
     u_int8_t curScope, lastScope;
-    bool inFunctionSegment = true;
     
     int firstAvailableWord;
     u_int8_t availableWords[6] = {
@@ -302,7 +301,7 @@ void SourceCode::add_some_lines() {
         
         u_int8_t word0 = availableWords[randint(firstAvailableWord, 5)];
         
-        LinePtr newLine = code.emplace(curLine);
+        auto newLine = code.emplace(curLine);
         newLine->contentPile = prefixes::get_template(word0, scope.func_available());
         fill_template(*newLine, curScope);
         
@@ -312,13 +311,13 @@ void SourceCode::add_some_lines() {
 
 
 void SourceCode::edit_some_lines() {
-    for (LinePtr curLine = code.begin(); curLine != code.end(); ++curLine) {
+    for (auto & curLine : code) {
         
         if(SKIP_EDITING_LINE) //TODO: skip coeff
             continue;
         
         u_int8_t mutationMask = randint(0, 15);
-        mutate_line(*curLine, mutationMask);
+        mutate_line(curLine, mutationMask);
     }
     
     
@@ -326,7 +325,7 @@ void SourceCode::edit_some_lines() {
 
 
 SourceCode* SourceCode::give_birth() {
-    SourceCode *child = new SourceCode();
+    auto *child = new SourceCode();
     child->deps = this->deps;
     child->scope = this->scope;
     
@@ -360,7 +359,7 @@ char* SourceCode::render_text() {
     
     char *codeTXT = new char[32 * code.size()];
     int c = 0;
-    int indents = 0;
+    int indents;
     int curScope;
     char return_str[10] = "return ab";
     int lastFuncIndent = 0;
@@ -416,7 +415,7 @@ char* SourceCode::render_text() {
             args[0] = buf[0];
             args[1] = buf[1];
             inFunc = true;
-            goto FLUSH_BUFER;
+            goto FLUSH_BUFFER;
         }
         
         for (int i = 0; i < 3; i++) {
@@ -459,7 +458,7 @@ char* SourceCode::render_text() {
             }
         }
 
-    FLUSH_BUFER:
+    FLUSH_BUFFER:
         c += sprintf(&codeTXT[c], word0::str[line.content.word0], args[0], args[1], args[2]);
         codeTXT[c++] = '\n';
     }

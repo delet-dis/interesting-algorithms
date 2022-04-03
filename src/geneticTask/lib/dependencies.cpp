@@ -1,7 +1,6 @@
 #include <memory.h>
 #include "words.h"
 #include "dependencies.h"
-#include "source_code.h"
 
 Deps::Deps(const Deps &other) {
     memcpy(this->vars, other.vars, sizeof vars);

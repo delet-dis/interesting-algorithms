@@ -43,13 +43,14 @@ u_int8_t Bank::operator[](const int pos) {
     return element;
 }
 
-int Bank::free_available() {
+int Bank::free_available() const {
     return 32 - size;
 }
 
 
 
 Bank::Bank(const Bank& other) {
+    //TODO: Проверить конструктор
     this->allParams = other.allParams;
 }
 
@@ -110,44 +111,44 @@ u_int8_t Scope::get_prev_scope(u_int8_t curScopeID) {
 
 u_int8_t Scope::get_rand_prev_scope(u_int8_t curScopeID, u_int8_t nextScopeID) {
     int range = locals[curScopeID].depth - locals[nextScopeID].depth;
-    int choise = randint(0, range);
+    int choice = randint(0, range);
     int scope = curScopeID;
-    for (int i = 0; i < choise; i++)
+    for (int i = 0; i < choice; i++)
         scope = locals[scope].parentScope;
     return scope;
 }
 
 
 u_int8_t Scope::get_rand_var(u_int8_t scopeID, bool excludeCurLocal) {
-    int choise = randint(-locals[scopeID].qOfVars, globalBank.size-1);
+    int choice = randint(-locals[scopeID].qOfVars, globalBank.size - 1);
     int ind = scopeID;
 
     if(excludeCurLocal) {
-        choise++;
+        choice++;
         ind = locals[ind].parentScope;
     }
     
-    if (choise >= 0)
-        return globalBank[choise];
-    
-    choise += locals[ind].var != noVar;
-    while (choise) {  // TODO: it can go wrong
+    if (choice >= 0)
+        return globalBank[choice];
+
+    choice += locals[ind].var != noVar;
+    while (choice) {  // TODO: it can go wrong
         ind = locals[ind].parentScope;
-        choise += locals[ind].var != noVar;
+        choice += locals[ind].var != noVar;
     }
     return locals[ind].var;
 
 }
 u_int8_t Scope::get_rand_func() {
-    int choise = randint(0, funcBank.size - 1);
-    return funcBank[choise];
+    int choice = randint(0, funcBank.size - 1);
+    return funcBank[choice];
 }
 
-bool Scope::func_available() {
+bool Scope::func_available() const {
     return funcBank.size;
 }
 
-bool Scope::global_var_available() {
+bool Scope::global_var_available() const {
     return globalBank.size;
 }
 
