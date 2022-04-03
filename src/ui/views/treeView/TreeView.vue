@@ -134,6 +134,14 @@ export default class TreeView extends Vue {
         }
     }
 
+    private submitDataToReduceTree() {
+        if (this.displayingTreeAsArray) {
+            this.displayResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
+        } else {
+            this.isErrorDisplaying = true
+        }
+    }
+
     private displayResult(result: Node[] | null) {
         if (result) {
             this.displayingTreeAsArray = result
@@ -146,12 +154,8 @@ export default class TreeView extends Vue {
         }
     }
 
-    private reduceTree() {
-        if (this.displayingTreeAsArray) {
-            this.displayResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
-        } else {
-            this.isErrorDisplaying = true
-        }
+    private initTree() {
+        this.displayingTree = this.$refs.tree as Tree
     }
 
     private initModal() {
@@ -185,17 +189,13 @@ export default class TreeView extends Vue {
 
         reduceTreeButton?.addEventListener('click', () => {
             if (this.displayingTreeAsArray) {
-                this.reduceTree()
+                this.submitDataToReduceTree()
 
                 this.isErrorDisplaying = false
             } else {
                 this.isErrorDisplaying = true
             }
         })
-    }
-
-    private initTree() {
-        this.displayingTree = this.$refs.tree as Tree
     }
 
     mounted() {

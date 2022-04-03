@@ -232,73 +232,6 @@ export default class LabyrinthView extends Vue {
         this.isConfigEditable = true
     }
 
-    private initLabyrinth() {
-        this.labyrinth = this.$refs.labyrinth as Labyrinth
-    }
-
-    private initLabyrinthOnClick() {
-        if (this.labyrinth) {
-            (this.labyrinth.$el as HTMLElement).addEventListener('click', () => {
-                    this.isAbleToStart = this.isStartAndFinishAvailable()
-                }
-            )
-        }
-    }
-
-    private initStartPickingButtonOnclickListener() {
-        let startButton = document.getElementById("startPickingButton")
-
-        startButton?.addEventListener('click', () => {
-            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.START_PICKING)
-
-            this.isAbleToStart = this.isStartAndFinishAvailable()
-        })
-    }
-
-    private initFinishPickingButtonOnclickListener() {
-        let finishButton = document.getElementById("finishPickingButton")
-
-        finishButton?.addEventListener('click', () => {
-            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.FINISH_PICKING)
-
-            this.isAbleToStart = this.isStartAndFinishAvailable()
-        })
-    }
-
-    private initBorderPickingButtonOnclickListener() {
-        let borderButton = document.getElementById("borderPickingButton")
-
-        borderButton?.addEventListener('click', () => {
-            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.BORDERS_PICKING)
-
-            this.isAbleToStart = this.isStartAndFinishAvailable()
-        })
-    }
-
-    private initStartButtonOnClickListener() {
-        let startButton = document.getElementById("startButton")
-
-        startButton?.addEventListener('click', () => {
-            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.DATA_SUBMITTING)
-        })
-    }
-
-    private initClearButtonOnClickListener() {
-        let clearButton = document.getElementById("clearButton")
-
-        clearButton?.addEventListener('click', () => {
-            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_CLEANING)
-        })
-    }
-
-    private initGenerateButtonOnClickListener() {
-        let generateButton = document.getElementById("generateButton")
-
-        generateButton?.addEventListener('click', () => {
-            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_GENERATING)
-        })
-    }
-
     private isStartAndFinishAvailable(): boolean {
         let isStartAvailable = false
         let isFinishAvailable = false
@@ -379,6 +312,73 @@ export default class LabyrinthView extends Vue {
                 this.isErrorDisplaying = true
             }
         }
+    }
+
+    private initLabyrinth() {
+        this.labyrinth = this.$refs.labyrinth as Labyrinth
+    }
+
+    private initLabyrinthOnClick() {
+        if (this.labyrinth) {
+            (this.labyrinth.$el as HTMLElement).addEventListener('click', () => {
+                    this.isAbleToStart = this.isStartAndFinishAvailable()
+                }
+            )
+        }
+    }
+
+    private initStartPickingButtonOnclickListener() {
+        let startButton = document.getElementById("startPickingButton")
+
+        startButton?.addEventListener('click', () => {
+            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.START_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
+        })
+    }
+
+    private initFinishPickingButtonOnclickListener() {
+        let finishButton = document.getElementById("finishPickingButton")
+
+        finishButton?.addEventListener('click', () => {
+            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.FINISH_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
+        })
+    }
+
+    private initBorderPickingButtonOnclickListener() {
+        let borderButton = document.getElementById("borderPickingButton")
+
+        borderButton?.addEventListener('click', () => {
+            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.BORDERS_PICKING)
+
+            this.isAbleToStart = this.isStartAndFinishAvailable()
+        })
+    }
+
+    private initStartButtonOnClickListener() {
+        let startButton = document.getElementById("startButton")
+
+        startButton?.addEventListener('click', () => {
+            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.DATA_SUBMITTING)
+        })
+    }
+
+    private initClearButtonOnClickListener() {
+        let clearButton = document.getElementById("clearButton")
+
+        clearButton?.addEventListener('click', () => {
+            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_CLEANING)
+        })
+    }
+
+    private initGenerateButtonOnClickListener() {
+        let generateButton = document.getElementById("generateButton")
+
+        generateButton?.addEventListener('click', () => {
+            this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_GENERATING)
+        })
     }
 
     mounted() {
