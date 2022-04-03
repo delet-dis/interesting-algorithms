@@ -19,11 +19,11 @@ public:
     }
 
     ~Matrix() {
-        delete [] data;
+        delete[] data;
     }
 
     T* operator[](const int pos) {
-        return &data[pos * cols];
+        return &data[pos * rows];
     }
 
 };

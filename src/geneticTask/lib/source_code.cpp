@@ -13,6 +13,29 @@ SourceCode::SourceCode() {
     placeToDeclareVars = code.begin();
     placeToDeclareFuncs = ++code.begin();
 }
+
+void SourceCode::set_const_code(int* begin, int* end) {
+    bool inVarSegment = true, inFuncSegment = false;
+    LinePtr placeToInsert = placeToDeclareVars;
+    
+    for (int *line = begin; line != end; ++line) {
+        
+        if (inFuncSegment && *line == 0) {
+            placeToInsert = code.end();
+            continue;
+        }
+        
+        if(inVarSegment && *line == 0) {
+            inFuncSegment = true;
+            placeToInsert = placeToDeclareFuncs;
+            continue;
+        }
+        
+        LinePtr newLine = code.emplace(placeToInsert);
+        newLine->contentPile = *line;
+    }
+}
+
     
 int SourceCode::edit_distance(const SourceCode &other) const {
     int i, j;
@@ -20,22 +43,22 @@ int SourceCode::edit_distance(const SourceCode &other) const {
     t[0][0] = this->code.front() == other.code.front();
     
     for (i = 1; i < this->code.size(); i++)
-        t[0][i] = 4 * i;
+        t[i][0] = 4 * i;
 
     for (j = 1; j < other.code.size(); j++)
-        t[j][0] = 4 * j;
+        t[0][j] = 4 * j;
     
     
     i = 1;
     for (auto iter1 = ++this->code.begin(); iter1 != this->code.end(); ++iter1, ++i) {
         j = 1;
         for (auto iter2 = ++other.code.begin(); iter2 != other.code.end(); ++iter2, ++j) {
-            t[i][j] = std::min(t[i-1][j], t[j-1][i]) + 4;
+            t[i][j] = std::min(t[i-1][j], t[i][j-1]) + 4;
             t[i][j] = std::min(t[i][j], t[i-1][j-1] + iter1->difference(*iter2));
         }
     }
     
-    return t[i][j];
+    return t[i-1][j-1];
 }
 
 
