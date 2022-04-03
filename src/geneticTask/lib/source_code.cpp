@@ -87,7 +87,7 @@ void SourceCode::fill_template(Line &line, u_int8_t curScope) {
     if (line.content.word0 == word0::DEF) {
         func = scope.new_func();
         local = scope.get_local(curScope);
-        var = scope.get_rand_var(curScope);
+        var = scope.get_rand_var(curScope, true);
         deps.vars[var]++;
         
         line.content.word1 |= func;
@@ -212,7 +212,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
         }
             
             
-        if (!deps.get_deps(*line) && randint(0, 2)) { //TODO: skip coeff
+        if (!deps.get_deps(*line) && DELETE_LINE) { //TODO: skip coeff
             curScope = line->scope;
             if(line->content.word0 <= 3) //lines that affect scope
                 curScope = scope.free(*line);
@@ -242,7 +242,7 @@ void SourceCode::add_some_lines() {
     //declare new funcs
     threshold = std::min(scope.free_funcs_available(), scope.free_scopes_available());
     threshold = std::min(threshold, scope.free_vars_available());
-    quantity = randint(0, threshold / 3);
+    quantity = randint(0, threshold / 5);
     
     for (int i = 0; i < quantity; i++) {
         LinePtr newLine = code.emplace(placeToDeclareFuncs);
@@ -277,7 +277,7 @@ void SourceCode::add_some_lines() {
             continue;
         
 
-        if(randint(0, 3) / 3) //TODO: skip coeff
+        if(SKIP_ADDING_NEW_LINE) //TODO: skip coeff
             continue;
         
         //TODO: scope termination coeff
@@ -314,7 +314,7 @@ void SourceCode::add_some_lines() {
 void SourceCode::edit_some_lines() {
     for (LinePtr curLine = code.begin(); curLine != code.end(); ++curLine) {
         
-        if(randint(0, 1)) //TODO: skip coeff
+        if(SKIP_EDITING_LINE) //TODO: skip coeff
             continue;
         
         u_int8_t mutationMask = randint(0, 15);
