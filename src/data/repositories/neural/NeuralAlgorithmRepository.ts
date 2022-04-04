@@ -20,15 +20,23 @@ class NeuralAlgorithmRepository implements NeuralInterface {
         const numberOfLayers = 3
         const layersSizes: number[] = [784, 256, 10]
         const network: Network = new Network(numberOfLayers, layersSizes)
-        let predict;
-
+        console.log(NeuralAlgorithmRepository.beautifyInputFile(file) )
         const mas: number[] = JSON.parse("[" + NeuralAlgorithmRepository.beautifyInputFile(file) + "]")
-       // network.readWeights(mas)
-        let s:string =imageInBase64
-        console.log(s)
-        s=s.replace("data:image/png;base64,","")
-        return 0 //network.forwardFeed()
-      //  imageInBase64.base64decode
+        console.log(imageData.data)
+        const imagePixels:number[]=[]
+        for (let i=1;i<=imageData.data.length;i++){
+            if(i%4==0){
+                if (imageData.data[i-1]>0){
+                imagePixels.push(1)
+                }
+                else {
+                    imagePixels.push(0)
+                }
+            }
+        }
+        console.log(imagePixels)
+        network.readWeights(mas)
+        return network.forwardFeed()
     }
 
     private static beautifyInputFile(fileAsString: string): string {
@@ -37,6 +45,7 @@ class NeuralAlgorithmRepository implements NeuralInterface {
             .replace("\\n", "")
             .replace(";", "")
             .replace("\\r", "")
+            .replaceAll(" ",",")
     }
 }
 

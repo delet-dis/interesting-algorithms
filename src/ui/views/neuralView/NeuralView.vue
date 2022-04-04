@@ -294,11 +294,11 @@ export default class NeuralView extends Vue {
                 //     this.displayResult(NeuralAlgorithmRepository.getInstance().detectDisplayingNumber(canvasAsDataUrl))
                 // }
 
-                let resizedCanvas = NeuralView.resizeCanvas(this.canvas, 25)
+                let resizedCanvas = NeuralView.resizeCanvas(this.canvas, 28)
                 let canvasContext = resizedCanvas.getContext('2d')
 
                 if (canvasContext) {
-                    this.displayResult(NeuralAlgorithmRepository.getInstance().detectDisplayingNumber(canvasContext.getImageData(0, 0, 25, 25)))
+                    this.displayResult(NeuralAlgorithmRepository.getInstance().detectDisplayingNumber(canvasContext.getImageData(0, 0, 28, 28)))
                 }
             }
         })

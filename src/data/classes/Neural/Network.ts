@@ -60,7 +60,6 @@ class Network {
         let max = value[0]
         let prediction = 0
         let tmp
-
         for (let i = 0; i < this.size[this.numberOfLayers - 1]; i++) {
             tmp = value[i]
 
@@ -79,10 +78,15 @@ class Network {
         for (let i = 0; i < this.numberOfLayers - 1; i++) {
             for (let j = 0; j < this.weights[i].row; j++) {
                 for (let k = 0; k < this.weights[i].col; k++) {
-                    s++
-
                     this.weights[i].matrix[j][k] = weights[s]
+                    s++
                 }
+            }
+        }
+        for (let i = 0; i < this.numberOfLayers - 1; i++) {
+            for (let j = 0; j < this.size[i+1]; j++){
+                this.bios[i][j]=weights[s]
+                s++
             }
         }
     }
