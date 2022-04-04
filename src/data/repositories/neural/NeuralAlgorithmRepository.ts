@@ -11,7 +11,7 @@ class NeuralAlgorithmRepository implements NeuralInterface {
         return NeuralAlgorithmRepository.instance
     }
 
-    detectDisplayingNumber(imageInBase64: string): number {
+    detectDisplayingNumber(imageData: ImageData): number {
         return 0
     }
 }
