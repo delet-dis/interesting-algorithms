@@ -8,25 +8,25 @@
 #include "lib/gentic_coefficients.h"
 
 
-int fib_code[] = {
-    6348803,
-    6349059,
-    6349571,
-    0,
-    1088610304,
-    1640251906,
-    4341765,
-    1639989762,
-    4342021,
-    1637957892,
-    1092632581,
-    1637957892,
-    1092632837,
-    1101021188,
-    0,
-    17159,
-    1126187781,
-    17158
+const_line fib_code[] = {
+    {6348803,    0},
+    {6349059,    0},
+    {6349571,    0},
+    {0,          0},
+    {1088610304, 0},
+    {1640251906, 1},
+    {4341765,    2},
+    {1639989762, 1},
+    {4342021,    2},
+    {1637957892, 2},
+    {1092632581, 2},
+    {1637957892, 2},
+    {1092632837, 2},
+    {1101021188, 2},
+    {0,          0},
+    {17159,      0},
+    {1126187781, 0},
+    {17158,      0},
 };
 
 struct individual {
@@ -90,11 +90,16 @@ int main() {
     FILE *log = fopen("log.txt", "w");
     
     SourceCode fib;
-    fib.set_const_code(fib_code, &fib_code[18]);
+    fib.set_const_code(fib_code, &fib_code[18]);    
+    /*char *fibtext = fib.render_text();
+    puts(fibtext);
+    delete fibtext;*/
+    
+    
     
     individual parents[numOfParents];
     individual children[numOfChildren];
-    
+    float radiation_local = 1;
     for (auto & parent : parents){
         parent.it = new SourceCode();
         parent.fitness = 100;
@@ -103,12 +108,10 @@ int main() {
         child.it = nullptr;
     
     for (int j = 0; j < numOfGenerations; j++) {
-       //create_threads(children, parents, &fib);
-       //join_threads();
         
         #pragma omp parallel
         {
-            srand(std::rand());
+            srandint(std::rand());
             #pragma omp for
             for (int i = 0; i < numOfChildren; i++) {
                 delete children[i].it;
@@ -137,7 +140,10 @@ int main() {
             children[choice].it = nullptr;
         }
         
-        fprintf(log, "%d\n", parents[0].fitness);
+        //radiation_local += (radiation_finish - radiation_start) / (float)numOfGenerations;
+        //radiation = radiation_local;
+        
+        fprintf(log, "%d %d\n", parents[0].fitness, radiation);
     }
     char *text = parents[0].it->render_text();
     puts(text);

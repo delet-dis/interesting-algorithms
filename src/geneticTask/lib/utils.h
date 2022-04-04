@@ -1,4 +1,4 @@
 #pragma once
 
-void srand(int seed);
+void srandint(int seed);
 int randint(int a, int b);

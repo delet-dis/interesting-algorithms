@@ -20,7 +20,7 @@ public:
     std::list<Line> code;
     
     SourceCode();
-    void set_const_code(int *begin, int *end);
+    void set_const_code(const_line *begin, const_line *end);
     [[nodiscard]] int edit_distance(const SourceCode &other) const;
     SourceCode* give_birth();
     char* render_text();

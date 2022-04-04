@@ -1,7 +1,8 @@
 #include "utils.h"
+//#include <cstdlib>
 thread_local int __rand_seed;
 
-void srand(int seed) {
+void srandint(int seed) {
     __rand_seed = seed;
 }
 

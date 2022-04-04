@@ -144,11 +144,11 @@ u_int8_t Scope::get_rand_func() {
     return funcBank[choice];
 }
 
-bool Scope::func_available() const {
+int Scope::funcs_available() const {
     return funcBank.size;
 }
 
-bool Scope::global_var_available() const {
+int Scope::global_vars_available() const {
     return globalBank.size;
 }
 
@@ -163,6 +163,12 @@ int Scope::free_funcs_available() {
 int Scope::free_vars_available() {
     return allVarsBank.free_available();
 }
+
+void Scope::set_const(u_int8_t vars, u_int8_t funcs) {
+    funcBank.size = funcs;
+    globalBank.size = vars;
+}
+
 
 u_int8_t Scope::free(const Line &l) {
     u_int8_t var, func;

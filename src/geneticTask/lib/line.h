@@ -2,6 +2,8 @@
 #include <list>
 #include <sys/types.h>
 
+
+
 struct raw_line {
     u_int8_t word0;
     u_int8_t word1;
@@ -9,10 +11,19 @@ struct raw_line {
     u_int8_t word3;
 };
 
+struct const_line {
+    union{
+        int32_t contentPile;
+        raw_line content;
+        u_int8_t words[4];
+    };
+    u_int8_t indents;
+};
 
 class Line {
 public:
     u_int8_t scope = 0;
+    u_int8_t indents = 0;
     
     union {
         raw_line content;
