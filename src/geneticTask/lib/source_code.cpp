@@ -53,7 +53,7 @@ int SourceCode::edit_distance(const SourceCode &other) const {
     for (auto iter1 = ++this->code.begin(); iter1 != this->code.end(); ++iter1, ++i) {
         j = 1;
         for (auto iter2 = ++other.code.begin(); iter2 != other.code.end(); ++iter2, ++j) {
-            t[i][j] = std::min(t[i-1][j], t[i][j-1]) + 4;
+            t[i][j] = std::min(t[i-1][j], t[i][j-1]) + iter1->difference(*iter2);
             t[i][j] = std::min(t[i][j], t[i-1][j-1] + iter1->difference(*iter2));
         }
     }
