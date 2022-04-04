@@ -1,5 +1,5 @@
 interface NeuralInterface {
-    detectDisplayingNumber(imageInBase64: string): number
+    detectDisplayingNumber(imageData: ImageData): number
 }
 
 export default NeuralInterface

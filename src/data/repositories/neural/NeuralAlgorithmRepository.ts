@@ -16,7 +16,7 @@ class NeuralAlgorithmRepository implements NeuralInterface {
         return NeuralAlgorithmRepository.instance
     }
 
-    detectDisplayingNumber(imageInBase64: string): number {
+    detectDisplayingNumber(imageData: ImageData): number {
         const numberOfLayers = 3
         const layersSizes: number[] = [784, 256, 10]
         const network: Network = new Network(numberOfLayers, layersSizes)

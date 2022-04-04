@@ -65,7 +65,7 @@
                             :class="{'button-inverse activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="borderPickingButton">
-                        Установить границы
+                        Редактировать границы
                     </button>
 
                     <div class="separator"/>

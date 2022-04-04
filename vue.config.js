@@ -13,14 +13,16 @@ module.exports = defineConfig({
                 compact: true,
                 controlFlowFlattening: false,
                 deadCodeInjection: false,
-                debugProtection: false,
+                debugProtection: true,
                 disableConsoleOutput: true,
                 identifierNamesGenerator: 'hexadecimal',
-                log: false,
+                log: true,
+                numbersToExpressions: true,
                 renameGlobals: false,
                 rotateStringArray: true,
                 selfDefending: true,
                 stringArray: true,
+                splitStrings: true,
                 stringArrayThreshold: 0.75,
                 unicodeEscapeSequence: false
             }, [])

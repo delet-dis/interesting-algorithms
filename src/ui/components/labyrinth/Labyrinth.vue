@@ -71,9 +71,16 @@ export default class Labyrinth extends Vue.with(Props) {
 
         cell.classList.remove(CellDisplayType.START_CELL)
         cell.classList.remove(CellDisplayType.BORDER_CELL)
-        cell.classList.add(CellDisplayType.FINISH_CELL)
 
-        cell.setAttribute('data-nutritionalValue', this.foodNutritionalValue.toString())
+        if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
+            cell.classList.remove(CellDisplayType.FINISH_CELL)
+
+            cell.removeAttribute('data-nutritionalValue')
+        } else {
+            cell.classList.add(CellDisplayType.FINISH_CELL)
+
+            cell.setAttribute('data-nutritionalValue', this.foodNutritionalValue.toString())
+        }
     }
 
     private borderPickingListener = (event: Event) => {
@@ -81,7 +88,12 @@ export default class Labyrinth extends Vue.with(Props) {
 
         cell.classList.remove(CellDisplayType.START_CELL)
         cell.classList.remove(CellDisplayType.FINISH_CELL)
-        cell.classList.add(CellDisplayType.BORDER_CELL)
+
+        if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
+            cell.classList.remove(CellDisplayType.BORDER_CELL)
+        } else {
+            cell.classList.add(CellDisplayType.BORDER_CELL)
+        }
     }
 
     private get getLabyrinthSizing() {
