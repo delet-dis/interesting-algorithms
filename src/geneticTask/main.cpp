@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <algorithm>
 #include <ctime>
-#include <cstdlib>
 #include <cstdint>
 #include <thread>
 #include "lib/source_code.h"
@@ -86,7 +85,8 @@ int main() {
     
     int seed = time(nullptr); //overflow 1648922503
     printf("seed: %d\n", seed);
-    srand(seed);
+    std::srand(seed);
+    //srand(seed);
     FILE *log = fopen("log.txt", "w");
     
     SourceCode fib;
@@ -105,13 +105,17 @@ int main() {
     for (int j = 0; j < numOfGenerations; j++) {
        //create_threads(children, parents, &fib);
        //join_threads();
-       #pragma omp parallel for
-       for (int i = 0; i < numOfChildren; i++) {
-            delete children[i].it;
-            children[i].it = parents[i / fertility].it->give_birth();
-            children[i].fitness = children[i].it->edit_distance(fib);
+        
+        #pragma omp parallel
+        {
+            srand(std::rand());
+            #pragma omp for
+            for (int i = 0; i < numOfChildren; i++) {
+                delete children[i].it;
+                children[i].it = parents[i / fertility].it->give_birth();
+                children[i].fitness = children[i].it->edit_distance(fib);
+            }
         }
-
         
         build_heap(children, numOfChildren);
 

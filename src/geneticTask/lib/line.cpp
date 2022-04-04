@@ -16,7 +16,7 @@ int Line::difference(const Line &other) const {
     int diff = 0;
     if(this->content.word0 != other.content.word0){
         if(this->content.word0 == word0::DEF || other.content.word0 == word0::DEF )
-            return 10;
+            return 15;
         return 4;
     }
     diff += this->content.word1 != other.content.word1;
