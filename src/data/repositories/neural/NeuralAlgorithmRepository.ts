@@ -19,8 +19,10 @@ class NeuralAlgorithmRepository implements NeuralInterface {
         const network: Network = new Network(numberOfLayers, layersSizes)
         let predict;
         const mas: number[] = JSON.parse("[" + NeuralAlgorithmRepository.beautifyInputFile(file) + "]")
-        network.readWeights(mas)
+        //network.readWeights(mas)
+        console.log(imageInBase64)
         return 0
+        //network.forwardFeed()
     }
 
     private static beautifyInputFile(fileAsString: string): string {
