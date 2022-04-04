@@ -32,6 +32,7 @@ class NeuralAlgorithmRepository implements NeuralInterface {
                 }
             }
         }
+        console.log(mas.length)
         network.readWeights(mas)
         network.setInput(imagePixels)
         return network.forwardFeed()
