@@ -66,7 +66,7 @@
                             :class="{'button-caution activeButton':isConfigEditable===true,
                             'button-flat nonActiveButton': isConfigEditable===false}"
                             id="foodPickingButton">
-                        Установить точку еды
+                        Редактировать точки еды
                     </button>
 
                     <div class="separator"/>
