@@ -1,6 +1,7 @@
 import NeuralInterface from "@/data/interfaces/neural/NeuralInterface";
 import Network from "@/data/classes/Neural/Network";
-import fs from "fs";
+import file from "raw-loader!../../raw/weights.txt";
+
 class NeuralAlgorithmRepository implements NeuralInterface {
     private static instance: NeuralAlgorithmRepository
 
@@ -13,14 +14,20 @@ class NeuralAlgorithmRepository implements NeuralInterface {
     }
 
     detectDisplayingNumber(imageInBase64: string): number {
-        const L=3
-        const size:number[]=[784,256,10]
-        const NW:Network=new Network(L,size)
+        const numberOfLayers = 3
+        const layersSizes: number[] = [784, 256, 10]
+        const network: Network = new Network(numberOfLayers, layersSizes)
         let predict;
-        const line:string=fs.readFileSync("weights1.txt",'utf8')
-        const mas:number[]=JSON.parse("["+ line +"]")
-        NW.ReadWeights(mas)
+        const mas: number[] = JSON.parse("[" + NeuralAlgorithmRepository.beautifyInputFile(file) + "]")
+        network.readWeights(mas)
         return 0
+    }
+
+    private static beautifyInputFile(fileAsString: string): string {
+        return fileAsString.replace('export default "', "")
+            .replace('"', "")
+            .replace("\\n", "")
+            .replace(";", "")
     }
 }
 

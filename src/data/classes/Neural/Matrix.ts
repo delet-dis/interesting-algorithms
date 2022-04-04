@@ -15,7 +15,7 @@ class Matrix{
     }
     Multiply(neuron:number[],n:number,c:number[]):number[]{
         for(let i=0;i<this.row;i++){
-            let tmp:number=0;
+            let tmp=0;
             for (let j=0;j<this.col;j++){
                 tmp+=this.matrix[i][j]*neuron[j];
             }
