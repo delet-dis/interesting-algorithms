@@ -81,7 +81,12 @@ export default class Labyrinth extends Vue.with(Props) {
 
         cell.classList.remove(CellDisplayType.START_CELL)
         cell.classList.remove(CellDisplayType.FINISH_CELL)
-        cell.classList.add(CellDisplayType.BORDER_CELL)
+
+        if (cell.classList.contains(CellDisplayType.BORDER_CELL)) {
+            cell.classList.remove(CellDisplayType.BORDER_CELL)
+        } else {
+            cell.classList.add(CellDisplayType.BORDER_CELL)
+        }
     }
 
     private get getLabyrinthSizing() {
