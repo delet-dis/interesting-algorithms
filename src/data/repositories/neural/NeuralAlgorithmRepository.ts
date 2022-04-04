@@ -20,9 +20,7 @@ class NeuralAlgorithmRepository implements NeuralInterface {
         const numberOfLayers = 3
         const layersSizes: number[] = [784, 256, 10]
         const network: Network = new Network(numberOfLayers, layersSizes)
-        console.log(NeuralAlgorithmRepository.beautifyInputFile(file) )
         const mas: number[] = JSON.parse("[" + NeuralAlgorithmRepository.beautifyInputFile(file) + "]")
-        console.log(imageData.data)
         const imagePixels:number[]=[]
         for (let i=1;i<=imageData.data.length;i++){
             if(i%4==0){
@@ -34,8 +32,8 @@ class NeuralAlgorithmRepository implements NeuralInterface {
                 }
             }
         }
-        console.log(imagePixels)
         network.readWeights(mas)
+        network.setInput(imagePixels)
         return network.forwardFeed()
     }
 
