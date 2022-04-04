@@ -1,6 +1,9 @@
 import NeuralInterface from "@/data/interfaces/neural/NeuralInterface";
 import Network from "@/data/classes/Neural/Network";
 import file from "raw-loader!../../raw/weights.txt";
+import {base64alphabet} from "javascript-obfuscator/typings/src/constants/Base64Alphabet";
+import * as buffer from "buffer";
+import * as Buffer from "buffer";
 
 class NeuralAlgorithmRepository implements NeuralInterface {
     private static instance: NeuralAlgorithmRepository
@@ -18,11 +21,14 @@ class NeuralAlgorithmRepository implements NeuralInterface {
         const layersSizes: number[] = [784, 256, 10]
         const network: Network = new Network(numberOfLayers, layersSizes)
         let predict;
+
         const mas: number[] = JSON.parse("[" + NeuralAlgorithmRepository.beautifyInputFile(file) + "]")
-        //network.readWeights(mas)
-        console.log(imageInBase64)
-        return 0
-        //network.forwardFeed()
+       // network.readWeights(mas)
+        let s:string =imageInBase64
+        console.log(s)
+        s=s.replace("data:image/png;base64,","")
+        return 0 //network.forwardFeed()
+      //  imageInBase64.base64decode
     }
 
     private static beautifyInputFile(fileAsString: string): string {
@@ -30,6 +36,7 @@ class NeuralAlgorithmRepository implements NeuralInterface {
             .replace('"', "")
             .replace("\\n", "")
             .replace(";", "")
+            .replace("\\r", "")
     }
 }
 
