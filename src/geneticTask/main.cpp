@@ -1,8 +1,13 @@
 #include <cstdio>
 #include <algorithm>
-#include "lib/source_code.h"
 #include <ctime>
 #include <cstdlib>
+#include <cstdint>
+#include <thread>
+#include "lib/source_code.h"
+#include "lib/utils.h"
+#include "lib/gentic_coefficients.h"
+
 
 int fib_code[] = {
     6348803,
@@ -30,6 +35,10 @@ struct individual {
     int fitness;
 };
 
+int numOfThreads;
+std::thread **threads;
+
+
 void sift(individual *arr, int pos, int len){
     int child = pos * 2 + 1;
     
@@ -40,7 +49,7 @@ void sift(individual *arr, int pos, int len){
         
         if(arr[pos].fitness > arr[child].fitness)
             std::swap(arr[pos], arr[child]);
-        else //НЕ ФАКТ
+        else
             break;
         pos = child;
         child = pos * 2 + 1;
@@ -51,6 +60,7 @@ void build_heap(individual *arr, int len) {
     for(int i = len / 2; i >= 0; i--)
         sift(arr, i, len);
 }
+
 
 individual* find_min(individual *arr, int len) {
     int min = INT32_MAX;
@@ -72,8 +82,8 @@ void print(SourceCode *src) {
 }
 
 
-
 int main() {
+    
     int seed = time(nullptr); //overflow 1648922503
     printf("seed: %d\n", seed);
     srand(seed);
@@ -81,11 +91,6 @@ int main() {
     
     SourceCode fib;
     fib.set_const_code(fib_code, &fib_code[18]);
-    
-    const int numOfGenerations = 500;
-    const int numOfParents = 7;
-    const int fertility = 500;
-    const int numOfChildren = numOfParents * fertility;
     
     individual parents[numOfParents];
     individual children[numOfChildren];
@@ -98,21 +103,34 @@ int main() {
         child.it = nullptr;
     
     for (int j = 0; j < numOfGenerations; j++) {
-        for (int i = 0; i < numOfChildren; i++) {
+       //create_threads(children, parents, &fib);
+       //join_threads();
+       #pragma omp parallel for
+       for (int i = 0; i < numOfChildren; i++) {
             delete children[i].it;
             children[i].it = parents[i / fertility].it->give_birth();
             children[i].fitness = children[i].it->edit_distance(fib);
         }
+
         
         build_heap(children, numOfChildren);
-        //int choise = 0;
-        for (int i = 0; i < numOfParents; i++) {
-            //build_heap(&children[fertility * i], fertility);
-            //choise  = randint(0, 2);
-            delete parents[i].it;
-            parents[i].it = children[i].it;
-            parents[i].fitness = children[i].fitness;
-            children[i].it = nullptr;
+
+        int k;
+        for (k = 0; k < numOfEliteParents; k++) {
+            delete parents[k].it;
+            parents[k].it = children[k].it;
+            parents[k].fitness = children[k].fitness;
+            children[k].it = nullptr;
+        } 
+        
+        for (; k < numOfParents; k++) {
+            int choice = 0;
+            while(!children[choice].it)
+                choice = randint(numOfEliteParents+1, numOfChildren-1);
+            delete parents[k].it;
+            parents[k].it = children[choice].it;
+            parents[k].fitness = children[choice].fitness;
+            children[choice].it = nullptr;
         }
         
         fprintf(log, "%d\n", parents[0].fitness);
