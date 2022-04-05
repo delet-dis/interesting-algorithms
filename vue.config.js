@@ -1,5 +1,5 @@
 const {defineConfig} = require('@vue/cli-service')
-const JavaScriptObfuscator = require('webpack-obfuscator');
+
 module.exports = defineConfig({
     transpileDependencies: true,
     outputDir: "docs",
