@@ -52,7 +52,6 @@ class Network {
             this.neuronVal[k] = Matrix.SumVector(this.neuronVal[k], this.bios[k - 1], this.size[k])
             this.neuronVal[k] = ActivationFunction.use(this.neuronVal[k], this.size[k])
         }
-        console.log(this.neuronVal[this.numberOfLayers - 1])
         return this.searchMaxIndex(this.neuronVal[this.numberOfLayers - 1])
     }
 

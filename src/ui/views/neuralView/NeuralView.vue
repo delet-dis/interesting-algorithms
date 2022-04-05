@@ -172,7 +172,7 @@ export default class NeuralView extends Vue {
                         if (this.canvasContext) {
                             this.canvasContext.beginPath()
 
-                            this.canvasContext.lineWidth = 35
+                            this.canvasContext.lineWidth = 50
                             this.canvasContext.lineCap = "round"
 
                             this.canvasContext.moveTo(this.startX, this.startY)
