@@ -7,27 +7,6 @@ module.exports = defineConfig({
         ? '/interesting-algorithms/'
         : '/',
     productionSourceMap: false,
-    configureWebpack: (process.env.NODE_ENV === 'production') ? {
-        plugins: [
-            new JavaScriptObfuscator({
-                compact: true,
-                controlFlowFlattening: false,
-                deadCodeInjection: false,
-                debugProtection: true,
-                disableConsoleOutput: true,
-                identifierNamesGenerator: 'hexadecimal',
-                log: true,
-                numbersToExpressions: true,
-                renameGlobals: false,
-                rotateStringArray: true,
-                selfDefending: true,
-                stringArray: true,
-                splitStrings: true,
-                stringArrayThreshold: 0.75,
-                unicodeEscapeSequence: false
-            }, [])
-        ]
-    } : {},
 
     chainWebpack: config => {
         config.module
