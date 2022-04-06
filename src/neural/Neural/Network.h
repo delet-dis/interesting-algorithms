@@ -1,35 +1,43 @@
 #pragma once
+
 #include "ActivationFunction.h"
 #include "Matrix.h"
 #include <fstream>
+
 using namespace std;
-struct data_Network{
-	int L;
-	int* size;
+struct data_Network {
+    int L;
+    int *size;
 };
-class Network
-{
-	int L;
-	int* size;
-	ActivationFunction actFunc;
-	Matrix* weights;
-	double** bios;
-	double** neurons_val, ** neurons_err;
-	double* neurons_bios_val;
+
+class Network {
+    int L;
+    int *size;
+    ActivationFunction actFunc;
+    Matrix *weights;
+    double **bios;
+    double **neurons_val, **neurons_err;
+    double *neurons_bios_val;
 public:
-	void Init(data_Network data);
-	void PrintConfig();
-	void SetInput(double* values);
+    void Init(data_Network data);
 
-	double ForwardFeed();
-	int SearchMaxIndex(double* value);
-	void PrintValues(int L);
+    void PrintConfig();
 
-	void BackPropogation(double expect);
-	void WeightUpdater(double lr);
+    void SetInput(const double *values);
 
-	void SaveWeights();
-	void ReadWeights();
-	
+    double ForwardFeed();
+
+    int SearchMaxIndex(const double *value);
+
+    void PrintValues(int L);
+
+    void BackPropogation(double expect);
+
+    void WeightUpdater(double lr);
+
+    void SaveWeights();
+
+    void ReadWeights();
+
 };
 
