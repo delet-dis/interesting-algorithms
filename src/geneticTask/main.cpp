@@ -9,24 +9,24 @@
 
 
 const_line fib_code[] = {
-    {6348803,    0},
-    {6349059,    0},
-    {6349571,    0},
-    {0,          0},
-    {1088610304, 0},
-    {1640251906, 1},
-    {4341765,    2},
-    {1639989762, 1},
-    {4342021,    2},
-    {1637957892, 2},
-    {1092632581, 2},
-    {1637957892, 2},
-    {1092632837, 2},
-    {1101021188, 2},
-    {0,          0},
-    {17159,      0},
-    {1126187781, 0},
-    {17158,      0},
+    {6348803,     0},
+    {6349059,     0},
+    {6349571,     0},
+    {8,           0},
+    {-2132615168, 0},
+    {1640251906,  1},
+    {4341765,     2},
+    {1639989762,  1},
+    {4342021,     2},
+    {1637957892,  2},
+    {1092632581,  2},
+    {1637957892,  2},
+    {1092632837,  2},
+    {1101021188,  2},
+    {8,           0},
+    {17159,       0},
+    {1126187781,  0},
+    {17158,       0},
 };
 
 struct individual {
@@ -75,7 +75,7 @@ individual* find_min(individual *arr, int len) {
 
 void print(SourceCode *src) {
     for (Line &i : src->code) {
-        printf("%u %u %u %u\n", i.words[0], i.words[1], i.words[2], i.words[3]);
+        printf("%d %u %u %u %u\n", i.contentPile, i.words[0], i.words[1], i.words[2], i.words[3]);
     }
     putchar('\n');
 }
@@ -83,32 +83,26 @@ void print(SourceCode *src) {
 
 int main() {
     
-    int seed = time(nullptr); //overflow 1648922503
+    int seed = time(nullptr);
     printf("seed: %d\n", seed);
     std::srand(seed);
-    //srand(seed);
-    FILE *log = fopen("log.txt", "w");
+    //FILE *log = fopen("log.txt", "w");
     
     SourceCode fib;
     fib.set_const_code(fib_code, &fib_code[18]);    
-    /*char *fibtext = fib.render_text();
-    puts(fibtext);
-    delete fibtext;*/
-    
     
     
     individual parents[numOfParents];
     individual children[numOfChildren];
-    float radiation_local = 1;
     for (auto & parent : parents){
         parent.it = new SourceCode();
-        parent.fitness = 100;
+        parent.fitness = 1000;
     }
     for (auto & child : children)
         child.it = nullptr;
     
-    for (int j = 0; j < numOfGenerations; j++) {
-        
+    int j;
+    for (j = 0; j < numOfGenerations && parents[0].fitness != 0; j++) {
         #pragma omp parallel
         {
             srandint(std::rand());
@@ -130,7 +124,7 @@ int main() {
             children[k].it = nullptr;
         } 
         
-        for (; k < numOfParents; k++) {
+        for (; k < numOfParents - numOfFreshParents; k++) {
             int choice = 0;
             while(!children[choice].it)
                 choice = randint(numOfEliteParents+1, numOfChildren-1);
@@ -140,17 +134,26 @@ int main() {
             children[choice].it = nullptr;
         }
         
-        //radiation_local += (radiation_finish - radiation_start) / (float)numOfGenerations;
-        //radiation = radiation_local;
+        for (; k < numOfParents; k++) {
+            delete parents[k].it;
+            parents[k].it = new SourceCode();
+            SourceCode *tmp;
+            for (int i = 0; i < 15; i++) {
+                tmp = parents[k].it->give_birth();
+                delete parents[k].it;
+                parents[k].it = tmp;
+            }
+            parents[k].fitness = parents[k].it->edit_distance(fib);
+        }
         
-        fprintf(log, "%d %d\n", parents[0].fitness, radiation);
+        //fprintf(log, "%d\n", parents[0].fitness);
     }
     char *text = parents[0].it->render_text();
     puts(text);
-    printf("%d\n", parents[0].fitness);
+    printf("%d %d\n", parents[0].fitness, j);
     
-    
+    //print(parents[0].it);
     delete text;
     puts("\n\n");    
-    fclose(log);
+    //fclose(log);
 }
