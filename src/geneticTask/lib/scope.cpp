@@ -55,7 +55,6 @@ int Bank::free_available() const {
 
 
 Bank::Bank(const Bank& other) {
-    //TODO: Проверить конструктор
     this->allParams = other.allParams;
 }
 

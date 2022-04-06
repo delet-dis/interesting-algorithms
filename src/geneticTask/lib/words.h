@@ -11,7 +11,8 @@ namespace word0 {
         ARITHMETIC,
         ASSIGN,
         PRINT,
-        INPUT
+        INPUT,
+        SPECIAL
     };
     
     const int last = INPUT;

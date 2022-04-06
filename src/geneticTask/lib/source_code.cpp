@@ -8,8 +8,10 @@
 
 SourceCode::SourceCode() {
     deps.zero_init();
-    code.emplace_back();
-    code.emplace_back();
+    Line& newLine = code.emplace_back();
+    newLine.words[0] = word0::SPECIAL;
+    Line& newLine2 = code.emplace_back();
+    newLine2.words[0] = word0::SPECIAL;
     placeToDeclareVars = code.begin();
     placeToDeclareFuncs = ++code.begin();
 }
@@ -24,13 +26,13 @@ void SourceCode::set_const_code(const_line *begin, const_line *end) {
     
     for (iter = begin; iter != end; ++iter) {
         
-        if (inFuncSegment && iter->contentPile == 0) {
+        if (inFuncSegment && iter->words[0] == word0::SPECIAL) {
             placeToInsert = code.end();
             inFuncSegment = false;
             continue;
         }
         
-        if(inVarSegment && iter->contentPile == 0) {
+        if(inVarSegment && iter->words[0] == word0::SPECIAL) {
             inFuncSegment = true;
             inVarSegment = false;
             placeToInsert = placeToDeclareFuncs;
@@ -49,33 +51,101 @@ void SourceCode::set_const_code(const_line *begin, const_line *end) {
     scope.set_const(globalVars, funcs);
 }
 
-    
-int SourceCode::edit_distance(const SourceCode &other) const {
-    int i, j;
-    Matrix<int> t(this->code.size(), other.code.size());
-    t[0][0] = this->code.front() == other.code.front();
-    
-    for (i = 1; i < this->code.size(); i++)
-        t[i][0] = 8 * i;
 
-    for (j = 1; j < other.code.size(); j++)
-        t[0][j] = 8 * j;
+int SourceCode::edit_distance(const SourceCode &other) const {
     
+    int diff = 5 * std::abs(scope.globalBank.size - other.scope.globalBank.size);
+    diff += 5 * std::abs(scope.funcBank.size - other.scope.funcBank.size);
+    Matrix<int> t(this->code.size()+1, other.code.size()+1);
+    LinePtrConst thisStart = this->code.begin();
+    LinePtrConst otherStart = other.code.begin();
+    return recursive_edit_distance(other, thisStart, otherStart, t, 0, 0, 0).replace_i_j + diff;
+}
+
+SourceCode::edit_distance_result
+    SourceCode::recursive_edit_distance(const SourceCode &other, LinePtrConst& prevIter1, LinePtrConst& prevIter2,
+                                        Matrix<int> &t, int matrixFreeSpace, int indentsLevel1, int indentsLevel2) const {
     
-    i = 1;
-    for (auto iter1 = ++this->code.begin(); iter1 != this->code.end(); ++iter1, ++i) {
-        j = 1;
-        for (auto iter2 = ++other.code.begin(); iter2 != other.code.end(); ++iter2, ++j) {
-            t[i][j] = std::min(t[i-1][j], t[i][j-1]) + iter1->difference(*iter2);
-            t[i][j] = std::min(t[i][j], t[i-1][j-1] + iter1->difference(*iter2));
+    SourceCode::edit_distance_result res = {0, 0, 0};
+    
+    LinePtrConst iter1 = prevIter1;
+    LinePtrConst iter2 = prevIter2;
+    
+
+    int offset_i = matrixFreeSpace / t.rows;
+    int offset_j = matrixFreeSpace % t.rows;
+    
+    t[offset_i][offset_j] = 0;//iter1->difference(*prevIter2);
+    
+    int j = 1 + offset_j;
+    int i = 1 + offset_i;
+    LinePtrConst tmp;
+    
+    for (iter2 = prevIter2; iter2 != other.code.end() && iter2->indents == indentsLevel2; ++j) {
+        res.add_j += 4 * count_current_scope_lines(iter2, other.code.end());
+        t[offset_i][j] = res.add_j;
+    }
+
+    for (; iter1 != this->code.end() && iter1->indents == indentsLevel1; ++i) {
+        
+        tmp = iter1;
+        
+        res.remove_i += 4 * count_current_scope_lines(iter1, this->code.end());
+        t[i][offset_j] = res.remove_i;
+        
+        j = offset_j + 1;
+        
+        for (iter2 = prevIter2; iter2 != other.code.end() && iter2->indents == indentsLevel2; ++j) {
+            iter1 = tmp;
+            
+            SourceCode::edit_distance_result costs; 
+            u_int16_t diff = iter1->difference(*iter2);
+            if(iter1->words[0] > 2 && iter2->words[0] > 2) {
+                costs.remove_i = 4;
+                costs.add_j = 4;
+                costs.replace_i_j = diff;
+                ++iter2;
+                ++iter1;
+            }
+            else if (diff >= 8) {
+                costs.remove_i = 4 * count_current_scope_lines(iter1, this->code.end());
+                costs.add_j = 4 * count_current_scope_lines(iter2, other.code.end());
+                costs.replace_i_j = costs.add_j + costs.remove_i;
+            }
+            else {
+                int indents1 = iter1->indents + 1;
+                int indents2 = iter2->indents + 1;
+                ++iter1;
+                ++iter2;
+                costs = recursive_edit_distance(other, iter1, iter2, t, i*t.rows+j, indents1, indents2);
+                costs.remove_i += 4;
+                costs.add_j += 4;
+                costs.replace_i_j += diff;
+            }
+            
+            
+            t[i][j] = std::min(t[i-1][j] + costs.remove_i, t[i][j-1] + costs.add_j);
+            t[i][j] = std::min(t[i][j], t[i-1][j-1] + costs.replace_i_j);
         }
     }
     
-    int difference = t[i-1][j-1];
-    difference += std::abs(this->scope.global_vars_available() - other.scope.global_vars_available()) * 8;
-    difference += std::abs(this->scope.funcs_available() - other.scope.funcs_available()) * 15;
+    prevIter1 = iter1;
+    prevIter2 = iter2;
+    res.replace_i_j = t[i-1][j-1];
     
-    return difference;
+    return res;
+}
+
+int SourceCode::count_current_scope_lines(LinePtrConst& iter, LinePtrConst end) const {
+    int indentsLevel = iter->indents;
+    int lines = 1;
+    ++iter;
+    while (iter != end && iter->indents > indentsLevel) {
+        iter++;
+        lines++;
+    }
+    
+    return lines;
 }
 
 
@@ -251,7 +321,7 @@ void SourceCode::copy_code_and_delete_some_lines(const SourceCode &parent) {
         }
             
             
-        if (!deps.get_deps(*line) && DELETE_LINE) { //TODO: skip coeff
+        if (!deps.get_deps(*line) && DELETE_LINE) {
             curScope = line->scope;
             if(line->content.word0 <= 3) //lines that affect scope
                 curScope = scope.free(*line);
@@ -270,8 +340,11 @@ void SourceCode::add_some_lines() {
     //declare new vars
     int threshold = scope.free_vars_available();
     int needVar = !scope.global_vars_available();
-    int quantity = randint(needVar, threshold / 3);
-    
+    int quantity;
+    if(needVar || NEW_VAR_CHANCE)
+        quantity = randint(needVar, threshold / 3);
+    else
+        quantity = 0;
     for (int i = 0; i < quantity; i++) {
         auto newLine = code.emplace(placeToDeclareVars);
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
@@ -281,7 +354,10 @@ void SourceCode::add_some_lines() {
     //declare new funcs
     threshold = std::min(scope.free_funcs_available(), scope.free_scopes_available());
     threshold = std::min(threshold, scope.free_vars_available());
-    quantity = randint(0, threshold / 3);
+    if(NEW_FUNC_CHANCE)
+        quantity = randint(0, threshold / 3);
+    else
+        quantity = 0;
     
     for (int i = 0; i < quantity; i++) {
         auto newLine = code.emplace(placeToDeclareFuncs);
@@ -290,7 +366,6 @@ void SourceCode::add_some_lines() {
     } 
     
     
-    //TODO: insert into functions
     auto curLine = placeToDeclareVars;
     curLine++;
     u_int8_t curScope, lastScope;
@@ -305,25 +380,19 @@ void SourceCode::add_some_lines() {
     };
         
     
-    bool inFunctionSegment = true;
     do  {
         
         curScope = curLine->scope;
         ++curLine;
         
-        if(curLine == placeToDeclareFuncs){
-            inFunctionSegment = false;
+        if(curLine == placeToDeclareFuncs)
             continue;
-        }
+
+
+        if(SKIP_ADDING_NEW_LINE)
+            continue;
         
 
-        if( (!inFunctionSegment || SKIP_ADDING_NEW_LINE_IN_FUNCTION) && SKIP_ADDING_NEW_LINE) //TODO: skip coeff
-            continue;
-        
-        //TODO: scope termination coeff
-       /* if ((curLine == code.end() || curLine->scope != curScope) && randint(0, 1) && !inFunctionSegment)
-            curScope = scope.get_prev_scope(curScope); //TODO:get_rand_prev_scope()
-        */
         if(curLine == code.end())
             lastScope = 0;
         else if(curLine->words[0] == word0::IF || curLine->words[0] == word0::FOR)
@@ -354,7 +423,7 @@ void SourceCode::add_some_lines() {
 void SourceCode::edit_some_lines() {
     for (auto & curLine : code) {
         
-        if(SKIP_EDITING_LINE || curLine.contentPile == 0) //places for vars and funcs == 0
+        if(SKIP_EDITING_LINE || curLine.words[0] == word0::SPECIAL) //places for vars and funcs == 0
             continue;
         
         u_int8_t mutationMask = randint(0, 15);
@@ -399,7 +468,6 @@ char* SourceCode::render_text() {
     char *codeTXT = new char[32 * code.size()];
     int c = 0;
     int indents;
-    int curScope;
     char return_str[10] = "return ab";
     int lastFuncIndent = 0;
     bool inFunc = false;
