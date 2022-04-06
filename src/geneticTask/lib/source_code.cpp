@@ -439,10 +439,10 @@ SourceCode* SourceCode::give_birth() {
     child->deps = this->deps;
     child->scope = this->scope;
     
-    int choice = randint(0, 7);
+    int choice = randint(1, 3);
 
     //delete
-    if (choice & 1) {
+    if (choice == 1) {
         child->copy_code_and_delete_some_lines(*this);
     }
     else {
@@ -450,11 +450,11 @@ SourceCode* SourceCode::give_birth() {
     }
     
     // add
-    if (choice & 2) {
+    if (choice == 2) {
         child->add_some_lines();
     }
     // edit
-    if (choice & 4) {
+    if (choice == 3) {
         child->edit_some_lines();
     }
         
