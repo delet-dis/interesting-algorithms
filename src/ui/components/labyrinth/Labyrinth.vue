@@ -45,6 +45,8 @@ export default class Labyrinth extends Vue.with(Props) {
     }
 
     private startPickingListener = (event: Event) => {
+        this.removeFoodListener()
+
         let cell = (event.target as Element)
 
         this.clearCells()
@@ -84,6 +86,8 @@ export default class Labyrinth extends Vue.with(Props) {
     }
 
     private borderPickingListener = (event: Event) => {
+        this.removeFoodListener()
+
         let cell = (event.target as Element)
 
         cell.classList.remove(CellDisplayType.START_CELL)
