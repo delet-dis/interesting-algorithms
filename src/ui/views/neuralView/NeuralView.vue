@@ -99,7 +99,9 @@ export default class NeuralView extends Vue {
         let clusteringCard = document.getElementById("neuralCard")
 
         if (clusteringCard) {
-            if (this.canvas) {
+            if (this.canvas && this.canvasContext) {
+                let tempImage = this.canvasContext.getImageData(0, 0, this.canvas.width, this.canvas.height)
+
                 let widthAndHeightDimensions = clusteringCard.clientWidth - 20
 
                 this.canvas.width = widthAndHeightDimensions
@@ -110,6 +112,8 @@ export default class NeuralView extends Vue {
 
                 this.canvas.setAttribute('width', widthAndHeightDimensions + "px")
                 this.canvas.setAttribute('height', widthAndHeightDimensions + "px")
+
+                this.canvasContext.putImageData(tempImage, 0, 0)
             }
         }
     }
