@@ -21,6 +21,11 @@ u_int8_t Bank::get() {
     return ID;
 }
 
+bool Bank::has(u_int8_t ID) const {
+    return repository[ID / 8] & (1 << (ID % 8));
+}
+
+
 void Bank::free(u_int8_t ID) {
     size--;
     repository[ID / 8] ^= 1 << (ID % 8);

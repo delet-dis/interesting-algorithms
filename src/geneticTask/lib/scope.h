@@ -15,6 +15,7 @@ public:
     Bank() = default;
     Bank(const Bank &other);
     u_int8_t get();
+    bool has(u_int8_t ID) const;
     void occupy(u_int8_t ID);
     u_int8_t operator[](int pos);
     void free(u_int8_t ID);
@@ -42,14 +43,14 @@ private:
     };
     
     
+    
+public:
+    
     Bank allVarsBank;
     node locals[32];
     Bank globalBank;
     Bank funcBank;
     Bank scopeBank;
-    
-public:
-    
     
     Scope();
     Scope(const Scope &other);
