@@ -9,24 +9,24 @@
 
 
 const_line fib_code[] = {
-    {6348803,     0},
-    {6349059,     0},
-    {6349571,     0},
-    {8,           0},
-    {-2132615168, 0},
-    {1640251906,  1},
-    {4341765,     2},
-    {1639989762,  1},
-    {4342021,     2},
-    {1637957892,  2},
-    {1092632581,  2},
-    {1637957892,  2},
-    {1092632837,  2},
-    {1101021188,  2},
-    {8,           0},
-    {17159,       0},
-    {1126187781,  0},
-    {17158,       0},
+    {{6348803},     0},
+    {{6349059},     0},
+    {{6349571},     0},
+    {{8},           0},
+    {{-2132615168}, 0},
+    {{1640251906},  1},
+    {{4341765},     2},
+    {{1639989762},  1},
+    {{4342021},     2},
+    {{1637957892},  2},
+    {{1092632581},  2},
+    {{1637957892},  2},
+    {{1092632837},  2},
+    {{1101021188},  2},
+    {{8},           0},
+    {{17159},       0},
+    {{1126187781},  0},
+    {{17158},       0},
 };
 
 struct individual {
@@ -75,7 +75,7 @@ individual* find_min(individual *arr, int len) {
 
 void print(SourceCode *src) {
     for (Line &i : src->code) {
-        printf("%d %u %u %u %u\n", i.contentPile, i.words[0], i.words[1], i.words[2], i.words[3]);
+        printf("{{%d},\t%d},\n", i.contentPile, i.indents);
     }
     putchar('\n');
 }
@@ -89,8 +89,7 @@ int main() {
     //FILE *log = fopen("log.txt", "w");
     
     SourceCode fib;
-    fib.set_const_code(fib_code, &fib_code[18]);    
-    
+    fib.set_const_code(fib_code, &fib_code[18]);      
     
     individual parents[numOfParents];
     individual children[numOfChildren];
@@ -151,7 +150,6 @@ int main() {
     char *text = parents[0].it->render_text();
     puts(text);
     printf("%d %d\n", parents[0].fitness, j);
-    
     //print(parents[0].it);
     delete text;
     puts("\n\n");    
