@@ -57,8 +57,8 @@ int SourceCode::edit_distance(const SourceCode &other) const {
     int diff = 5 * std::abs(scope.globalBank.size - other.scope.globalBank.size);
     diff += 5 * std::abs(scope.funcBank.size - other.scope.funcBank.size);
     Matrix<int> t(this->code.size()+1, other.code.size()+1);
-    LinePtrConst thisStart = this->code.begin();
-    LinePtrConst otherStart = other.code.begin();
+    auto thisStart = this->code.begin();
+    auto otherStart = other.code.begin();
     return recursive_edit_distance(other, thisStart, otherStart, t, 0, 0, 0).replace_i_j + diff;
 }
 
@@ -68,8 +68,8 @@ SourceCode::edit_distance_result
     
     SourceCode::edit_distance_result res = {0, 0, 0};
     
-    LinePtrConst iter1 = prevIter1;
-    LinePtrConst iter2 = prevIter2;
+    auto iter1 = prevIter1;
+    auto iter2 = prevIter2;
     
 
     int offset_i = matrixFreeSpace / t.rows;
@@ -98,7 +98,7 @@ SourceCode::edit_distance_result
         for (iter2 = prevIter2; iter2 != other.code.end() && iter2->indents == indentsLevel2; ++j) {
             iter1 = tmp;
             
-            SourceCode::edit_distance_result costs; 
+            SourceCode::edit_distance_result costs{};
             u_int16_t diff = iter1->difference(*iter2);
             if(iter1->words[0] > 2 && iter2->words[0] > 2) {
                 costs.remove_i = 4;
@@ -136,7 +136,7 @@ SourceCode::edit_distance_result
     return res;
 }
 
-int SourceCode::count_current_scope_lines(LinePtrConst& iter, LinePtrConst end) const {
+int SourceCode::count_current_scope_lines(LinePtrConst& iter, LinePtrConst end) {
     int indentsLevel = iter->indents;
     int lines = 1;
     ++iter;
@@ -439,10 +439,10 @@ SourceCode* SourceCode::give_birth() {
     child->deps = this->deps;
     child->scope = this->scope;
     
-    int choise = randint(0, 7);
+    int choice = randint(0, 7);
 
     //delete
-    if (choise & 1) {
+    if (choice & 1) {
         child->copy_code_and_delete_some_lines(*this);
     }
     else {
@@ -450,11 +450,11 @@ SourceCode* SourceCode::give_birth() {
     }
     
     // add
-    if (choise & 2) {
+    if (choice & 2) {
         child->add_some_lines();
     }
     // edit
-    if (choise & 4) {
+    if (choice & 4) {
         child->edit_some_lines();
     }
         

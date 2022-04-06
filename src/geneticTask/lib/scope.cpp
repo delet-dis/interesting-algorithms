@@ -156,15 +156,15 @@ int Scope::global_vars_available() const {
     return globalBank.size;
 }
 
-int Scope::free_scopes_available() {
+int Scope::free_scopes_available() const {
     return scopeBank.free_available();
 }
 
-int Scope::free_funcs_available() {
+int Scope::free_funcs_available() const {
     return funcBank.free_available();
 }
 
-int Scope::free_vars_available() {
+int Scope::free_vars_available() const {
     return allVarsBank.free_available();
 }
 

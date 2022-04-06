@@ -25,7 +25,7 @@ private:
         u_int16_t replace_i_j;
     };
     
-    int count_current_scope_lines(LinePtrConst &iter, LinePtrConst end) const;
+    static int count_current_scope_lines(LinePtrConst &iter, LinePtrConst end) ;
     edit_distance_result recursive_edit_distance(const SourceCode &other, LinePtrConst &iter1, LinePtrConst &iter2,  Matrix<int> &t, int matrixFreeSpace, int indentsLevel1, int indentsLevel2) const;
     
 public:
@@ -33,7 +33,7 @@ public:
     
     SourceCode();
     void set_const_code(const_line *begin, const_line *end);
-    int edit_distance(const SourceCode &other) const;
+    [[nodiscard]] int edit_distance(const SourceCode &other) const;
     SourceCode* give_birth();
     char* render_text();
 };

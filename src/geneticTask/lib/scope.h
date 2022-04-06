@@ -15,11 +15,11 @@ public:
     Bank() = default;
     Bank(const Bank &other);
     u_int8_t get();
-    bool has(u_int8_t ID) const;
+    [[nodiscard]] bool has(u_int8_t ID) const;
     void occupy(u_int8_t ID);
     u_int8_t operator[](int pos);
     void free(u_int8_t ID);
-    int free_available() const;
+    [[nodiscard]] int free_available() const;
 };
 
 
@@ -62,11 +62,11 @@ public:
     u_int8_t get_rand_prev_scope(u_int8_t curScopeID, u_int8_t nextScopeID);
     u_int8_t get_rand_var(u_int8_t scopeID, bool excludeCurLocal = false);
     u_int8_t get_rand_func();
-    int funcs_available() const;
-    int global_vars_available() const;
-    int free_scopes_available();
-    int free_funcs_available();
-    int free_vars_available();
+    [[nodiscard]] int funcs_available() const;
+    [[nodiscard]] int global_vars_available() const;
+    int free_scopes_available() const;
+    int free_funcs_available() const;
+    int free_vars_available() const;
     void set_const(u_int8_t vars, u_int8_t funcs);
     u_int8_t free(const Line &l);  // return parentScope
     int get_indent(u_int8_t scopeID);
