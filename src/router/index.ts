@@ -1,5 +1,4 @@
-import {createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw} from 'vue-router'
-import App from "@/App.vue";
+import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -19,23 +18,23 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/geneticAlgorithm',
-        name: 'test',
-        component: App
+        name: 'genetic',
+        component: () => import('../ui/views/geneticView/GeneticView.vue'),
     },
     {
         path: '/antAlgorithm',
-        name: 'test',
-        component: App
+        name: 'ant',
+        component: () => import('../ui/views/antView/AntView.vue'),
     },
     {
         path: '/treeAlgorithm',
         name: 'test',
-        component: App
+        component: () => import('../ui/views/treeView/TreeView.vue'),
     },
     {
         path: '/neuralAlgorithm',
-        name: 'test',
-        component: App
+        name: 'test1',
+        component: () => import('../ui/views/neuralView/NeuralView.vue'),
     }
 ]
 

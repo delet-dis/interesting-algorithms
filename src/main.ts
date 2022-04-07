@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import 'babel-polyfill'
 import './ui/assets/global.css'
 import './ui/assets/buttons.css'
 import router from './router'

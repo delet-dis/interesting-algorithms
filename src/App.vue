@@ -21,6 +21,7 @@ import {Options, setup, Vue} from 'vue-class-component';
 import Sidebar from "@/ui/components/sidebar/Sidebar.vue";
 import SidebarState from "@/ui/components/sidebar/SidebarState";
 import {useMeta} from "vue-meta";
+import "../node_modules/bootstrap/dist/css/bootstrap-grid.min.css";
 
 
 @Options({

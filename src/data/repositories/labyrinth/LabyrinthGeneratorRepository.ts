@@ -1,7 +1,7 @@
 import LabyrinthGeneratorInterface from "@/data/interfaces/labyrinth/LabyrinthGeneratorInterface";
 import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
 import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import Point from "@/data/models/labyrinth/Point";
+import Point from "@/data/models/Point";
 
 
 class LabyrinthGeneratorRepository implements LabyrinthGeneratorInterface {

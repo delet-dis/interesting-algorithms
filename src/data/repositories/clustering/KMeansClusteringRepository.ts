@@ -1,6 +1,6 @@
 import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface";
 import Dot from "@/data/models/clustering/Dot";
-import Cluster from "@/data/models/clustering/Cluster";
+import Cluster from "@/data/classes/clustering/Cluster";
 
 class KMeansClusteringRepository implements ClusteringInterface {
     private static instance: KMeansClusteringRepository
@@ -13,63 +13,70 @@ class KMeansClusteringRepository implements ClusteringInterface {
         return KMeansClusteringRepository.instance
     }
 
-    private clusArr: Cluster[] = []
+    private clusters: Cluster[] = []
 
-    private IdentifyCenters(k: number, allDots: Dot[]): void {
+    private identifyCenters(k: number, allDots: Dot[]): void {
         const size = allDots.length
         const step = size / k
-        let steper = 0
-        for (let j = 0; j < k; j++, steper += step) {
 
-            this.clusArr[j].curX = allDots[Math.floor(steper)].xCoordinate
-            this.clusArr[j].curY = allDots[Math.floor(steper)].yCoordinate
+        let iterator = 0
+
+        for (let j = 0; j < k; j++, iterator += step) {
+            this.clusters[j].currentX = allDots[Math.floor(iterator)].xCoordinate
+            this.clusters[j].currentY = allDots[Math.floor(iterator)].yCoordinate
         }
-
     }
 
-    private Bind(allDots: Dot[], clustersNumber: number): Dot[] {
+    private bind(allDots: Dot[], clustersNumber: number): Dot[] {
         for (let i = 0; i < clustersNumber; i++) {
-            this.clusArr[i].arr = []
+            this.clusters[i].dots = []
         }
+
         for (let i = 0; i < allDots.length; i++) {
-            let minDist = 10000
+            let minimalDistance = Number.MAX_VALUE
             let arrayPos = -1
-            for (let j = 0; j < this.clusArr.length; j++) {
-                const curDist = Math.sqrt(Math.pow(allDots[i].xCoordinate - this.clusArr[j].curX, 2) + Math.pow(allDots[i].yCoordinate - this.clusArr[j].curY, 2))
-                if (curDist < minDist) {
-                    minDist = curDist
+
+            for (let j = 0; j < this.clusters.length; j++) {
+                const currentDistance = Math.sqrt(Math.pow(allDots[i].xCoordinate - this.clusters[j].currentX, 2) +
+                    Math.pow(allDots[i].yCoordinate - this.clusters[j].currentY, 2))
+
+                if (currentDistance < minimalDistance) {
+                    minimalDistance = currentDistance
                     allDots[i].kMeansIndex = j
                     arrayPos = j
                 }
             }
-            this.clusArr[arrayPos].arr.push(allDots[i])
+            this.clusters[arrayPos].dots.push(allDots[i])
 
         }
         return allDots
     }
 
     splitByClusters(dots: Dot[], numberOfClusters: number): Dot[] {
-        this.clusArr=[]
-        for (let i = 0; i < numberOfClusters; i++)
-            this.clusArr[i] = new Cluster()
-        this.IdentifyCenters(numberOfClusters, dots)
-        for (; ;) {
-            let chk = 0
-            dots = this.Bind(dots, numberOfClusters)
+        this.clusters = []
 
-            for (let j = 0; j < this.clusArr.length; j++) {
-                this.clusArr[j].SetCenter()
+        for (let i = 0; i < numberOfClusters; i++) {
+            this.clusters[i] = new Cluster()
+        }
+
+        this.identifyCenters(numberOfClusters, dots)
+
+        let numberOfClustersToCheck = 0
+
+        while (numberOfClustersToCheck != numberOfClusters) {
+            numberOfClustersToCheck = 0
+
+            dots = this.bind(dots, numberOfClusters)
+
+            for (let j = 0; j < this.clusters.length; j++) {
+                this.clusters[j].setCenter()
             }
             for (let p = 0; p < numberOfClusters; p++) {
-                if (this.clusArr[p].curX == this.clusArr[p].lastX && this.clusArr[p].curY == this.clusArr[p].lastY)
-                    chk++
-            }
-
-            if (chk == numberOfClusters) {
-                break
+                if (this.clusters[p].currentX == this.clusters[p].lastX && this.clusters[p].currentY == this.clusters[p].lastY)
+                    numberOfClustersToCheck++
             }
         }
-        return dots;
+        return dots
     }
 }
 
