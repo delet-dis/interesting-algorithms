@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <ctime>
 #include <cstdint>
-#include <thread>
+#include <random>
 #include "lib/source_code.h"
 #include "lib/utils.h"
 #include "lib/gentic_coefficients.h"
@@ -33,10 +33,6 @@ struct individual {
     SourceCode *it;
     int fitness;
 };
-
-int numOfThreads;
-std::thread **threads;
-
 
 void sift(individual *arr, int pos, int len){
     int child = pos * 2 + 1;
@@ -85,7 +81,8 @@ int main() {
     
     int seed = time(nullptr);
     printf("seed: %d\n", seed);
-    std::srand(seed);
+    std::mt19937 rnd;
+    rnd.seed(seed);
     //FILE *log = fopen("log.txt", "w");
     
     SourceCode fib;
@@ -93,6 +90,7 @@ int main() {
     
     individual parents[numOfParents];
     individual children[numOfChildren];
+    
     for (auto & parent : parents){
         parent.it = new SourceCode();
         parent.fitness = 1000;
@@ -104,7 +102,7 @@ int main() {
     for (j = 0; j < numOfGenerations && parents[0].fitness != 0; j++) {
         #pragma omp parallel
         {
-            srandint(std::rand());
+            srandint(rnd());
             #pragma omp for
             for (int i = 0; i < numOfChildren; i++) {
                 delete children[i].it;
