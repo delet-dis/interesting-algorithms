@@ -1,6 +1,6 @@
 #pragma once
 const int numOfGenerations = 50000;
-const int numOfFreshParents = 0;
+const int numOfFreshParents = 1;
 const int numOfRandParents = 10;
 const int numOfEliteParents = 3;
 const int numOfParents = numOfEliteParents + numOfRandParents + numOfFreshParents;
