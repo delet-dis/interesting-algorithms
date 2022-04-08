@@ -1,4 +1,4 @@
-import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
+import SidebarLinkEntity from "@/data/models/SidebarLinkEntity"
 
 class Destinations{
     static readonly destinationsList: SidebarLinkEntity[] = [

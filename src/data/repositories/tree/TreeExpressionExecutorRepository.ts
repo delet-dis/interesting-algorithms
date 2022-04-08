@@ -1,5 +1,5 @@
-import TreeExpressionExecutorInterface from "@/data/interfaces/tree/TreeExpressionExecutorInterface";
-import Node from "@/data/models/tree/Node";
+import TreeExpressionExecutorInterface from "@/data/interfaces/tree/TreeExpressionExecutorInterface"
+import Node from "@/data/models/tree/Node"
 
 class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterface{
     private static instance: TreeExpressionExecutorRepository

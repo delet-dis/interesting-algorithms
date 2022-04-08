@@ -11,10 +11,10 @@
 </template>
 
 <script lang="ts">
-import {Options, setup, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
-import {useMeta} from "vue-meta";
-import AboutText from "@/ui/views/aboutView/components/AboutDescription.vue";
+import {Options, setup, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
+import {useMeta} from "vue-meta"
+import AboutText from "@/ui/views/aboutView/components/AboutDescription.vue"
 
 
 @Options({
@@ -25,11 +25,8 @@ import AboutText from "@/ui/views/aboutView/components/AboutDescription.vue";
 })
 export default class AboutView extends Vue {
     meta = setup(() => useMeta({
-        title: '🏠',
-        htmlAttrs: { lang: 'ru', amp: true }
+        title: "🏠",
+        htmlAttrs: { lang: "ru", amp: true }
     }))
 }
 </script>
-
-<style scoped>
-</style>

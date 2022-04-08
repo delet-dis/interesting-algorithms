@@ -1,6 +1,6 @@
-import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
-import Point from "@/data/models/Point";
+import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution"
+import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell"
+import Point from "@/data/models/Point"
 
 
 interface LabyrinthSolverInterface {

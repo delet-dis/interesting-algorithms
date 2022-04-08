@@ -2,13 +2,13 @@ export {};
 
 declare global {
     interface HTMLCanvasElement {
-        resizeToTwentyFivePx(this: HTMLCanvasElement): HTMLCanvasElement;
+        resizeToTwentyFivePx(this: HTMLCanvasElement): HTMLCanvasElement
     }
 }
 
 HTMLCanvasElement.prototype.resizeToTwentyFivePx = function (this: HTMLCanvasElement) {
-    const resizedCanvas = document.createElement('canvas')
-    const resizedCanvasContext = resizedCanvas.getContext('2d')
+    const resizedCanvas = document.createElement("canvas")
+    const resizedCanvasContext = resizedCanvas.getContext("2d")
 
     resizedCanvas.width = 25
     resizedCanvas.height = 25

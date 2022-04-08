@@ -53,13 +53,13 @@
 </template>
 
 <script lang="ts">
-import {Options, setup, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
-import {useMeta} from "vue-meta";
-import NeuralDescription from "@/ui/views/neuralView/components/NeuralDescription.vue";
-import Error from "@/ui/components/error/Error.vue";
-import DrawingState from "@/ui/views/neuralView/enums/DrawingState";
-import NeuralAlgorithmRepository from "@/data/repositories/neural/NeuralAlgorithmRepository";
+import {Options, setup, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
+import {useMeta} from "vue-meta"
+import NeuralDescription from "@/ui/views/neuralView/components/NeuralDescription.vue"
+import Error from "@/ui/components/error/Error.vue"
+import DrawingState from "@/ui/views/neuralView/enums/DrawingState"
+import NeuralAlgorithmRepository from "@/data/repositories/neural/NeuralAlgorithmRepository"
 
 
 @Options({
@@ -71,8 +71,8 @@ import NeuralAlgorithmRepository from "@/data/repositories/neural/NeuralAlgorith
 })
 export default class NeuralView extends Vue {
     meta = setup(() => useMeta({
-        title: '🧠',
-        htmlAttrs: {lang: 'ru', amp: true}
+        title: "🧠",
+        htmlAttrs: {lang: "ru", amp: true}
     }))
 
     private isErrorDisplaying = false
@@ -91,7 +91,7 @@ export default class NeuralView extends Vue {
         if (card) {
             card.style.height = card.clientWidth + `px`
 
-            card.setAttribute('height', card.clientWidth + `px`)
+            card.setAttribute("height", card.clientWidth + `px`)
         }
     }
 
@@ -110,8 +110,8 @@ export default class NeuralView extends Vue {
                 this.canvas.style.width = widthAndHeightDimensions + "px"
                 this.canvas.style.height = widthAndHeightDimensions + "px"
 
-                this.canvas.setAttribute('width', widthAndHeightDimensions + "px")
-                this.canvas.setAttribute('height', widthAndHeightDimensions + "px")
+                this.canvas.setAttribute("width", widthAndHeightDimensions + "px")
+                this.canvas.setAttribute("height", widthAndHeightDimensions + "px")
 
                 this.canvasContext.putImageData(tempImage, 0, 0)
             }
@@ -119,8 +119,8 @@ export default class NeuralView extends Vue {
     }
 
     private static resizeCanvas(canvas: HTMLCanvasElement, sizing: number) {
-        const resizedCanvas = document.createElement('canvas')
-        const resizedCanvasContext = resizedCanvas.getContext('2d')
+        const resizedCanvas = document.createElement("canvas")
+        const resizedCanvasContext = resizedCanvas.getContext("2d")
 
         resizedCanvas.width = sizing
         resizedCanvas.height = sizing
@@ -268,34 +268,34 @@ export default class NeuralView extends Vue {
         NeuralView.updateCardSize(card)
         this.updateCanvasSize()
 
-        window?.addEventListener('resize', () => {
+        window?.addEventListener("resize", () => {
             NeuralView.updateCardSize(card)
             this.updateCanvasSize()
         })
     }
 
     private initCanvasMouseEvents() {
-        this.canvas?.addEventListener('mousedown', this.canvasMouseDownListener)
-        this.canvas?.addEventListener('mouseup', this.canvasMouseUpListener)
-        this.canvas?.addEventListener('mouseout', this.canvasMouseOutListener)
-        this.canvas?.addEventListener('mousemove', this.canvasMouseMoveListener)
+        this.canvas?.addEventListener("mousedown", this.canvasMouseDownListener)
+        this.canvas?.addEventListener("mouseup", this.canvasMouseUpListener)
+        this.canvas?.addEventListener("mouseout", this.canvasMouseOutListener)
+        this.canvas?.addEventListener("mousemove", this.canvasMouseMoveListener)
 
-        this.canvas?.addEventListener('touchstart', this.canvasTouchStartListener)
-        this.canvas?.addEventListener('touchmove', this.canvasTouchMoveListener)
-        this.canvas?.addEventListener('touchend', this.canvasTouchEndListener)
+        this.canvas?.addEventListener("touchstart", this.canvasTouchStartListener)
+        this.canvas?.addEventListener("touchmove", this.canvasTouchMoveListener)
+        this.canvas?.addEventListener("touchend", this.canvasTouchEndListener)
     }
 
     private initSubmitButtonOnClickListener() {
         let submitButton = document.getElementById("submitButton")
 
-        submitButton?.addEventListener('click', () => {
+        submitButton?.addEventListener("click", () => {
             this.isErrorDisplaying = this.isCanvasBlank()
 
             if (this.canvas) {
                 let outputCanvasSizing = 28
 
                 let resizedCanvas = NeuralView.resizeCanvas(this.canvas, outputCanvasSizing)
-                let canvasContext = resizedCanvas.getContext('2d')
+                let canvasContext = resizedCanvas.getContext("2d")
 
                 if (canvasContext) {
                     this.displayResult(NeuralAlgorithmRepository.getInstance()
@@ -308,7 +308,7 @@ export default class NeuralView extends Vue {
     private initClearButtonOnClickListener() {
         let clearButton = document.getElementById("clearButton")
 
-        clearButton?.addEventListener('click', () => {
+        clearButton?.addEventListener("click", () => {
             this.changeCanvasDrawingState(DrawingState.CLEANING)
         })
     }

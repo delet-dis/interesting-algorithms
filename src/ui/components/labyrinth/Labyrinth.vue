@@ -12,14 +12,14 @@
 </template>
 
 <script lang="ts">
-import {Options, prop, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
-import SidebarLinkEntity from "@/data/models/SidebarLinkEntity";
-import CellDisplayType from "@/data/enums/CellDisplayType";
-import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import Point from "@/data/models/Point";
-import Cell from "@/data/models/cell/Cell";
-import AntCellType from "@/data/enums/AntCellType";
+import {Options, prop, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
+import SidebarLinkEntity from "@/data/models/SidebarLinkEntity"
+import CellDisplayType from "@/data/enums/CellDisplayType"
+import LabyrinthCellType from "@/data/enums/LabyrinthCellType"
+import Point from "@/data/models/Point"
+import Cell from "@/data/models/cell/Cell"
+import AntCellType from "@/data/enums/AntCellType"
 
 class Props {
     labyrinthSizing: SidebarLinkEntity = prop({
@@ -77,11 +77,11 @@ export default class Labyrinth extends Vue.with(Props) {
         if (cell.classList.contains(CellDisplayType.FINISH_CELL)) {
             cell.classList.remove(CellDisplayType.FINISH_CELL)
 
-            cell.removeAttribute('data-nutritionalValue')
+            cell.removeAttribute("data-nutritionalValue")
         } else {
             cell.classList.add(CellDisplayType.FINISH_CELL)
 
-            cell.setAttribute('data-nutritionalValue', this.foodNutritionalValue.toString())
+            cell.setAttribute("data-nutritionalValue", this.foodNutritionalValue.toString())
         }
     }
 
@@ -144,7 +144,7 @@ export default class Labyrinth extends Vue.with(Props) {
     private static initCardWidthListener() {
         Labyrinth.updateCardSize()
 
-        window?.addEventListener('resize', () => {
+        window?.addEventListener("resize", () => {
             Labyrinth.updateCardSize()
         })
     }
@@ -156,7 +156,7 @@ export default class Labyrinth extends Vue.with(Props) {
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
             cell.classList.remove(CellDisplayType.FINISHABLE_CELL)
 
-            cell.addEventListener('click', this.startPickingListener)
+            cell.addEventListener("click", this.startPickingListener)
         })
     }
 
@@ -166,7 +166,7 @@ export default class Labyrinth extends Vue.with(Props) {
             cell.classList.remove(CellDisplayType.FINISH_CELL)
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
-            cell.addEventListener('click', this.finishPickingListener)
+            cell.addEventListener("click", this.finishPickingListener)
         })
     }
 
@@ -175,7 +175,7 @@ export default class Labyrinth extends Vue.with(Props) {
             cell.classList.add(CellDisplayType.FINISHABLE_CELL)
             cell.classList.remove(CellDisplayType.BORDERABLE_CELL)
 
-            cell.addEventListener('click', this.foodPickingListener)
+            cell.addEventListener("click", this.foodPickingListener)
         })
     }
 
@@ -183,7 +183,7 @@ export default class Labyrinth extends Vue.with(Props) {
         Array.from(this.cells).forEach((cell) => {
             cell.classList.add(CellDisplayType.BORDERABLE_CELL)
 
-            cell.addEventListener('click', this.borderPickingListener)
+            cell.addEventListener("click", this.borderPickingListener)
         })
     }
 
@@ -219,25 +219,25 @@ export default class Labyrinth extends Vue.with(Props) {
 
     removeStartListener() {
         Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.startPickingListener)
+            cell.removeEventListener("click", this.startPickingListener)
         })
     }
 
     removeFinishListener() {
         Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.finishPickingListener)
+            cell.removeEventListener("click", this.finishPickingListener)
         })
     }
 
     removeFoodListener() {
         Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.foodPickingListener)
+            cell.removeEventListener("click", this.foodPickingListener)
         })
     }
 
     removeBorderListener() {
         Array.from(this.cells).forEach((cell) => {
-            cell.removeEventListener('click', this.borderPickingListener)
+            cell.removeEventListener("click", this.borderPickingListener)
         })
     }
 

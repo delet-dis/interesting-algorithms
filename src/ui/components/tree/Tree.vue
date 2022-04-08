@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
-import Node from "@/data/models/tree/Node";
+import {Options, Vue} from "vue-class-component"
+import Node from "@/data/models/tree/Node"
 
 @Options({
     components: {},
@@ -26,10 +26,10 @@ export default class Tree extends Vue {
 
     private drawDisplayingTree() {
         if (this.displayingTree) {
-            let displayingTreeUl = document.createElement('ul')
-            let displayingTreeLi = document.createElement('li')
+            let displayingTreeUl = document.createElement("ul")
+            let displayingTreeLi = document.createElement("li")
 
-            let tree = document.getElementById('tree')
+            let tree = document.getElementById("tree")
 
             this.displayingTree.forEach((node) => {
                 this.createNode(node, displayingTreeLi)
@@ -44,8 +44,8 @@ export default class Tree extends Vue {
     }
 
     private createNode(node: Node, parentElement: HTMLElement) {
-        let nodeWrapper = document.createElement('div')
-        let nodeHeader = document.createElement('a')
+        let nodeWrapper = document.createElement("div")
+        let nodeHeader = document.createElement("a")
 
         if (node.data.condition) {
             nodeHeader.innerText = "Условие:\n" + node.data.condition
@@ -58,10 +58,10 @@ export default class Tree extends Vue {
         nodeWrapper.appendChild(nodeHeader)
 
         if (node.nestedNodes) {
-            let nestedNodesUl = document.createElement('ul')
+            let nestedNodesUl = document.createElement("ul")
 
             node.nestedNodes.forEach((node) => {
-                let nestedNodeLi = document.createElement('li')
+                let nestedNodeLi = document.createElement("li")
                 this.createNode(node, nestedNodeLi)
                 nestedNodesUl.appendChild(nestedNodeLi)
             })
@@ -109,7 +109,7 @@ export default class Tree extends Vue {
 }
 
 .tree li::before, .tree li::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 50%;
@@ -151,7 +151,7 @@ export default class Tree extends Vue {
 
 
 .tree ul ul::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 50%;

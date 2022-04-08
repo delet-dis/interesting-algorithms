@@ -1,5 +1,5 @@
-import {BehaviorSubject} from "rxjs";
-import AntCell from "@/data/models/ant/AntCell";
+import {BehaviorSubject} from "rxjs"
+import AntCell from "@/data/models/ant/AntCell"
 
 abstract class AntBase {
     abstract mapState: BehaviorSubject<AntCell[]>

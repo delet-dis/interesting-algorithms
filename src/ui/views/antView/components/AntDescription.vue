@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
+import {Options, Vue} from "vue-class-component"
 
 
 @Options({
@@ -23,7 +23,3 @@ import {Options, Vue} from 'vue-class-component';
 export default class AntDescription extends Vue {
 }
 </script>
-
-<style scoped>
-
-</style>

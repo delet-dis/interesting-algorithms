@@ -103,22 +103,22 @@
 </template>
 
 <script lang="ts">
-import {Options, setup, Vue} from 'vue-class-component';
-import {useMeta} from "vue-meta";
-import Card from "@/ui/components/card/Card.vue";
-import AntDescription from "@/ui/views/antView/components/AntDescription.vue";
-import Error from "@/ui/components/error/Error.vue";
-import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
-import AntViewDisplayType from "@/ui/views/antView/enums/AntViewDisplayType";
-import 'vue-slider-component/theme/antd.css';
-import Point from "@/data/models/Point";
-import CellDisplayType from "@/data/enums/CellDisplayType";
-import VueSlider from "vue-slider-component";
-import AntCell from "@/data/models/ant/AntCell";
-import AntCellType from "@/data/enums/AntCellType";
-import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository";
-import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository";
-import {Subscription} from "rxjs";
+import {Options, setup, Vue} from "vue-class-component"
+import {useMeta} from "vue-meta"
+import Card from "@/ui/components/card/Card.vue"
+import AntDescription from "@/ui/views/antView/components/AntDescription.vue"
+import Error from "@/ui/components/error/Error.vue"
+import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue"
+import AntViewDisplayType from "@/ui/views/antView/enums/AntViewDisplayType"
+import "vue-slider-component/theme/antd.css"
+import Point from "@/data/models/Point"
+import CellDisplayType from "@/data/enums/CellDisplayType"
+import VueSlider from "vue-slider-component"
+import AntCell from "@/data/models/ant/AntCell"
+import AntCellType from "@/data/enums/AntCellType"
+import AntLabyrinthGeneratorRepository from "@/data/repositories/ant/AntLabyrinthGeneratorRepository"
+import AntPathFinderRepository from "@/data/repositories/ant/AntPathFinderRepository"
+import {Subscription} from "rxjs"
 
 @Options({
     components: {
@@ -131,8 +131,8 @@ import {Subscription} from "rxjs";
 })
 export default class AntView extends Vue {
     meta = setup(() => useMeta({
-        title: '🐜',
-        htmlAttrs: {lang: 'ru', amp: true}
+        title: "🐜",
+        htmlAttrs: {lang: "ru", amp: true}
     }))
 
     private isErrorDisplaying = false
@@ -355,7 +355,7 @@ export default class AntView extends Vue {
 
     private initLabyrinthOnClick() {
         if (this.labyrinth) {
-            (this.labyrinth.$el as HTMLElement).addEventListener('click', () => {
+            (this.labyrinth.$el as HTMLElement).addEventListener("click", () => {
                     this.isAbleToStart = this.isStartAndFinishAvailable()
                 }
             )
@@ -365,7 +365,7 @@ export default class AntView extends Vue {
     private initColonyCenterPickingButtonOnclickListener() {
         let colonyCenterPickingButton = document.getElementById("colonyCenterPickingButton")
 
-        colonyCenterPickingButton?.addEventListener('click', () => {
+        colonyCenterPickingButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.CENTER_PICKING)
         })
     }
@@ -373,7 +373,7 @@ export default class AntView extends Vue {
     private initFoodPickingButtonOnclickListener() {
         let foodPickingButton = document.getElementById("foodPickingButton")
 
-        foodPickingButton?.addEventListener('click', () => {
+        foodPickingButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.FOOD_PICKING)
         })
     }
@@ -381,7 +381,7 @@ export default class AntView extends Vue {
     private initBorderPickingButtonOnclickListener() {
         let borderButton = document.getElementById("borderPickingButton")
 
-        borderButton?.addEventListener('click', () => {
+        borderButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.BORDERS_PICKING)
         })
     }
@@ -389,7 +389,7 @@ export default class AntView extends Vue {
     private initStartButtonOnClickListener() {
         let startButton = document.getElementById("startButton")
 
-        startButton?.addEventListener('click', () => {
+        startButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.DATA_SUBMITTING)
         })
     }
@@ -397,7 +397,7 @@ export default class AntView extends Vue {
     private initClearButtonOnClickListener() {
         let clearButton = document.getElementById("clearButton")
 
-        clearButton?.addEventListener('click', () => {
+        clearButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.LABYRINTH_CLEANING)
         })
     }
@@ -405,7 +405,7 @@ export default class AntView extends Vue {
     private initGenerateButtonOnClickListener() {
         let generateButton = document.getElementById("generateButton")
 
-        generateButton?.addEventListener('click', () => {
+        generateButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(AntViewDisplayType.LABYRINTH_GENERATING)
         })
     }
@@ -413,7 +413,7 @@ export default class AntView extends Vue {
     private initStopButtonOnClickListener() {
         let stopButton = document.getElementById("stopButton")
 
-        stopButton?.addEventListener('click', () => {
+        stopButton?.addEventListener("click", () => {
             if (!this.isConfigEditable) {
                 this.changeLabyrinthDisplayState(AntViewDisplayType.LABYRINTH_STOP_DISPLAYING)
             }
@@ -433,7 +433,3 @@ export default class AntView extends Vue {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

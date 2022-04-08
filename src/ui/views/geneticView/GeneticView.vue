@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import {Options, setup, Vue} from 'vue-class-component';
+import {Options, setup, Vue} from "vue-class-component";
 import Card from "@/ui/components/card/Card.vue";
 import {useMeta} from "vue-meta";
 import GeneticText from "@/ui/views/geneticView/components/GeneticDescription.vue";
@@ -25,12 +25,8 @@ import GeneticText from "@/ui/views/geneticView/components/GeneticDescription.vu
 })
 export default class GeneticView extends Vue {
     meta = setup(() => useMeta({
-        title: '🧬',
-        htmlAttrs: { lang: 'ru', amp: true }
+        title: "🧬",
+        htmlAttrs: { lang: "ru", amp: true }
     }))
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -93,22 +93,22 @@
 </template>
 
 <script lang="ts">
-import {Options, setup, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
-import {useMeta} from "vue-meta";
-import LabyrinthDescription from "@/ui/views/labyrinthView/components/LabyrinthDescription.vue";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
-import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/LabyrinthGeneratorRepository";
-import VueSlider from "vue-slider-component";
-import 'vue-slider-component/theme/antd.css'
-import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import CellDisplayType from "@/data/enums/CellDisplayType";
-import Point from "@/data/models/Point";
-import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository";
-import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
-import LabyrinthViewDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthViewDisplayType";
-import Error from "@/ui/components/error/Error.vue";
-import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
+import {Options, setup, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
+import {useMeta} from "vue-meta"
+import LabyrinthDescription from "@/ui/views/labyrinthView/components/LabyrinthDescription.vue"
+import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell"
+import LabyrinthGeneratorRepository from "@/data/repositories/labyrinth/LabyrinthGeneratorRepository"
+import VueSlider from "vue-slider-component"
+import "vue-slider-component/theme/antd.css"
+import LabyrinthCellType from "@/data/enums/LabyrinthCellType"
+import CellDisplayType from "@/data/enums/CellDisplayType"
+import Point from "@/data/models/Point"
+import LabyrinthSolverRepository from "@/data/repositories/labyrinth/LabyrinthSolverRepository"
+import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution"
+import LabyrinthViewDisplayType from "@/ui/views/labyrinthView/enums/LabyrinthViewDisplayType"
+import Error from "@/ui/components/error/Error.vue"
+import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue"
 
 
 @Options({
@@ -122,8 +122,8 @@ import Labyrinth from "@/ui/components/labyrinth/Labyrinth.vue";
 })
 export default class LabyrinthView extends Vue {
     meta = setup(() => useMeta({
-        title: '🗺',
-        htmlAttrs: {lang: 'ru', amp: true}
+        title: "🗺",
+        htmlAttrs: {lang: "ru", amp: true}
     }))
 
     private isConfigEditable = true
@@ -320,7 +320,7 @@ export default class LabyrinthView extends Vue {
 
     private initLabyrinthOnClick() {
         if (this.labyrinth) {
-            (this.labyrinth.$el as HTMLElement).addEventListener('click', () => {
+            (this.labyrinth.$el as HTMLElement).addEventListener("click", () => {
                     this.isAbleToStart = this.isStartAndFinishAvailable()
                 }
             )
@@ -330,7 +330,7 @@ export default class LabyrinthView extends Vue {
     private initStartPickingButtonOnclickListener() {
         let startButton = document.getElementById("startPickingButton")
 
-        startButton?.addEventListener('click', () => {
+        startButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.START_PICKING)
 
             this.isAbleToStart = this.isStartAndFinishAvailable()
@@ -340,7 +340,7 @@ export default class LabyrinthView extends Vue {
     private initFinishPickingButtonOnclickListener() {
         let finishButton = document.getElementById("finishPickingButton")
 
-        finishButton?.addEventListener('click', () => {
+        finishButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.FINISH_PICKING)
 
             this.isAbleToStart = this.isStartAndFinishAvailable()
@@ -350,7 +350,7 @@ export default class LabyrinthView extends Vue {
     private initBorderPickingButtonOnclickListener() {
         let borderButton = document.getElementById("borderPickingButton")
 
-        borderButton?.addEventListener('click', () => {
+        borderButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.BORDERS_PICKING)
 
             this.isAbleToStart = this.isStartAndFinishAvailable()
@@ -360,7 +360,7 @@ export default class LabyrinthView extends Vue {
     private initStartButtonOnClickListener() {
         let startButton = document.getElementById("startButton")
 
-        startButton?.addEventListener('click', () => {
+        startButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.DATA_SUBMITTING)
         })
     }
@@ -368,7 +368,7 @@ export default class LabyrinthView extends Vue {
     private initClearButtonOnClickListener() {
         let clearButton = document.getElementById("clearButton")
 
-        clearButton?.addEventListener('click', () => {
+        clearButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_CLEANING)
         })
     }
@@ -376,7 +376,7 @@ export default class LabyrinthView extends Vue {
     private initGenerateButtonOnClickListener() {
         let generateButton = document.getElementById("generateButton")
 
-        generateButton?.addEventListener('click', () => {
+        generateButton?.addEventListener("click", () => {
             this.changeLabyrinthDisplayState(LabyrinthViewDisplayType.LABYRINTH_GENERATING)
         })
     }
@@ -393,7 +393,3 @@ export default class LabyrinthView extends Vue {
     }
 }
 </script>
-
-<style scoped>
-
-</style>
