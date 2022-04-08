@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
+import {Options, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
 
 @Options({
     components: {Card},

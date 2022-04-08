@@ -55,16 +55,16 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
-import Error from "@/ui/components/error/Error.vue";
-import TreeDescription from "@/ui/views/treeView/components/TreeDescription.vue";
-import Modal from "@/ui/components/modal/Modal.vue";
-import TreeCreatorRepository from "@/data/repositories/tree/TreeCreatorRepository";
-import TreeExpressionExecutorRepository from "@/data/repositories/tree/TreeExpressionExecutorRepository";
-import Node from "@/data/models/tree/Node";
-import TreeReducerRepository from "@/data/repositories/tree/TreeReducerRepository";
-import Tree from "@/ui/components/tree/Tree.vue";
+import {Options, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
+import Error from "@/ui/components/error/Error.vue"
+import TreeDescription from "@/ui/views/treeView/components/TreeDescription.vue"
+import Modal from "@/ui/components/modal/Modal.vue"
+import TreeCreatorRepository from "@/data/repositories/tree/TreeCreatorRepository"
+import TreeExpressionExecutorRepository from "@/data/repositories/tree/TreeExpressionExecutorRepository"
+import Node from "@/data/models/tree/Node"
+import TreeReducerRepository from "@/data/repositories/tree/TreeReducerRepository"
+import Tree from "@/ui/components/tree/Tree.vue"
 
 @Options({
     components: {
@@ -163,17 +163,17 @@ export default class TreeView extends Vue {
     }
 
     private initLoadDataButtonOnClick() {
-        let loadDataButton = document.getElementById('loadData')
+        let loadDataButton = document.getElementById("loadData")
 
-        loadDataButton?.addEventListener('click', () => {
+        loadDataButton?.addEventListener("click", () => {
             this.showModalForDataLoading()
         })
     }
 
     private initExecuteQueryButtonOnClick() {
-        let executeQueryButton = document.getElementById('executeQuery')
+        let executeQueryButton = document.getElementById("executeQuery")
 
-        executeQueryButton?.addEventListener('click', () => {
+        executeQueryButton?.addEventListener("click", () => {
             if (this.displayingTreeAsArray) {
                 this.showModalForQueryExecuting()
 
@@ -185,9 +185,9 @@ export default class TreeView extends Vue {
     }
 
     private initReduceTreeButtonOnClick() {
-        let reduceTreeButton = document.getElementById('reduceTreeButton')
+        let reduceTreeButton = document.getElementById("reduceTreeButton")
 
-        reduceTreeButton?.addEventListener('click', () => {
+        reduceTreeButton?.addEventListener("click", () => {
             if (this.displayingTreeAsArray) {
                 this.submitDataToReduceTree()
 

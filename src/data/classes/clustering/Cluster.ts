@@ -1,4 +1,4 @@
-import Dot from "@/data/models/clustering/Dot";
+import Dot from "@/data/models/clustering/Dot"
 
 class Cluster {
     currentX = -1

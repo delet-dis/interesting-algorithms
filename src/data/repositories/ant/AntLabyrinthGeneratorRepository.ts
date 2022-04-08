@@ -1,7 +1,7 @@
-import AntCell from "@/data/models/ant/AntCell";
-import AntCellType from "@/data/enums/AntCellType";
-import point from "@/data/models/Point";
-import AntLabyrinthGeneratorInterface from "@/data/interfaces/ant/AntLabyrinthGeneratorInterface";
+import AntCell from "@/data/models/ant/AntCell"
+import AntCellType from "@/data/enums/AntCellType"
+import point from "@/data/models/Point"
+import AntLabyrinthGeneratorInterface from "@/data/interfaces/ant/AntLabyrinthGeneratorInterface"
 
 class AntLabyrinthGeneratorRepository implements AntLabyrinthGeneratorInterface {
     private static instance: AntLabyrinthGeneratorRepository

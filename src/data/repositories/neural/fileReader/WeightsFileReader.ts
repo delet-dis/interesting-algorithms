@@ -1,5 +1,5 @@
-import WeightsFileReaderInterface from "@/data/interfaces/neural/fileReader/WeightsFileReaderInterface";
-import file from "raw-loader!../../../raw/weights.txt";
+import WeightsFileReaderInterface from "@/data/interfaces/neural/fileReader/WeightsFileReaderInterface"
+import file from "raw-loader!../../../raw/weights.txt"
 
 class WeightsFileReader implements WeightsFileReaderInterface {
     private static instance: WeightsFileReader

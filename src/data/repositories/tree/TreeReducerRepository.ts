@@ -1,5 +1,5 @@
-import Node from "@/data/models/tree/Node";
-import TreeReducerInterface from "@/data/interfaces/tree/TreeReducerInterface";
+import Node from "@/data/models/tree/Node"
+import TreeReducerInterface from "@/data/interfaces/tree/TreeReducerInterface"
 
 class TreeReducerRepository implements TreeReducerInterface {
     private static instance: TreeReducerRepository

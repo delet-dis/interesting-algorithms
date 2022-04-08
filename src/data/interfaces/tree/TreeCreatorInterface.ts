@@ -1,4 +1,4 @@
-import Node from "@/data/models/tree/Node";
+import Node from "@/data/models/tree/Node"
 
 interface TreeCreatorInterface {
     createTree(inputData: string): Node[] | null

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
+import {Options, Vue} from "vue-class-component"
 
 @Options({
     components: {
@@ -18,7 +18,3 @@ import {Options, Vue} from 'vue-class-component';
 export default class NeuralDescription extends Vue {
 }
 </script>
-
-<style scoped>
-
-</style>

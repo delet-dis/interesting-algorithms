@@ -1,5 +1,5 @@
-import TreeCreatorInterface from "@/data/interfaces/tree/TreeCreatorInterface";
-import Node from "@/data/models/tree/Node";
+import TreeCreatorInterface from "@/data/interfaces/tree/TreeCreatorInterface"
+import Node from "@/data/models/tree/Node"
 
 class TreeCreatorRepository implements TreeCreatorInterface {
     private static instance: TreeCreatorRepository

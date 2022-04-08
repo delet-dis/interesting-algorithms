@@ -1,6 +1,6 @@
-import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface";
-import Dot from "@/data/models/clustering/Dot";
-import Cluster from "@/data/classes/clustering/Cluster";
+import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface"
+import Dot from "@/data/models/clustering/Dot"
+import Cluster from "@/data/classes/clustering/Cluster"
 
 class KMeansClusteringRepository implements ClusteringInterface {
     private static instance: KMeansClusteringRepository

@@ -1,4 +1,4 @@
-import Node from "@/data/models/tree/Node";
+import Node from "@/data/models/tree/Node"
 
 interface TreeExpressionExecutorInterface {
     executeExpressionInTree(expression: string, tree: Node[]): Node[] | null

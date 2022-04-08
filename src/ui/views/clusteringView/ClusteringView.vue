@@ -86,17 +86,17 @@
 </template>
 
 <script lang="ts">
-import {Options, setup, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
-import {useMeta} from "vue-meta";
-import ClusteringDescription from "@/ui/views/clusteringView/components/ClusteringDescription.vue";
-import VueSlider from "vue-slider-component";
-import 'vue-slider-component/theme/antd.css'
-import Dot from "@/data/models/clustering/Dot";
-import KMeansClusteringRepository from "@/data/repositories/clustering/KMeansClusteringRepository";
-import ClusteringDisplayState from "@/ui/views/clusteringView/enums/ClusteringDisplayState";
-import HierarchyClusteringRepository from "@/data/repositories/clustering/HierarchyClusteringRepository";
-import Error from "@/ui/components/error/Error.vue";
+import {Options, setup, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
+import {useMeta} from "vue-meta"
+import ClusteringDescription from "@/ui/views/clusteringView/components/ClusteringDescription.vue"
+import VueSlider from "vue-slider-component"
+import "vue-slider-component/theme/antd.css"
+import Dot from "@/data/models/clustering/Dot"
+import KMeansClusteringRepository from "@/data/repositories/clustering/KMeansClusteringRepository"
+import ClusteringDisplayState from "@/ui/views/clusteringView/enums/ClusteringDisplayState"
+import HierarchyClusteringRepository from "@/data/repositories/clustering/HierarchyClusteringRepository"
+import Error from "@/ui/components/error/Error.vue"
 
 
 @Options({
@@ -109,8 +109,8 @@ import Error from "@/ui/components/error/Error.vue";
 })
 export default class ClusteringView extends Vue {
     meta = setup(() => useMeta({
-        title: '📦',
-        htmlAttrs: {lang: 'ru', amp: true}
+        title: "📦",
+        htmlAttrs: {lang: "ru", amp: true}
     }))
 
     private dotsToDisplayField: Dot[] = []
@@ -225,11 +225,11 @@ export default class ClusteringView extends Vue {
     }
 
     private initCanvasOnClickListener() {
-        this.canvas?.addEventListener('click', this.canvasClickListener)
+        this.canvas?.addEventListener("click", this.canvasClickListener)
     }
 
     private removeCanvasClickListener() {
-        this.canvas?.removeEventListener('click', this.canvasClickListener)
+        this.canvas?.removeEventListener("click", this.canvasClickListener)
     }
 
     private initCanvas() {
@@ -245,7 +245,7 @@ export default class ClusteringView extends Vue {
         ClusteringView.updateCardSize(card)
         this.updateCanvasSize()
 
-        window?.addEventListener('resize', () => {
+        window?.addEventListener("resize", () => {
             ClusteringView.updateCardSize(card)
             this.updateCanvasSize()
         })
@@ -254,7 +254,7 @@ export default class ClusteringView extends Vue {
     private initAddDotButtonOnClickListener() {
         let addDotButton = document.getElementById("addDotButton")
 
-        addDotButton?.addEventListener('click', () => {
+        addDotButton?.addEventListener("click", () => {
             this.clusteringDisplayState = ClusteringDisplayState.DOTS_ADDING
         })
     }
@@ -262,7 +262,7 @@ export default class ClusteringView extends Vue {
     private initRemoveDotButtonOnClickListener() {
         let removeDotButton = document.getElementById("removeDotButton")
 
-        removeDotButton?.addEventListener('click', () => {
+        removeDotButton?.addEventListener("click", () => {
             this.clusteringDisplayState = ClusteringDisplayState.DOTS_REMOVING
         })
     }
@@ -270,7 +270,7 @@ export default class ClusteringView extends Vue {
     private initKMeansButtonOnClickListener() {
         let kMeansButton = document.getElementById("kMeansButton")
 
-        kMeansButton?.addEventListener('click', () => {
+        kMeansButton?.addEventListener("click", () => {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
                 this.isErrorDisplaying = false
 
@@ -290,7 +290,7 @@ export default class ClusteringView extends Vue {
     private initHierarchyButtonOnClickListener() {
         let hierarchyButton = document.getElementById("hierarchyButton")
 
-        hierarchyButton?.addEventListener('click', () => {
+        hierarchyButton?.addEventListener("click", () => {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
                 this.isErrorDisplaying = false
 
@@ -310,7 +310,7 @@ export default class ClusteringView extends Vue {
     private initComparisonButtonOnClickListener() {
         let comparisonButton = document.getElementById("comparisonButton")
 
-        comparisonButton?.addEventListener('click', () => {
+        comparisonButton?.addEventListener("click", () => {
             if (this.numberOfClusters <= this.dotsToDisplay.length) {
                 this.isErrorDisplaying = false
 

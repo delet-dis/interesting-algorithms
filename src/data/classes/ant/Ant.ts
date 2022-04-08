@@ -1,6 +1,6 @@
-import AntCell from "@/data/models/ant/AntCell";
-import point from "@/data/models/Point";
-import AntCellType from "@/data/enums/AntCellType";
+import AntCell from "@/data/models/ant/AntCell"
+import point from "@/data/models/Point"
+import AntCellType from "@/data/enums/AntCellType"
 
 class Ant {
     public way: AntCell[] = []

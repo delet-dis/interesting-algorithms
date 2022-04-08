@@ -1,6 +1,6 @@
-import Matrix from "@/data/classes/neural/Matrix";
-import ActivationFunction from "@/data/classes/neural/ActivationFunction";
-import WeightsFileReader from "@/data/repositories/neural/fileReader/WeightsFileReader";
+import Matrix from "@/data/classes/neural/Matrix"
+import ActivationFunction from "@/data/classes/neural/ActivationFunction"
+import WeightsFileReader from "@/data/repositories/neural/fileReader/WeightsFileReader"
 
 class Network {
     private static instance: Network

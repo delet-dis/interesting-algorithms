@@ -1,5 +1,5 @@
-import NeuralInterface from "@/data/interfaces/neural/NeuralInterface";
-import Network from "@/data/classes/neural/Network";
+import NeuralInterface from "@/data/interfaces/neural/NeuralInterface"
+import Network from "@/data/classes/neural/Network"
 
 class NeuralAlgorithmRepository implements NeuralInterface {
     private static instance: NeuralAlgorithmRepository

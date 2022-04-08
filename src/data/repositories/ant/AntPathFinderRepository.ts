@@ -1,9 +1,9 @@
-import AntBase from "@/data/interfaces/ant/AntBase";
-import {BehaviorSubject} from "rxjs";
-import AntCell from "@/data/models/ant/AntCell";
-import Ant from "@/data/classes/ant/Ant";
-import AntCellType from "@/data/enums/AntCellType";
-import point from "@/data/models/Point";
+import AntBase from "@/data/interfaces/ant/AntBase"
+import {BehaviorSubject} from "rxjs"
+import AntCell from "@/data/models/ant/AntCell"
+import Ant from "@/data/classes/ant/Ant"
+import AntCellType from "@/data/enums/AntCellType"
+import point from "@/data/models/Point"
 
 class AntPathFinderRepository extends AntBase {
     private static instance: AntPathFinderRepository

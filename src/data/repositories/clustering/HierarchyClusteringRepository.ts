@@ -1,7 +1,7 @@
-import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface";
-import Dot from "@/data/models/clustering/Dot";
-import LinkedList, {ListNode} from "@/data/models/clustering/DoubleLinkedList";
-import Cluster from "@/data/models/clustering/Cluster";
+import ClusteringInterface from "@/data/interfaces/clustering/ClusteringInterface"
+import Dot from "@/data/models/clustering/Dot"
+import LinkedList, {ListNode} from "@/data/models/clustering/DoubleLinkedList"
+import Cluster from "@/data/models/clustering/Cluster"
 
 class HierarchyClusteringRepository implements ClusteringInterface {
     private static instance: HierarchyClusteringRepository

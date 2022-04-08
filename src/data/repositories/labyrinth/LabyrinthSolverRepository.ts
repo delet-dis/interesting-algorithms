@@ -1,8 +1,8 @@
-import LabyrinthCellType from "@/data/enums/LabyrinthCellType";
-import LabyrinthSolverInterface from "@/data/interfaces/labyrinth/LabyrinthSolverInterface";
-import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell";
-import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution";
-import Point from "@/data/models/Point";
+import LabyrinthCellType from "@/data/enums/LabyrinthCellType"
+import LabyrinthSolverInterface from "@/data/interfaces/labyrinth/LabyrinthSolverInterface"
+import LabyrinthCell from "@/data/models/labyrinth/LabyrinthCell"
+import LabyrinthSolution from "@/data/models/labyrinth/LabyrinthSolution"
+import Point from "@/data/models/Point"
 
 
 type pointParams = {

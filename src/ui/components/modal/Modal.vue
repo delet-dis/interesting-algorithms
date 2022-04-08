@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
-import Card from "@/ui/components/card/Card.vue";
+import {Options, Vue} from "vue-class-component"
+import Card from "@/ui/components/card/Card.vue"
 
 @Options({
     components: {Card},
@@ -49,9 +49,9 @@ export default class Modal extends Vue {
     private inputField: HTMLInputElement | null = null
 
     setSubmitButtonOnClick(functionToInvoke: (inputString: string) => (void)) {
-        let submitButton = document.getElementById('submitButton')
+        let submitButton = document.getElementById("submitButton")
 
-        submitButton?.addEventListener('click', () => {
+        submitButton?.addEventListener("click", () => {
             if (this.isAvailableToSubmitData) {
                 if (this.inputField) {
                     functionToInvoke(this.inputField.value)
@@ -73,19 +73,19 @@ export default class Modal extends Vue {
     }
 
     private initInputField() {
-        this.inputField = document.getElementById('inputField') as HTMLInputElement
+        this.inputField = document.getElementById("inputField") as HTMLInputElement
     }
 
     private initCancelButtonOnClick() {
-        let cancelButton = document.getElementById('cancelButton')
+        let cancelButton = document.getElementById("cancelButton")
 
-        cancelButton?.addEventListener('click', () => {
+        cancelButton?.addEventListener("click", () => {
             this.clearEnteredData()
         })
     }
 
     private initInputFieldTextChangeListener() {
-        this.inputField?.addEventListener('input', () => {
+        this.inputField?.addEventListener("input", () => {
             if (this.inputField) {
                 this.isAvailableToSubmitData = this.inputField.value.length > 0;
             }
