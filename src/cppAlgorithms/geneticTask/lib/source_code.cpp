@@ -345,6 +345,7 @@ void SourceCode::add_some_lines() {
         quantity = randint(needVar, threshold / 3);
     else
         quantity = 0;
+    
     for (int i = 0; i < quantity; i++) {
         auto newLine = code.emplace(placeToDeclareVars);
         newLine->contentPile = prefixes::get_template(word0::NEW_VAR);
@@ -368,7 +369,7 @@ void SourceCode::add_some_lines() {
     
     auto curLine = placeToDeclareVars;
     curLine++;
-    u_int8_t curScope, lastScope;
+    u_int8_t curScope, lastScope, defScope = 0;
     int firstAvailableWord;
     u_int8_t availableWords[6] = {
         word0::FOR,
@@ -380,22 +381,30 @@ void SourceCode::add_some_lines() {
     };
         
     
+    if (curLine->words[0] == word0::DEF) 
+        defScope = curLine->scope;
+    
     do  {
         
         curScope = curLine->scope;
         ++curLine;
         
-        if(curLine == placeToDeclareFuncs)
-            continue;
+        //if(curLine == placeToDeclareFuncs)
+        //    continue;
 
 
         if(SKIP_ADDING_NEW_LINE)
             continue;
         
-
-        if(curLine == code.end())
+        if(curLine == placeToDeclareFuncs) {
+            if (defScope)
+                lastScope = defScope;
+            else
+                continue;
+        }
+        else if (curLine == code.end())
             lastScope = 0;
-        else if(curLine->words[0] == word0::IF || curLine->words[0] == word0::FOR)
+        else if (curLine->words[0] == word0::IF || curLine->words[0] == word0::FOR)
             lastScope = scope.get_prev_scope(curLine->scope);
         else
             lastScope = curLine->scope;
@@ -403,9 +412,9 @@ void SourceCode::add_some_lines() {
         curScope = scope.get_rand_prev_scope(curScope, lastScope);
        
         firstAvailableWord = 0;
-        if(!scope.free_vars_available())
+        if (!scope.free_vars_available())
             firstAvailableWord = 1;   //FOR is impossible
-        if(!scope.free_scopes_available())
+        if (!scope.free_scopes_available())
             firstAvailableWord = 2; //IF and FOR is impossible
         
         
