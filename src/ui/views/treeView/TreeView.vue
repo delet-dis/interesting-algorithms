@@ -15,7 +15,7 @@
                 </Error>
             </div>
             <div class="col-lg-6 col-md-12">
-                <Card class="treeCard" id="treeCard" v-if="displayingTreeAsArray">
+                <Card class="treeCard" id="treeCard" :class="{'invisibleCard':!displayingTreeAsArray}">
                     <Tree ref="tree"/>
                 </Card>
             </div>
@@ -213,5 +213,9 @@ export default class TreeView extends Vue {
     overflow: auto;
     display: flex;
     justify-content: center;
+}
+
+.invisibleCard {
+    display: none;
 }
 </style>

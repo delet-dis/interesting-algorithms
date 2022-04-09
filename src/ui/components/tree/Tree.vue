@@ -7,6 +7,7 @@
 <script lang="ts">
 import {Options, Vue} from "vue-class-component"
 import Node from "@/data/models/tree/Node"
+import NodeType from "@/data/models/tree/NodeType";
 
 @Options({
     components: {},
@@ -47,11 +48,15 @@ export default class Tree extends Vue {
         let nodeWrapper = document.createElement("div")
         let nodeHeader = document.createElement("a")
 
-        if (node.data.condition) {
+        if (node.data.type == NodeType.PATH_NODE) {
+            nodeHeader.classList.add("pathNode")
+        }
+
+        if (node.data.condition || node.data.type == NodeType.BRANCH_NODE) {
             nodeHeader.innerText = "Условие:\n" + node.data.condition
         }
 
-        if (node.data.result) {
+        if (node.data.result || node.data.type == NodeType.LEAF_NODE) {
             nodeHeader.innerText = "Результат:\n" + node.data.result
         }
 
@@ -175,6 +180,11 @@ export default class Tree extends Vue {
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
+}
+
+.tree li a.pathNode {
+    background-color: black;
+    color: white;
 }
 
 .tree li a:hover, .tree li a:hover + ul li a {
