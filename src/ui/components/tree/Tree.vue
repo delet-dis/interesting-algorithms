@@ -52,12 +52,14 @@ export default class Tree extends Vue {
             nodeHeader.classList.add("pathNode")
         }
 
+        nodeHeader.innerText = "Параметр: " + node.data.responsibleParameter + "\n\n"
+
         if (node.data.condition || node.data.type == NodeType.BRANCH_NODE) {
-            nodeHeader.innerText = "Условие:\n" + node.data.condition
+            nodeHeader.innerText = nodeHeader.innerText + "Условие:\n" + node.data.condition
         }
 
         if (node.data.result || node.data.type == NodeType.LEAF_NODE) {
-            nodeHeader.innerText = "Результат:\n" + node.data.result
+            nodeHeader.innerText = nodeHeader.innerText + "Результат:\n" + node.data.result
         }
 
         nodeWrapper.appendChild(nodeHeader)
