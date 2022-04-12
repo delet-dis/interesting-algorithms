@@ -135,9 +135,14 @@ class node {
             }
         }
     }
-    convertor(){
+    convert():Node{
         const curNodeData:NodeData=new NodeData(1,this.param,this.paramString)
-        const curNode:Node=new Node(NodeData,)
+        const nestedNodes:Node[]=[]
+        for (let i=0;i<this.nextNodes.length;i++){
+            nestedNodes.push(this.nextNodes[i].convert())
+        }
+        const curNode:Node=new Node(curNodeData,nestedNodes)
+        return curNode
     }
 }
 export default node
