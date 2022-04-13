@@ -143,13 +143,16 @@ class Node {
         }
     }
     convert():DisplayingNode{
-        const nestedNodes:DisplayingNode[]=[]
-        for (let i=0;i<this.nextNodes.length;i++){
-            nestedNodes.push(this.nextNodes[i].convert())
+        let nestedNodes:DisplayingNode[]|null=null
+        if(this.nextNodes.length>0) {
+            nestedNodes=[]
+            for (let i = 0; i < this.nextNodes.length; i++) {
+                nestedNodes.push(this.nextNodes[i].convert())
+            }
         }
         let nodeType=1
         let result:null|string=null
-        if(nestedNodes.length==0){
+        if(nestedNodes==null){
             nodeType=0
             result=this.currElems[0][this.currElems[0].length-1]
         }
