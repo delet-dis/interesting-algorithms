@@ -18,8 +18,8 @@ class TreeCreatorRepository implements TreeCreatorInterface {
         const data:string[][]=CSVParserRepository.getInstance().parseInputData(inputData)
         const root:node=new node(data,0)
         root.createNewNodes()
-        const rootOfNode:Node=root.convert()
-        return rootOfNode
+        const rootOfTree:Node=root.convert()
+        return rootOfTree
     }
 }
 
