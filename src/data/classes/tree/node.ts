@@ -148,10 +148,12 @@ class node {
             nestedNodes.push(this.nextNodes[i].convert())
         }
         let nodeType=1
+        let result:null|string=null
         if(nestedNodes.length==0){
             nodeType=0
+            result=this.currElems[0][this.currElems[0].length-1]
         }
-        const curNodeData:NodeData=new NodeData(nodeType,this.param,this.paramString)
+        const curNodeData:NodeData=new NodeData(nodeType,this.param,this.paramString,result)
         const curNode:Node=new Node(curNodeData,nestedNodes)
         return curNode
     }
