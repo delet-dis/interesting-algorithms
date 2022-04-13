@@ -15,17 +15,17 @@ class node {
     }
 
     chooseParam(): number {
-        this.param = 0
+        let newParam = 0
         let minEntropy = 100
         let curElemEntropy: number
         for (let i = 0; i < this.currElems[0].length; i++) {
             curElemEntropy = this.findEntropy(i)
             if (curElemEntropy < minEntropy && curElemEntropy!=0) {
                 minEntropy = curElemEntropy
-                this.param = i
+                newParam = i
             }
         }
-        return this.param
+        return newParam
     }
 
     findEntropy(num: number): number {
@@ -88,14 +88,18 @@ class node {
                     groupTwo.push(this.currElems[i])
                 }
             }
-            this.paramString=sum.toString()
             this.nextNodes[0] = new node(groupOne, this.depth)
+            this.nextNodes[0].paramString='<'+sum.toString()
+            this.nextNodes[0].param=separateByParam
             this.nextNodes[1] = new node(groupTwo, this.depth)
+            this.nextNodes[1].paramString='>='+ (sum.toString())
+            this.nextNodes[1].param=separateByParam
         }
         else {
             const sameNamesMas: string[] = []
             const sameNameCounter: number[] = []
             const groups:string[][][]=new Array()
+            const nextParamString:string[]=[]
             for (let i = 0; i < this.currElems.length; i++) {
                 let exist = false
                 for (let j = 0; j < sameNamesMas.length; j++) {
@@ -116,6 +120,7 @@ class node {
                 for (let j=0;j<this.currElems.length;j++){
                     if(sameNamesMas[i]==this.currElems[j][separateByParam]){
                         groups[i][k]=this.currElems[j]
+                        nextParamString[i]=sameNamesMas[i]
                         k++;
                     }
                 }
@@ -123,6 +128,8 @@ class node {
             this.paramString='name'
             for (let i=0;i<groups.length;i++){
                 this.nextNodes[i]= new node(groups[i],this.depth)
+                this.nextNodes[i].paramString=nextParamString[i]
+                this.nextNodes[i].param=separateByParam
             }
         }
 
