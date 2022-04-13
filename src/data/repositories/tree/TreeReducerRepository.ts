@@ -12,8 +12,8 @@ class TreeReducerRepository implements TreeReducerInterface {
         return TreeReducerRepository.instance
     }
 
-    reduceTree(tree: Node[]): Node[] {
-        return []
+    reduceTree(tree: Node): Node | null {
+        return null
     }
 }
 
