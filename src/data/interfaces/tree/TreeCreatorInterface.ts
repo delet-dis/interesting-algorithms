@@ -1,7 +1,7 @@
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 
 interface TreeCreatorInterface {
-    createTree(inputData: string): Node | null
+    createTree(inputData: string): DisplayingNode | null
 }
 
 export default TreeCreatorInterface

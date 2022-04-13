@@ -1,4 +1,4 @@
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 import TreeReducerInterface from "@/data/interfaces/tree/TreeReducerInterface"
 
 class TreeReducerRepository implements TreeReducerInterface {
@@ -12,7 +12,7 @@ class TreeReducerRepository implements TreeReducerInterface {
         return TreeReducerRepository.instance
     }
 
-    reduceTree(tree: Node): Node | null {
+    reduceTree(tree: DisplayingNode): DisplayingNode | null {
         return null
     }
 }

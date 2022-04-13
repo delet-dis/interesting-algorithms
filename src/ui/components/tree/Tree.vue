@@ -6,22 +6,22 @@
 
 <script lang="ts">
 import {Options, Vue} from "vue-class-component"
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 import NodeType from "@/data/models/tree/NodeType";
 
 @Options({
     components: {},
 })
 export default class Tree extends Vue {
-    private displayingTreeField: Node | null = null
+    private displayingTreeField: DisplayingNode | null = null
 
-    set displayingTree(newValue: Node | null) {
+    set displayingTree(newValue: DisplayingNode | null) {
         this.displayingTreeField = newValue
 
         this.drawDisplayingTree()
     }
 
-    get displayingTree(): Node | null {
+    get displayingTree(): DisplayingNode | null {
         return this.displayingTreeField
     }
 
@@ -42,7 +42,7 @@ export default class Tree extends Vue {
         }
     }
 
-    private createNode(node: Node, parentElement: HTMLElement) {
+    private createNode(node: DisplayingNode, parentElement: HTMLElement) {
         let nodeWrapper = document.createElement("div")
         let nodeHeader = document.createElement("a")
 

@@ -1,6 +1,6 @@
 import TreeCreatorInterface from "@/data/interfaces/tree/TreeCreatorInterface"
-import Node from "@/data/models/tree/Node"
-import node from "@/data/classes/tree/node";
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
+import Node from "@/data/classes/tree/Node";
 import CSVParserInterface from "@/data/interfaces/tree/csv/CSVParserInterface";
 import CSVParserRepository from "@/data/repositories/tree/csv/CSVParserRepository";
 class TreeCreatorRepository implements TreeCreatorInterface {
@@ -14,11 +14,11 @@ class TreeCreatorRepository implements TreeCreatorInterface {
         return TreeCreatorRepository.instance
     }
 
-    createTree(inputData: string): Node | null {
+    createTree(inputData: string): DisplayingNode | null {
         const data:string[][]=CSVParserRepository.getInstance().parseInputData(inputData)
-        const root:node=new node(data,0)
+        const root:Node=new Node(data,0)
         root.createNewNodes()
-        const rootOfTree:Node=root.convert()
+        const rootOfTree:DisplayingNode=root.convert()
         return rootOfTree
     }
 }

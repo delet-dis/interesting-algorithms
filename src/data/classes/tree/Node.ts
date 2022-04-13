@@ -1,7 +1,7 @@
-import Node from "@/data/models/tree/Node";
+import DisplayingNode from "@/data/models/tree/DisplayingNode";
 import NodeData from "@/data/models/tree/NodeData";
-class node {
-    private nextNodes: node[]
+class Node {
+    private nextNodes: Node[]
     private param: number
     private currElems: string[][]
     private depth: number
@@ -88,17 +88,17 @@ class node {
                     groupTwo.push(this.currElems[i])
                 }
             }
-            this.nextNodes[0] = new node(groupOne, this.depth)
+            this.nextNodes[0] = new Node(groupOne, this.depth)
             this.nextNodes[0].paramString='<'+sum.toString()
             this.nextNodes[0].param=separateByParam
-            this.nextNodes[1] = new node(groupTwo, this.depth)
+            this.nextNodes[1] = new Node(groupTwo, this.depth)
             this.nextNodes[1].paramString='>='+ (sum.toString())
             this.nextNodes[1].param=separateByParam
         }
         else {
             const sameNamesMas: string[] = []
             const sameNameCounter: number[] = []
-            const groups:string[][][]=new Array()
+            const groups:string[][][]=[]
             const nextParamString:string[]=[]
             for (let i = 0; i < this.currElems.length; i++) {
                 let exist = false
@@ -116,7 +116,7 @@ class node {
             }
             for (let i=0;i<sameNamesMas.length;i++){
                 let k=0
-                groups[i]=new Array()
+                groups[i]=[]
                 for (let j=0;j<this.currElems.length;j++){
                     if(sameNamesMas[i]==this.currElems[j][separateByParam]){
                         groups[i][k]=this.currElems[j]
@@ -127,7 +127,7 @@ class node {
             }
             this.paramString='name'
             for (let i=0;i<groups.length;i++){
-                this.nextNodes[i]= new node(groups[i],this.depth)
+                this.nextNodes[i]= new Node(groups[i],this.depth)
                 this.nextNodes[i].paramString=nextParamString[i]
                 this.nextNodes[i].param=separateByParam
             }
@@ -142,8 +142,8 @@ class node {
             }
         }
     }
-    convert():Node{
-        const nestedNodes:Node[]=[]
+    convert():DisplayingNode{
+        const nestedNodes:DisplayingNode[]=[]
         for (let i=0;i<this.nextNodes.length;i++){
             nestedNodes.push(this.nextNodes[i].convert())
         }
@@ -154,8 +154,8 @@ class node {
             result=this.currElems[0][this.currElems[0].length-1]
         }
         const curNodeData:NodeData=new NodeData(nodeType,this.param,this.paramString,result)
-        const curNode:Node=new Node(curNodeData,nestedNodes)
+        const curNode:DisplayingNode=new DisplayingNode(curNodeData,nestedNodes)
         return curNode
     }
 }
-export default node
+export default Node
