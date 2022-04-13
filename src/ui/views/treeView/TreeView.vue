@@ -80,7 +80,7 @@ export default class TreeView extends Vue {
 
     private modal: Modal | null = null
 
-    private displayingTreeAsArray: Node[] | null = null
+    private displayingTreeAsArray: Node | null = null
 
     private displayingTree: Tree | null = null
 
@@ -123,12 +123,12 @@ export default class TreeView extends Vue {
     }
 
     private submitDataToBuildTree(inputString: string) {
-        this.displayResult(TreeCreatorRepository.getInstance().createTree(inputString))
+        this.displayBuildResult(TreeCreatorRepository.getInstance().createTree(inputString))
     }
 
     private submitDataToExecuteQuery(inputString: string) {
         if (this.displayingTreeAsArray) {
-            this.displayResult(TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray))
+            this.displayQueryExecutingOrReducingResult(TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray))
         } else {
             this.isErrorDisplaying = true
         }
@@ -136,19 +136,27 @@ export default class TreeView extends Vue {
 
     private submitDataToReduceTree() {
         if (this.displayingTreeAsArray) {
-            this.displayResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
+            this.displayQueryExecutingOrReducingResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
         } else {
             this.isErrorDisplaying = true
         }
     }
 
-    private displayResult(result: Node[] | null) {
+    private displayBuildResult(result: Node | null) {
         if (result) {
             this.displayingTreeAsArray = result
 
             if (this.displayingTree) {
                 this.displayingTree.displayingTree = this.displayingTreeAsArray
             }
+        } else {
+            this.isErrorDisplaying = true
+        }
+    }
+
+    private displayQueryExecutingOrReducingResult(result: Node | null) {
+        if (result && this.displayingTree) {
+            this.displayingTree.displayingTree = result
         } else {
             this.isErrorDisplaying = true
         }

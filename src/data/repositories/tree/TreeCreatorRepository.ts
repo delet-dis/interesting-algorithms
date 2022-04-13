@@ -12,7 +12,7 @@ class TreeCreatorRepository implements TreeCreatorInterface {
         return TreeCreatorRepository.instance
     }
 
-    createTree(inputData: string): Node[] | null {
+    createTree(inputData: string): Node | null {
         return null
     }
 }
