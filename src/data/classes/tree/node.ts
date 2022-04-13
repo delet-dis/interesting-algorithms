@@ -143,11 +143,15 @@ class node {
         }
     }
     convert():Node{
-        const curNodeData:NodeData=new NodeData(1,this.param,this.paramString)
         const nestedNodes:Node[]=[]
         for (let i=0;i<this.nextNodes.length;i++){
             nestedNodes.push(this.nextNodes[i].convert())
         }
+        let nodeType=1
+        if(nestedNodes.length==0){
+            nodeType=0
+        }
+        const curNodeData:NodeData=new NodeData(nodeType,this.param,this.paramString)
         const curNode:Node=new Node(curNodeData,nestedNodes)
         return curNode
     }
