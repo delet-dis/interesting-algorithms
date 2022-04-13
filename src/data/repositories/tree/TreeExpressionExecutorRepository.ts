@@ -1,5 +1,5 @@
 import TreeExpressionExecutorInterface from "@/data/interfaces/tree/TreeExpressionExecutorInterface"
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 
 class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterface{
     private static instance: TreeExpressionExecutorRepository
@@ -12,7 +12,7 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
         return TreeExpressionExecutorRepository.instance
     }
 
-    executeExpressionInTree(expression: string, tree: Node): Node | null{
+    executeExpressionInTree(expression: string, tree: DisplayingNode): DisplayingNode | null{
         return null
     }
 }

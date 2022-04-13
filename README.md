@@ -1,6 +1,6 @@
 # Interesting Algorithms
 
-[![Node.js CI](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml/badge.svg)](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml)
+[![DisplayingNode.js CI](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml/badge.svg)](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml)
 
 Interesting Algorithms is a [Vue](https://vuejs.org) app made in the sixth module of the educational program HITS at Tomsk State University.
 

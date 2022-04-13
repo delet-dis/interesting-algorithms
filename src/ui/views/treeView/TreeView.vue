@@ -62,7 +62,7 @@ import TreeDescription from "@/ui/views/treeView/components/TreeDescription.vue"
 import Modal from "@/ui/components/modal/Modal.vue"
 import TreeCreatorRepository from "@/data/repositories/tree/TreeCreatorRepository"
 import TreeExpressionExecutorRepository from "@/data/repositories/tree/TreeExpressionExecutorRepository"
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 import TreeReducerRepository from "@/data/repositories/tree/TreeReducerRepository"
 import Tree from "@/ui/components/tree/Tree.vue"
 
@@ -80,7 +80,7 @@ export default class TreeView extends Vue {
 
     private modal: Modal | null = null
 
-    private displayingTreeAsArray: Node | null = null
+    private displayingTreeAsArray: DisplayingNode | null = null
 
     private displayingTree: Tree | null = null
 
@@ -142,7 +142,7 @@ export default class TreeView extends Vue {
         }
     }
 
-    private displayBuildResult(result: Node | null) {
+    private displayBuildResult(result: DisplayingNode | null) {
         if (result) {
             this.displayingTreeAsArray = result
 
@@ -154,7 +154,7 @@ export default class TreeView extends Vue {
         }
     }
 
-    private displayQueryExecutingOrReducingResult(result: Node | null) {
+    private displayQueryExecutingOrReducingResult(result: DisplayingNode | null) {
         if (result && this.displayingTree) {
             this.displayingTree.displayingTree = result
         } else {

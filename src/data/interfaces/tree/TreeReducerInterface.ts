@@ -1,7 +1,7 @@
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 
 interface TreeReducerInterface {
-    reduceTree(tree: Node): Node | null
+    reduceTree(tree: DisplayingNode): DisplayingNode | null
 }
 
 export default TreeReducerInterface
