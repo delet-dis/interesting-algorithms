@@ -13,15 +13,15 @@ import NodeType from "@/data/models/tree/NodeType";
     components: {},
 })
 export default class Tree extends Vue {
-    private displayingTreeField: Node[] | null = null
+    private displayingTreeField: Node | null = null
 
-    set displayingTree(newValue: Node[] | null) {
+    set displayingTree(newValue: Node | null) {
         this.displayingTreeField = newValue
 
         this.drawDisplayingTree()
     }
 
-    get displayingTree(): Node[] | null {
+    get displayingTree(): Node | null {
         return this.displayingTreeField
     }
 
@@ -32,9 +32,7 @@ export default class Tree extends Vue {
 
             let tree = document.getElementById("tree")
 
-            this.displayingTree.forEach((node) => {
-                this.createNode(node, displayingTreeLi)
-            })
+            this.createNode(this.displayingTree, displayingTreeLi)
 
             displayingTreeUl.appendChild(displayingTreeLi)
 
@@ -52,15 +50,21 @@ export default class Tree extends Vue {
             nodeHeader.classList.add("pathNode")
         }
 
-        nodeHeader.innerText = "Параметр: " + node.data.responsibleParameter + "\n\n"
+        let stringToDisplay = ""
 
-        if (node.data.condition || node.data.type == NodeType.BRANCH_NODE) {
-            nodeHeader.innerText = nodeHeader.innerText + "Условие:\n" + node.data.condition
+        if (node.data.responsibleParameter) {
+            stringToDisplay += "Параметр: " + node.data.responsibleParameter + "\n\n"
         }
 
-        if (node.data.result || node.data.type == NodeType.LEAF_NODE) {
-            nodeHeader.innerText = nodeHeader.innerText + "Результат:\n" + node.data.result
+        if (node.data.condition) {
+            stringToDisplay += "Условие:\n" + node.data.condition
         }
+
+        if (node.data.result) {
+            stringToDisplay += "Результат:\n" + node.data.result
+        }
+
+        nodeHeader.innerText = stringToDisplay
 
         nodeWrapper.appendChild(nodeHeader)
 
