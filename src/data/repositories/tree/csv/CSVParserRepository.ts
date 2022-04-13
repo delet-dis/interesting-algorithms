@@ -11,28 +11,44 @@ class CSVParserRepository implements CSVParserInterface {
         return CSVParserRepository.instance
     }
 
-    private countRows(inputData: string): number {
-        let rows = 1;
-        for (const char of inputData) {
-            if(char == ",")
-                rows++
-            else if(char == "\n")
-                break;
-        }
-        return rows;
+    private numberCheck(str: string): boolean {
+        return !isNaN(Number(str))  
     }
 
     public parseInputData(inputData: string): string[][] | null {       
         let column = 0
         let row = 0
         let parameterLen = 0
-        const totalRows = this.countRows(inputData);
-        const table: string[][] = []
-        table.push(Array(totalRows).fill(""))
-    
+
+
+        const isNumber: boolean[] = []
+        let totalRows = 1
+        let curParameter = ""
         for (const char of inputData) {
             if (char == ",") {
-                if (!parameterLen)
+                totalRows++
+                isNumber.push(this.numberCheck(curParameter))
+                curParameter = ""
+                continue
+            }
+                
+            else if (char == "\n") {
+                isNumber.push(this.numberCheck(curParameter))
+                break;
+            }
+                
+            curParameter += char
+        }
+        if(totalRows != isNumber.length)
+            isNumber.push(this.numberCheck(curParameter))
+
+
+        curParameter = ""
+        const table: string[][] = []
+        table.push(Array(totalRows).fill(""))
+        for (const char of inputData) {
+            if (char == ",") {
+                if (!parameterLen || this.numberCheck(table[column][row]) != isNumber[row])
                     return null
                 row++
                 parameterLen = 0
@@ -40,7 +56,7 @@ class CSVParserRepository implements CSVParserInterface {
             }
     
             else if (char == "\n") { 
-                if(row != totalRows - 1)
+                if(row != totalRows - 1 || !parameterLen || this.numberCheck(table[column][row]) != isNumber[row])
                     return null
                 table.push(Array(totalRows).fill(""))
                 column++
@@ -54,11 +70,11 @@ class CSVParserRepository implements CSVParserInterface {
             table[column][row] += char
             parameterLen++
         }
-
         if(inputData[inputData.length - 1] == '\n') 
             table.pop()
-        else if(row != totalRows - 1 || !parameterLen)
+        else if(row != totalRows - 1 || !parameterLen || this.numberCheck(table[column][row]) != isNumber[row])
             return null
+
 
         return table;
     }
