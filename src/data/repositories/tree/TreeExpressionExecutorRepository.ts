@@ -16,10 +16,14 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
         return TreeExpressionExecutorRepository.instance
     }
 
+    private emptyData = new NodeData(0)
+
     private checkCondition(value: string, condition: string): boolean | null {
 
-        if (condition.charCodeAt(0) >= 60 && condition.charCodeAt(0) <= 62 && Number(value)) {
-            return eval(value + condition) 
+        if (condition.charCodeAt(0) >= 60 && condition.charCodeAt(0) <= 62) {
+            if(!isNaN(Number(value)))
+                return eval(value + condition) 
+            return null
         }
 
         return value == condition
@@ -31,9 +35,10 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
                                      originalTree.data.condition,
                                      originalTree.data.result)
 
-        if (!originalTree.nestedNodes) {
-            copyTree.nestedNodes = new Array(originalTree.nestedNodes!.length)
+        if (originalTree.nestedNodes) {
+            copyTree.nestedNodes = []
             for(let i = 0; i < originalTree.nestedNodes!.length; i++) {
+                copyTree.nestedNodes.push(new DisplayingNode(this.emptyData, null))
                 this.copyTree(copyTree.nestedNodes[i], originalTree.nestedNodes![i])
             }
         }
@@ -49,19 +54,26 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
         if (!parameters)
             return null
 
-        const newTree: DisplayingNode = new DisplayingNode(new NodeData(NodeType.BRANCH_NODE, 0),  null)
+        const newTree: DisplayingNode = new DisplayingNode(this.emptyData,  null)
         this.copyTree(newTree, tree)
         let currentNode = newTree
 
         while (currentNode.data.type != NodeType.LEAF_NODE) {
             currentNode.data.type = NodeType.PATH_NODE
             for (const node of currentNode.nestedNodes!) {
-                if(this.checkCondition(parameters[0][node.data.responsibleParameter!], node.data.condition!)) {
+                if(node.data.responsibleParameter! > parameters[0].length)
+                    return null
+                const result = this.checkCondition(parameters[0][node.data.responsibleParameter! - 1], node.data.condition!)
+                if(result) {
                     currentNode = node
                     break
                 }
+                else if (result == null) {
+                    return null
+                }
             }
         }
+        currentNode.data.type = NodeType.PATH_NODE
         
         return newTree
     }
