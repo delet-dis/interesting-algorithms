@@ -20,8 +20,8 @@ class TreeCreatorRepository implements TreeCreatorInterface {
         if(data!=null){
         const root:Node=new Node(data,0)
         root.createNewNodes()
-            console.log(root)
         const rootOfTree:DisplayingNode=root.convert()
+            console.log(rootOfTree)
             return rootOfTree
         }
         return null

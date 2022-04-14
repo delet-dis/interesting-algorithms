@@ -157,7 +157,7 @@ class Node {
             console.log(this.currElems, this.depth)
             result=this.currElems[0][this.currElems[0].length-1]
         }
-        const curNodeData:NodeData=new NodeData(nodeType,this.param,this.paramString,result)
+        const curNodeData:NodeData=new NodeData(nodeType,this.param+1,this.paramString,result)
         const curNode:DisplayingNode=new DisplayingNode(curNodeData,nestedNodes)
         return curNode
     }
