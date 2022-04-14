@@ -73,7 +73,7 @@ Algorithm made with CPP, it should be executed as bin file
 <img src="https://user-images.githubusercontent.com/47276603/162927445-1bf34020-662d-4b30-85bd-faf00081f450.png" width="700" hspace="5" vspace ="10">
 
 ### Tree algorithm
-<img src="https://user-images.githubusercontent.com/47276603/162927629-b52929e0-f82f-43b2-b4d6-5173c4042b6d.png" width="700" hspace="5" vspace ="10">
+<img src="https://user-images.githubusercontent.com/47276603/163381210-6284eeb1-31ef-4e57-b679-927ab8571211.png" width="700" hspace="5" vspace ="10">
 
 ### Neural network algorithm
 <img src="https://user-images.githubusercontent.com/47276603/162927877-27a20f31-7b87-44ef-8086-9558d5190ebc.png" width="700" hspace="5" vspace ="10">
