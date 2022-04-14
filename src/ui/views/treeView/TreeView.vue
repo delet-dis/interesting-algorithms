@@ -219,8 +219,6 @@ export default class TreeView extends Vue {
 <style scoped>
 .treeCard {
     overflow: auto;
-    display: flex;
-    justify-content: center;
 }
 
 .invisibleCard {
