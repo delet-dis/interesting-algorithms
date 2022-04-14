@@ -19,7 +19,7 @@ class CSVParserRepository implements CSVParserInterface {
         let column = 0
         let row = 0
         let parameterLen = 0
-
+        inputData = inputData.trim()
 
         const isNumber: boolean[] = []
         let totalRows = 1
