@@ -125,7 +125,6 @@ class Node {
                     }
                 }
             }
-            this.paramString='name'
             for (let i=0;i<groups.length;i++){
                 this.nextNodes[i]= new Node(groups[i],this.depth)
                 this.nextNodes[i].paramString=nextParamString[i]
