@@ -21,7 +21,6 @@ class TreeCreatorRepository implements TreeCreatorInterface {
         const root:Node=new Node(data,0)
         root.createNewNodes()
         const rootOfTree:DisplayingNode=root.convert()
-            console.log(rootOfTree)
             return rootOfTree
         }
         return null

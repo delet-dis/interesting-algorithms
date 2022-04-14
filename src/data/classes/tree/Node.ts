@@ -89,10 +89,10 @@ class Node {
                 }
             }
             this.nextNodes[0] = new Node(groupOne, this.depth)
-            this.nextNodes[0].paramString='<'+sum.toString()
+            this.nextNodes[0].paramString='<'+(sum.toFixed(2).toString())
             this.nextNodes[0].param=separateByParam
             this.nextNodes[1] = new Node(groupTwo, this.depth)
-            this.nextNodes[1].paramString='>='+ (sum.toString())
+            this.nextNodes[1].paramString='>='+ (sum.toFixed(2).toString())
             this.nextNodes[1].param=separateByParam
         }
         else {
@@ -153,7 +153,6 @@ class Node {
         let result:null|string=null
         if(nestedNodes==null){
             nodeType=0
-            console.log(this.currElems, this.depth)
             result=this.currElems[0][this.currElems[0].length-1]
         }
         const curNodeData:NodeData=new NodeData(nodeType,this.param+1,this.paramString,result)
