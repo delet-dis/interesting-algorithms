@@ -84,11 +84,15 @@ export default class TreeView extends Vue {
 
     private displayingTree: Tree | null = null
 
+    private testBuildData = "2,Alex,8\n" + "21,Alex,9\n" + "2,Alex,10\n" + "2,Tom,11\n" + "2,Tom,12\n" + "2,Tom,14"
+
     private showModalForDataLoading() {
         if (this.modal) {
             this.modal.header = "Ввод обучающей выборки в .csv формате"
 
             this.modal.isDisplaying = true
+
+            this.modal.setInputFieldValue = this.testBuildData
 
             this.modal.setSubmitButtonOnClick((inputString: string | undefined) => {
                 if (inputString) {
@@ -109,6 +113,8 @@ export default class TreeView extends Vue {
             this.modal.header = "Ввод запроса в .csv формате"
 
             this.modal.isDisplaying = true
+
+            this.modal.setInputFieldValue = ""
 
             this.modal.setSubmitButtonOnClick((inputString: string | undefined) => {
                 if (inputString) {

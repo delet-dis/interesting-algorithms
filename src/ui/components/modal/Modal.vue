@@ -44,11 +44,23 @@ export default class Modal extends Vue {
 
     isDisplaying = false
 
+    private inputFieldValue = ""
+
     private isAvailableToSubmitData = false
 
     private inputField: HTMLInputElement | null = null
 
     private previousOnclick: (() => (void)) | null = null
+
+    set setInputFieldValue(newValue: string) {
+        this.inputFieldValue = newValue
+
+        if (this.inputField) {
+            this.inputField.value = this.inputFieldValue
+
+            this.isAvailableToSubmitData = this.inputField.value.length > 0
+        }
+    }
 
     setSubmitButtonOnClick(functionToInvoke: (inputString: string) => (void)) {
         let submitButton = document.getElementById("submitButton")
@@ -60,9 +72,9 @@ export default class Modal extends Vue {
         let onclick = () => {
             if (this.isAvailableToSubmitData) {
                 if (this.inputField) {
-                    functionToInvoke(this.inputField.value)
-
                     this.clearEnteredData()
+
+                    functionToInvoke(this.inputField.value)
                 }
             }
         }
