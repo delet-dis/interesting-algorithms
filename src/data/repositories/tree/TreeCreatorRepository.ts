@@ -15,11 +15,15 @@ class TreeCreatorRepository implements TreeCreatorInterface {
     }
 
     createTree(inputData: string): DisplayingNode | null {
-        const data:string[][]=CSVParserRepository.getInstance().parseInputData(inputData)
+
+        const data:string[][]|null=CSVParserRepository.getInstance().parseInputData(inputData)
+        if(data!=null){
         const root:Node=new Node(data,0)
         root.createNewNodes()
         const rootOfTree:DisplayingNode=root.convert()
-        return rootOfTree
+            return rootOfTree
+        }
+        return null
     }
 }
 

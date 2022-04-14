@@ -50,6 +50,8 @@ export default class Modal extends Vue {
 
     private inputField: HTMLInputElement | null = null
 
+    private previousOnclick: (() => (void)) | null = null
+
     set setInputFieldValue(newValue: string) {
         this.inputFieldValue = newValue
 
@@ -63,15 +65,23 @@ export default class Modal extends Vue {
     setSubmitButtonOnClick(functionToInvoke: (inputString: string) => (void)) {
         let submitButton = document.getElementById("submitButton")
 
-        submitButton?.addEventListener("click", () => {
+        if (this.previousOnclick && submitButton) {
+            submitButton.removeEventListener("click", this.previousOnclick)
+        }
+
+        let onclick = () => {
             if (this.isAvailableToSubmitData) {
                 if (this.inputField) {
-                    this.clearEnteredData()
-
                     functionToInvoke(this.inputField.value)
+
+                    this.clearEnteredData()
                 }
             }
-        })
+        }
+
+        this.previousOnclick = onclick
+
+        submitButton?.addEventListener("click", onclick)
     }
 
     private clearEnteredData() {

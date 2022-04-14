@@ -89,10 +89,10 @@ class Node {
                 }
             }
             this.nextNodes[0] = new Node(groupOne, this.depth)
-            this.nextNodes[0].paramString='<'+sum.toString()
+            this.nextNodes[0].paramString='<'+(sum.toFixed(2).toString())
             this.nextNodes[0].param=separateByParam
             this.nextNodes[1] = new Node(groupTwo, this.depth)
-            this.nextNodes[1].paramString='>='+ (sum.toString())
+            this.nextNodes[1].paramString='>='+ (sum.toFixed(2).toString())
             this.nextNodes[1].param=separateByParam
         }
         else {
@@ -125,7 +125,6 @@ class Node {
                     }
                 }
             }
-            this.paramString='name'
             for (let i=0;i<groups.length;i++){
                 this.nextNodes[i]= new Node(groups[i],this.depth)
                 this.nextNodes[i].paramString=nextParamString[i]
@@ -135,25 +134,28 @@ class Node {
 
     }
     createNewNodes(){
-        this.separateGroups()
-        for(let i=0;i<this.nextNodes.length;i++){
-            if(this.currElems.length>1){
+        if(this.currElems.length>1){
+            this.separateGroups()
+            for(let i=0;i<this.nextNodes.length;i++){
                 this.nextNodes[i].createNewNodes()
-            }
+                }
         }
     }
     convert():DisplayingNode{
-        const nestedNodes:DisplayingNode[]=[]
-        for (let i=0;i<this.nextNodes.length;i++){
-            nestedNodes.push(this.nextNodes[i].convert())
+        let nestedNodes:DisplayingNode[]|null=null
+        if(this.nextNodes.length>0) {
+            nestedNodes=[]
+            for (let i = 0; i < this.nextNodes.length; i++) {
+                nestedNodes.push(this.nextNodes[i].convert())
+            }
         }
         let nodeType=1
         let result:null|string=null
-        if(nestedNodes.length==0){
+        if(nestedNodes==null){
             nodeType=0
             result=this.currElems[0][this.currElems[0].length-1]
         }
-        const curNodeData:NodeData=new NodeData(nodeType,this.param,this.paramString,result)
+        const curNodeData:NodeData=new NodeData(nodeType,this.param+1,this.paramString,result)
         const curNode:DisplayingNode=new DisplayingNode(curNodeData,nestedNodes)
         return curNode
     }

@@ -31,12 +31,13 @@ export default class Tree extends Vue {
             let displayingTreeLi = document.createElement("li")
 
             let tree = document.getElementById("tree")
-
             this.createNode(this.displayingTree, displayingTreeLi)
 
             displayingTreeUl.appendChild(displayingTreeLi)
 
             if (tree) {
+                tree.innerHTML = ""
+
                 tree.appendChild(displayingTreeUl)
             }
         }
@@ -57,11 +58,15 @@ export default class Tree extends Vue {
         }
 
         if (node.data.condition) {
-            stringToDisplay += "Условие:\n" + node.data.condition
+            stringToDisplay += "Условие:\n" + node.data.condition + "\n"
         }
 
         if (node.data.result) {
-            stringToDisplay += "Результат:\n" + node.data.result
+            stringToDisplay += "Результат:\n" + node.data.result + "\n"
+        }
+
+        if (stringToDisplay == "") {
+            stringToDisplay = "Корень"
         }
 
         nodeHeader.innerText = stringToDisplay
