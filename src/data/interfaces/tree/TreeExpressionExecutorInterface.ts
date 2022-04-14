@@ -1,7 +1,7 @@
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 
 interface TreeExpressionExecutorInterface {
-    executeExpressionInTree(expression: string, tree: Node): Node | null
+    executeExpressionInTree(expression: string, tree: DisplayingNode): DisplayingNode | null
 }
 
 export default TreeExpressionExecutorInterface

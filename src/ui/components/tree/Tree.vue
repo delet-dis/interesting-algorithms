@@ -6,22 +6,22 @@
 
 <script lang="ts">
 import {Options, Vue} from "vue-class-component"
-import Node from "@/data/models/tree/Node"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
 import NodeType from "@/data/models/tree/NodeType";
 
 @Options({
     components: {},
 })
 export default class Tree extends Vue {
-    private displayingTreeField: Node[] | null = null
+    private displayingTreeField: DisplayingNode | null = null
 
-    set displayingTree(newValue: Node[] | null) {
+    set displayingTree(newValue: DisplayingNode | null) {
         this.displayingTreeField = newValue
 
         this.drawDisplayingTree()
     }
 
-    get displayingTree(): Node[] | null {
+    get displayingTree(): DisplayingNode | null {
         return this.displayingTreeField
     }
 
@@ -31,20 +31,19 @@ export default class Tree extends Vue {
             let displayingTreeLi = document.createElement("li")
 
             let tree = document.getElementById("tree")
-
-            this.displayingTree.forEach((node) => {
-                this.createNode(node, displayingTreeLi)
-            })
+            this.createNode(this.displayingTree, displayingTreeLi)
 
             displayingTreeUl.appendChild(displayingTreeLi)
 
             if (tree) {
+                tree.innerHTML = ""
+
                 tree.appendChild(displayingTreeUl)
             }
         }
     }
 
-    private createNode(node: Node, parentElement: HTMLElement) {
+    private createNode(node: DisplayingNode, parentElement: HTMLElement) {
         let nodeWrapper = document.createElement("div")
         let nodeHeader = document.createElement("a")
 
@@ -52,13 +51,25 @@ export default class Tree extends Vue {
             nodeHeader.classList.add("pathNode")
         }
 
-        if (node.data.condition || node.data.type == NodeType.BRANCH_NODE) {
-            nodeHeader.innerText = "Условие:\n" + node.data.condition
+        let stringToDisplay = ""
+
+        if (node.data.responsibleParameter) {
+            stringToDisplay += "Параметр: " + node.data.responsibleParameter + "\n\n"
         }
 
-        if (node.data.result || node.data.type == NodeType.LEAF_NODE) {
-            nodeHeader.innerText = "Результат:\n" + node.data.result
+        if (node.data.condition) {
+            stringToDisplay += "Условие:\n" + node.data.condition + "\n"
         }
+
+        if (node.data.result) {
+            stringToDisplay += "Результат:\n" + node.data.result + "\n"
+        }
+
+        if (stringToDisplay == "") {
+            stringToDisplay = "Корень"
+        }
+
+        nodeHeader.innerText = stringToDisplay
 
         nodeWrapper.appendChild(nodeHeader)
 

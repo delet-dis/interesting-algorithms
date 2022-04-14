@@ -1,8 +1,9 @@
 import TreeExpressionExecutorInterface from "@/data/interfaces/tree/TreeExpressionExecutorInterface"
-import Node from "@/data/models/tree/Node"
 import NodeData from "@/data/models/tree/NodeData"
 import NodeType from "@/data/models/tree/NodeType"
 import CSVParserRepository from "./csv/CSVParserRepository"
+import DisplayingNode from "@/data/models/tree/DisplayingNode"
+
 
 class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterface{
     private static instance: TreeExpressionExecutorRepository
@@ -24,7 +25,7 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
         return value == condition
     }
 
-    private copyTree(copyTree: Node, originalTree: Node): void {
+    private copyTree(copyTree: DisplayingNode, originalTree: DisplayingNode): void {
         copyTree.data = new NodeData(originalTree.data.type,
                                      originalTree.data.responsibleParameter,
                                      originalTree.data.condition,
@@ -42,20 +43,20 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
             
     }
 
-    public executeExpressionInTree(expression: string, tree: Node): Node | null{
+    public executeExpressionInTree(expression: string, tree: DisplayingNode): DisplayingNode | null{
         const parameters = CSVParserRepository.getInstance().parseInputData(expression)
         
         if (!parameters)
             return null
 
-        const newTree: Node = new Node(new NodeData(NodeType.BRANCH_NODE, 0),  null)
+        const newTree: DisplayingNode = new DisplayingNode(new NodeData(NodeType.BRANCH_NODE, 0),  null)
         this.copyTree(newTree, tree)
         let currentNode = newTree
 
         while (currentNode.data.type != NodeType.LEAF_NODE) {
             currentNode.data.type = NodeType.PATH_NODE
             for (const node of currentNode.nestedNodes!) {
-                if(this.checkCondition(parameters[0][node.data.responsibleParameter], node.data.condition!)) {
+                if(this.checkCondition(parameters[0][node.data.responsibleParameter!], node.data.condition!)) {
                     currentNode = node
                     break
                 }
@@ -63,7 +64,6 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
         }
         
         return newTree
-        
     }
 }
 
