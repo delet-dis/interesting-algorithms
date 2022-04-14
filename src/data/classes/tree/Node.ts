@@ -89,10 +89,10 @@ class Node {
                 }
             }
             this.nextNodes[0] = new Node(groupOne, this.depth)
-            this.nextNodes[0].paramString='<'+sum.toString()
+            this.nextNodes[0].paramString='<'+(sum.toFixed(2).toString())
             this.nextNodes[0].param=separateByParam
             this.nextNodes[1] = new Node(groupTwo, this.depth)
-            this.nextNodes[1].paramString='>='+ (sum.toString())
+            this.nextNodes[1].paramString='>='+ (sum.toFixed(2).toString())
             this.nextNodes[1].param=separateByParam
         }
         else {
