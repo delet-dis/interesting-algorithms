@@ -1,6 +1,8 @@
 # Interesting Algorithms
 
-[![DisplayingNode.js CI](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml/badge.svg)](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml)
+[![Node.js CI](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml/badge.svg)](https://github.com/delet-dis/interesting-algorithms/actions/workflows/node.js.yml)
+[![codebeat badge](https://codebeat.co/badges/8b6db890-9365-4fda-a181-912fa708df35)](https://codebeat.co/projects/github-com-delet-dis-interesting-algorithms-master)
+[![CodeFactor](https://www.codefactor.io/repository/github/delet-dis/interesting-algorithms/badge)](https://www.codefactor.io/repository/github/delet-dis/interesting-algorithms)
 
 Interesting Algorithms is a [Vue](https://vuejs.org) app made in the sixth module of the educational program HITS at Tomsk State University.
 
