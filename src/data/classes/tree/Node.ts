@@ -153,7 +153,6 @@ class Node {
         let result:null|string=null
         if(nestedNodes==null){
             nodeType=0
-            console.log(this.currElems, this.depth)
             result=this.currElems[0][this.currElems[0].length-1]
         }
         const curNodeData:NodeData=new NodeData(nodeType,this.param+1,this.paramString,result)
