@@ -72,9 +72,9 @@ export default class Modal extends Vue {
         let onclick = () => {
             if (this.isAvailableToSubmitData) {
                 if (this.inputField) {
-                    this.clearEnteredData()
-
                     functionToInvoke(this.inputField.value)
+
+                    this.clearEnteredData()
                 }
             }
         }
