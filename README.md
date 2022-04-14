@@ -65,7 +65,7 @@ It contains components that strictly fulfill their functions, as well as parts t
 <img src="https://user-images.githubusercontent.com/47276603/162925299-9dfc21ce-1edf-4218-bade-77db8c0d83ee.png" width="700" hspace="5" vspace ="10">
 
 ### Genetic algorithm
-<img src="https://user-images.githubusercontent.com/47276603/162926052-b2f28104-ab4d-42cc-8b61-4b6911e2ce12.png" width="700" hspace="5" vspace ="10">
+<img src="https://user-images.githubusercontent.com/47276603/163383275-9a3eee10-9fc5-4321-b9f3-c9b8c475e585.png" width="700" hspace="5" vspace ="10">
 
 Algorithm made with CPP, it should be executed as bin file
 
