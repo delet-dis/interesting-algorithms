@@ -81,6 +81,31 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
 
         return newTree
     }
+
+
+    public countLeafResult(expression: string, tree: DisplayingNode): void {
+        const parameters = CSVParserRepository.getInstance().parseInputData(expression)
+        
+        if (!parameters)
+            return
+
+        let currentNode = tree
+
+        while (currentNode.data.type != NodeType.LEAF_NODE) {
+            if (currentNode.nestedNodes) {
+                for (const node of currentNode.nestedNodes) {
+                    if (node.data.responsibleParameter && node.data.condition) {
+                        const result = this.checkCondition(parameters[0][node.data.responsibleParameter - 1], node.data.condition)
+                        if (result) {
+                            currentNode = node
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        currentNode.data.counter++
+    }
 }
 
 export default TreeExpressionExecutorRepository
