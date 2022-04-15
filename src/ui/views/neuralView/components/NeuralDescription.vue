@@ -12,8 +12,7 @@
 import {Options, Vue} from "vue-class-component"
 
 @Options({
-    components: {
-    },
+    components: {},
 })
 export default class NeuralDescription extends Vue {
 }

@@ -63,18 +63,18 @@ export default class App extends Vue {
     margin-bottom: 0.5em;
 }
 
-.cardCenter{
+.cardCenter {
     display: flex;
     flex-direction: row;
     align-content: center;
     justify-content: center;
 }
 
-.cardCenterChild{
+.cardCenterChild {
     flex: 1;
 }
 
-.columnCentered{
+.columnCentered {
     float: none;
     margin: 0 auto;
 }

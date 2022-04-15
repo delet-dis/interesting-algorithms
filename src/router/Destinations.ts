@@ -1,6 +1,6 @@
 import SidebarLinkEntity from "@/data/models/SidebarLinkEntity"
 
-class Destinations{
+class Destinations {
     static readonly destinationsList: SidebarLinkEntity[] = [
         new SidebarLinkEntity("/", "fa-solid fa-house", "Главная", 0),
         new SidebarLinkEntity("/labyrinthAlgorithm", "fa-solid fa-location-arrow", "А*", 1),

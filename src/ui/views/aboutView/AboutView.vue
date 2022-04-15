@@ -1,5 +1,5 @@
 <template>
-    <div class ="container">
+    <div class="container">
         <div class="row">
             <div class="col-lg-10 col-md-12 columnCentered">
                 <Card>
@@ -26,7 +26,7 @@ import AboutText from "@/ui/views/aboutView/components/AboutDescription.vue"
 export default class AboutView extends Vue {
     meta = setup(() => useMeta({
         title: "🏠",
-        htmlAttrs: { lang: "ru", amp: true }
+        htmlAttrs: {lang: "ru", amp: true}
     }))
 }
 </script>

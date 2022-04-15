@@ -332,7 +332,10 @@ export default class ClusteringView extends Vue {
     }
 
     private initContainerWidthListener() {
-        new ResizeObserver(() => this.updateCanvasSize()).observe(document.getElementById("container")!)
+        let container = document.getElementById("container")
+        if (container) {
+            new ResizeObserver(() => this.updateCanvasSize()).observe(container)
+        }
     }
 
     private initColorsArrays() {

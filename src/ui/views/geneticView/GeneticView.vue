@@ -26,7 +26,7 @@ import GeneticText from "@/ui/views/geneticView/components/GeneticDescription.vu
 export default class GeneticView extends Vue {
     meta = setup(() => useMeta({
         title: "🧬",
-        htmlAttrs: { lang: "ru", amp: true }
+        htmlAttrs: {lang: "ru", amp: true}
     }))
 }
 </script>

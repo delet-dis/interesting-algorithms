@@ -12,15 +12,15 @@
     </h3>
 
     <p>
-      Ефимов Игорь
+        Ефимов Игорь
     </p>
 
     <p>
-      Алексей Браун
+        Алексей Браун
     </p>
 
     <p>
-      Артем Трушкин
+        Артем Трушкин
     </p>
 </template>
 
@@ -28,15 +28,14 @@
 import {Options, Vue} from "vue-class-component"
 
 @Options({
-    components: {
-    },
+    components: {},
 })
 export default class AboutText extends Vue {
 }
 </script>
 
 <style scoped>
-p{
-font-size: 20px;
+p {
+    font-size: 20px;
 }
 </style>
