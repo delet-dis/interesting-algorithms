@@ -12,7 +12,7 @@ class Ant {
         this.currentPosition = start
     }
 
-    public findPossibleWays(maze: AntCell[][], size: number): AntCell[] {
+    findPossibleWays(maze: AntCell[][], size: number): AntCell[] {
         const possibleDirections: AntCell[] = []
 
         if (this.currentPosition.point.x + 1 < size &&
@@ -42,7 +42,7 @@ class Ant {
         return possibleDirections
     }
 
-    public chooseDirection(maze: AntCell[][], possibleDirections: AntCell[]): boolean {
+    chooseDirection(maze: AntCell[][], possibleDirections: AntCell[]): boolean {
         const rand = Math.random()
 
         switch (possibleDirections.length) {
