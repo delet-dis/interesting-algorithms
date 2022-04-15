@@ -1,7 +1,6 @@
 import TreeCreatorInterface from "@/data/interfaces/tree/TreeCreatorInterface"
 import DisplayingNode from "@/data/models/tree/DisplayingNode"
 import Node from "@/data/classes/tree/Node";
-import CSVParserInterface from "@/data/interfaces/tree/csv/CSVParserInterface";
 import CSVParserRepository from "@/data/repositories/tree/csv/CSVParserRepository";
 class TreeCreatorRepository implements TreeCreatorInterface {
     private static instance: TreeCreatorRepository

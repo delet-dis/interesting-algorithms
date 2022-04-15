@@ -120,7 +120,9 @@ class AntPathFinderRepository extends AntBase {
                     ants[i].currentPosition = startingPosition
                 }
             } else {
-                clearInterval(this.intervalExecutorNumber!)
+                if(this.intervalExecutorNumber){
+                    clearInterval(this.intervalExecutorNumber)
+                }
                 this.clearPreviousResult()
             }
         }, 150))

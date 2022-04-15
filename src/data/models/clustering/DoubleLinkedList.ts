@@ -59,12 +59,12 @@ class LinkedList<T> implements Iterable <ListNode<T>> {
     }
 
     public concatenate(anotherList: LinkedList<T>): void {
-        if (this.size && anotherList.size) {
+        if (this.size && anotherList.size && anotherList.frontNode) {
             if(this.backNode){
                 this.backNode.nextNode = anotherList.frontNode
             }
 
-            anotherList.frontNode!.prevNode = this.backNode
+            anotherList.frontNode.prevNode = this.backNode
             this.backNode = anotherList.backNode
 
             this.size += anotherList.size
@@ -80,8 +80,11 @@ class LinkedList<T> implements Iterable <ListNode<T>> {
         return {
             next: () => {
                 const val = currentNode
-                if (val)
-                    currentNode = currentNode!.nextNode
+
+                if (val && currentNode?.nextNode) {
+                    currentNode = currentNode.nextNode
+                }
+
                 return {
                     done: val === null,
                     value: val!
