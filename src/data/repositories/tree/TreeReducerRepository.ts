@@ -72,14 +72,11 @@ class TreeReducerRepository implements TreeReducerInterface {
 
             }
                 
-
-        }
-            
+        }    
         
         this.tryToRemoveNode(tree)
         
-
-        return null
+        return tree
     }
 }
 
