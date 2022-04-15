@@ -16,8 +16,9 @@ class HierarchyClusteringRepository implements ClusteringInterface {
 
     public splitByClusters(dots: Dot[], numberOfClusters: number): Dot[] {
         const clusters: LinkedList<Cluster> = new LinkedList<Cluster>()
+
         for (let i = 0; i < dots.length; i++) {
-            clusters.pushBack(new Cluster(new LinkedList<Dot>(dots[i]), null, 99999, i))
+            clusters.pushBack(new Cluster(new LinkedList<Dot>(dots[i]), null, Number.MAX_VALUE, i))
         }
 
         const distances: number[][] = Array(dots.length)
@@ -26,7 +27,7 @@ class HierarchyClusteringRepository implements ClusteringInterface {
             distances[i] = Array(dots.length)
         }
 
-        let globalMin = 9999
+        let globalMin = Number.MAX_VALUE
         let bestCluster!: ListNode<Cluster>
         let i = 0
 
@@ -73,36 +74,40 @@ class HierarchyClusteringRepository implements ClusteringInterface {
 
             //метод одиночной связи
             globalMin = Number.MAX_VALUE
-            const prevBest = bestCluster
 
-            const bestClusterIndexInDistancesTable: number = bestCluster.data.distCol
-            const closestToBestClusterIndex: number = bestCluster.data.closest!.data.distCol
+            if(bestCluster.data.closest){
+                const prevBest = bestCluster
 
-            clusters.remove(bestCluster.data.closest!)
+                const bestClusterIndexInDistancesTable: number = bestCluster.data.distCol
+                const closestToBestClusterIndex: number = bestCluster.data.closest.data.distCol
 
-            for (const cluster of clusters) {
-                if (cluster === prevBest)
-                    continue
+                clusters.remove(bestCluster.data.closest)
 
-                const currentCluster: number = cluster.data.distCol
-                const newDistance: number = Math.min(distances[bestClusterIndexInDistancesTable][currentCluster], distances[closestToBestClusterIndex][currentCluster])
+                for (const cluster of clusters) {
+                    if (cluster === prevBest)
+                        continue
 
-                distances[bestClusterIndexInDistancesTable][currentCluster] = newDistance
-                distances[currentCluster][bestClusterIndexInDistancesTable] = newDistance
+                    const currentCluster: number = cluster.data.distCol
+                    const newDistance: number = Math.min(distances[bestClusterIndexInDistancesTable][currentCluster],
+                        distances[closestToBestClusterIndex][currentCluster])
 
-                if (newDistance < prevBest.data.minimalDistance) {
-                    prevBest.data.minimalDistance = newDistance
-                    prevBest.data.closest = cluster
-                }
+                    distances[bestClusterIndexInDistancesTable][currentCluster] = newDistance
+                    distances[currentCluster][bestClusterIndexInDistancesTable] = newDistance
 
-                if (newDistance <= cluster.data.minimalDistance) {
-                    cluster.data.minimalDistance = newDistance
-                    cluster.data.closest = prevBest
-                }
+                    if (newDistance < prevBest.data.minimalDistance) {
+                        prevBest.data.minimalDistance = newDistance
+                        prevBest.data.closest = cluster
+                    }
 
-                if (cluster.data.minimalDistance < globalMin) {
-                    globalMin = cluster.data.minimalDistance
-                    bestCluster = cluster
+                    if (newDistance <= cluster.data.minimalDistance) {
+                        cluster.data.minimalDistance = newDistance
+                        cluster.data.closest = prevBest
+                    }
+
+                    if (cluster.data.minimalDistance < globalMin) {
+                        globalMin = cluster.data.minimalDistance
+                        bestCluster = cluster
+                    }
                 }
             }
         }

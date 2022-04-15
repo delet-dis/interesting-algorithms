@@ -12,7 +12,7 @@ class Ant {
         this.currentPosition = start
     }
 
-    public findPossibleWays(maze: AntCell[][], size: number): AntCell[] {
+    findPossibleWays(maze: AntCell[][], size: number): AntCell[] {
         const possibleDirections: AntCell[] = []
 
         if (this.currentPosition.point.x + 1 < size &&
@@ -42,14 +42,12 @@ class Ant {
         return possibleDirections
     }
 
-    public chooseDirection(maze: AntCell[][], possibleDirections: AntCell[]): boolean {
+    chooseDirection(maze: AntCell[][], possibleDirections: AntCell[]): boolean {
+        const rand = Math.random()
+
         switch (possibleDirections.length) {
             case 1: {
-                this.previousPosition = this.currentPosition
-
-                this.way.push(this.currentPosition)
-
-                this.currentPosition = possibleDirections[0]
+                this.updatePossibleDirections(possibleDirections, 0)
 
                 return this.currentPosition.type != AntCellType.FOOD_CELL
             }
@@ -59,24 +57,14 @@ class Ant {
                     (Math.pow(possibleDirections[0].numberOfPheromones, 1) +
                         Math.pow(possibleDirections[1].numberOfPheromones, 1))
 
-                const rand = Math.random()
-
                 if (rand < a) {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[0]
+                    this.updatePossibleDirections(possibleDirections, 0)
 
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
+                    this.checkCurrentPositionForFoodCell()
                 } else {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[1]
+                    this.updatePossibleDirections(possibleDirections, 1)
 
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
+                    this.checkCurrentPositionForFoodCell()
                 }
                 return true
             }
@@ -92,33 +80,20 @@ class Ant {
                         Math.pow(possibleDirections[1].numberOfPheromones, 2) +
                         Math.pow(possibleDirections[2].numberOfPheromones, 2)))
 
-                const rand = Math.random()
-
                 if (rand < a) {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[0]
+                    this.updatePossibleDirections(possibleDirections, 0)
 
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
+                    this.checkCurrentPositionForFoodCell()
+                }
 
-                } else if (rand < b) {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[1]
+                if (rand < b) {
+                    this.updatePossibleDirections(possibleDirections, 1)
 
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
+                    this.checkCurrentPositionForFoodCell()
                 } else {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[2]
+                    this.updatePossibleDirections(possibleDirections, 2)
 
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
+                    this.checkCurrentPositionForFoodCell()
                 }
                 return true
             }
@@ -132,56 +107,54 @@ class Ant {
 
                 const b = a + Math.pow(possibleDirections[1].numberOfPheromones, 2) /
                     ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 2)) +
+                            Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                            Math.pow(possibleDirections[2].numberOfPheromones, 2)) +
                         Math.pow(possibleDirections[3].numberOfPheromones, 2))
 
                 const c = a + b + Math.pow(possibleDirections[2].numberOfPheromones, 2) /
                     ((Math.pow(possibleDirections[0].numberOfPheromones, 2) +
-                        Math.pow(possibleDirections[1].numberOfPheromones, 2) +
-                        Math.pow(possibleDirections[2].numberOfPheromones, 2)) +
+                            Math.pow(possibleDirections[1].numberOfPheromones, 2) +
+                            Math.pow(possibleDirections[2].numberOfPheromones, 2)) +
                         Math.pow(possibleDirections[3].numberOfPheromones, 2))
 
-                const rand = Math.random()
-
                 if (rand < a) {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[0]
+                    this.updatePossibleDirections(possibleDirections, 0)
 
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
-
-                } else if (rand < b) {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[1]
-
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
-                } else if (rand < c) {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[2]
-
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
-                } else {
-                    this.previousPosition = this.currentPosition
-                    this.way.push(this.currentPosition)
-                    this.currentPosition = possibleDirections[3]
-
-                    if (this.currentPosition.type == AntCellType.FOOD_CELL) {
-                        return false
-                    }
+                    this.checkCurrentPositionForFoodCell()
                 }
+
+                if (rand < b) {
+                    this.updatePossibleDirections(possibleDirections, 1)
+
+                    this.checkCurrentPositionForFoodCell()
+                }
+
+                if (rand < c) {
+                    this.updatePossibleDirections(possibleDirections, 2)
+
+                    this.checkCurrentPositionForFoodCell()
+                } else {
+                    this.updatePossibleDirections(possibleDirections, 3)
+
+                    this.checkCurrentPositionForFoodCell()
+                }
+
                 return true
             }
         }
         return false
+    }
+
+    private updatePossibleDirections(possibleDirections: AntCell[], at: number) {
+        this.previousPosition = this.currentPosition
+        this.way.push(this.currentPosition)
+        this.currentPosition = possibleDirections[at]
+    }
+
+    private checkCurrentPositionForFoodCell(): boolean | void {
+        if (this.currentPosition.type == AntCellType.FOOD_CELL) {
+            return false
+        }
     }
 }
 

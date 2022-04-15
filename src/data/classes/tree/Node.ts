@@ -2,82 +2,65 @@ import DisplayingNode from "@/data/models/tree/DisplayingNode";
 import NodeData from "@/data/models/tree/NodeData";
 
 class Node {
-    private nextNodes: Node[]
-    private parameter: number
-    private processingElements: string[][]
-    private depth: number
-    private parameterString: string
+    private nextNodes: Node[] = []
+    private parameter = -1
+    private readonly processingElements: string[][]
+    private readonly depth: number
+    private parameterString = ""
 
     constructor(elems: string[][], depth: number) {
-        this.nextNodes = []
         this.processingElements = elems
         this.depth = depth + 1
-        this.parameter = -1
-        this.parameterString = ""
     }
 
-    chooseParam(): number {
-        let newParam = 0
+    private chooseParam(): number {
+        let newParameter = 0
         let minEntropy = 100
-        let curElemEntropy: number
+
+        let currentElementEntropy: number
 
         for (let i = 0; i < this.processingElements[0].length; i++) {
-            curElemEntropy = this.findEntropy(i)
+            currentElementEntropy = this.findEntropy(i)
 
-            if (curElemEntropy < minEntropy && curElemEntropy != 0) {
-                minEntropy = curElemEntropy
-                newParam = i
+            if (currentElementEntropy < minEntropy && currentElementEntropy != 0) {
+                minEntropy = currentElementEntropy
+                newParameter = i
             }
         }
 
-        return newParam
+        return newParameter
     }
 
-    findEntropy(num: number): number {
+    private findEntropy(num: number): number {
         const checkNumber: number = +this.processingElements[0][num]
         let entropy = 0
 
         if (!isNaN(checkNumber)) {
             let sum = 0
-            let lowerThenSum = 0
+            let lowerThanSum = 0
 
             for (let i = 0; i < this.processingElements.length; i++) {
                 sum += +this.processingElements[i][num]
             }
 
-            sum = sum / this.processingElements.length
+            sum /= this.processingElements.length
 
             for (let i = 0; i < this.processingElements.length; i++) {
                 if (+this.processingElements[i][num] < sum) {
-                    lowerThenSum++
+                    lowerThanSum++
                 }
             }
 
-            entropy = -(lowerThenSum / this.processingElements.length) *
-                Math.log2(lowerThenSum / this.processingElements.length) -
-                ((this.processingElements.length - lowerThenSum) / this.processingElements.length) *
-                Math.log2((this.processingElements.length - lowerThenSum) / this.processingElements.length)
+            entropy = -(lowerThanSum / this.processingElements.length) *
+                Math.log2(lowerThanSum / this.processingElements.length) -
+                ((this.processingElements.length - lowerThanSum) / this.processingElements.length) *
+                Math.log2((this.processingElements.length - lowerThanSum) / this.processingElements.length)
+
         } else {
             const sameNamesMas: string[] = []
             const sameNameCounter: number[] = []
 
-            for (let i = 0; i < this.processingElements.length; i++) {
-                let exist = false
-
-                for (let j = 0; j < sameNamesMas.length; j++) {
-                    if (this.processingElements[i][num] == sameNamesMas[j]) {
-                        exist = true
-                        sameNameCounter[j]++
-
-                        break
-                    }
-                }
-
-                if (!exist) {
-                    sameNamesMas.push(this.processingElements[i][num])
-                    sameNameCounter.push(1)
-                }
-            }
+            this.checkForExistence(sameNamesMas, sameNameCounter, num)
 
             for (let i = 0; i < sameNameCounter.length; i++) {
                 entropy = entropy - (sameNameCounter[i] / this.processingElements.length) *
@@ -88,67 +71,53 @@ class Node {
         return entropy
     }
 
-    separateGroups() {
-        const separateByParam = this.chooseParam()
-        const checkNumber: number = +this.processingElements[0][separateByParam]
+    private separateGroups() {
+        const separateParameter = this.chooseParam()
+        const checkNumber: number = +this.processingElements[0][separateParameter]
 
         if (!isNaN(checkNumber)) {
-            const groupOne: string[][] = []
-            const groupTwo: string[][] = []
+            const firstGroup: string[][] = []
+            const secondGroup: string[][] = []
 
             let sum = 0
 
             for (let i = 0; i < this.processingElements.length; i++) {
-                sum += +this.processingElements[i][separateByParam]
+                sum += +this.processingElements[i][separateParameter]
             }
 
-            sum = sum / this.processingElements.length
+            sum /= this.processingElements.length
 
             for (let i = 0; i < this.processingElements.length; i++) {
-                if (+this.processingElements[i][separateByParam] < sum) {
-                    groupOne.push(this.processingElements[i])
+                if (+this.processingElements[i][separateParameter] < sum) {
+                    firstGroup.push(this.processingElements[i])
                 } else {
-                    groupTwo.push(this.processingElements[i])
+                    secondGroup.push(this.processingElements[i])
                 }
             }
 
-            this.nextNodes[0] = new Node(groupOne, this.depth)
-            this.nextNodes[0].parameterString = '<' + (sum.toFixed(2).toString())
-            this.nextNodes[0].parameter = separateByParam
+            const beautifiedSum = sum.toFixed(2).toString()
 
-            this.nextNodes[1] = new Node(groupTwo, this.depth)
-            this.nextNodes[1].parameterString = '>=' + (sum.toFixed(2).toString())
-            this.nextNodes[1].parameter = separateByParam
+            this.nextNodes[0] = new Node(firstGroup, this.depth)
+            this.nextNodes[0].parameterString = '<' + beautifiedSum
+            this.nextNodes[0].parameter = separateParameter
+
+            this.nextNodes[1] = new Node(secondGroup, this.depth)
+            this.nextNodes[1].parameterString = '>=' + beautifiedSum
+            this.nextNodes[1].parameter = separateParameter
         } else {
             const sameNamesMas: string[] = []
             const sameNameCounter: number[] = []
             const groups: string[][][] = []
             const nextParamString: string[] = []
 
-            for (let i = 0; i < this.processingElements.length; i++) {
-                let exist = false
-
-                for (let j = 0; j < sameNamesMas.length; j++) {
-                    if (this.processingElements[i][separateByParam] == sameNamesMas[j]) {
-                        exist = true
-                        sameNameCounter[j]++
-
-                        break
-                    }
-                }
-
-                if (!exist) {
-                    sameNamesMas.push(this.processingElements[i][separateByParam])
-                    sameNameCounter.push(1)
-                }
-            }
+            this.checkForExistence(sameNamesMas, sameNameCounter, separateParameter)
 
             for (let i = 0; i < sameNamesMas.length; i++) {
                 let k = 0
                 groups[i] = []
 
                 for (let j = 0; j < this.processingElements.length; j++) {
-                    if (sameNamesMas[i] == this.processingElements[j][separateByParam]) {
+                    if (sameNamesMas[i] == this.processingElements[j][separateParameter]) {
                         groups[i][k] = this.processingElements[j]
                         nextParamString[i] = sameNamesMas[i]
                         k++;
@@ -159,10 +128,29 @@ class Node {
             for (let i = 0; i < groups.length; i++) {
                 this.nextNodes[i] = new Node(groups[i], this.depth)
                 this.nextNodes[i].parameterString = nextParamString[i]
-                this.nextNodes[i].parameter = separateByParam
+                this.nextNodes[i].parameter = separateParameter
             }
         }
+    }
 
+    private checkForExistence(sameNamesMas: string[], sameNameCounter: number[], at: number) {
+        for (let i = 0; i < this.processingElements.length; i++) {
+            let exist = false
+
+            for (let j = 0; j < sameNamesMas.length; j++) {
+                if (this.processingElements[i][at] == sameNamesMas[j]) {
+                    exist = true
+                    sameNameCounter[j]++
+
+                    break
+                }
+            }
+
+            if (!exist) {
+                sameNamesMas.push(this.processingElements[i][at])
+                sameNameCounter.push(1)
+            }
+        }
     }
 
     createNewNodes() {
