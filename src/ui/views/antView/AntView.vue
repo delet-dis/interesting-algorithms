@@ -431,5 +431,9 @@ export default class AntView extends Vue {
         this.initStopButtonOnClickListener()
         this.initClearButtonOnClickListener()
     }
+
+    unmounted() {
+        this.changeLabyrinthDisplayState(AntViewDisplayType.LABYRINTH_STOP_DISPLAYING)
+    }
 }
 </script>
