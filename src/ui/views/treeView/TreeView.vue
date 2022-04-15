@@ -142,7 +142,7 @@ export default class TreeView extends Vue {
 
     private submitDataToReduceTree() {
         if (this.displayingTreeAsArray) {
-            this.displayQueryExecutingResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
+            this.displayBuildAndReducingResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
         } else {
             this.isErrorDisplaying = true
         }
