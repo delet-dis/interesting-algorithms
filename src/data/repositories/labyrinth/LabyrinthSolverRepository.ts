@@ -76,7 +76,7 @@ class LabyrinthSolverRepository implements LabyrinthSolverInterface {
         while (pointsToCheck.length && !pathFound) {
             const {coords: curCell, parent: parent, fromStartToPoint: prevPathLen} = pointsToCheck.pop()!
             const {x, y} = curCell
-            if(parents[y][x] != noParent)
+            if (parents[y][x] != noParent)
                 continue
 
             processedCells.push(new LabyrinthCell(curCell, LabyrinthCellType.PATH_CELL))

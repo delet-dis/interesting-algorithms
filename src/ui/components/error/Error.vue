@@ -18,7 +18,7 @@ export default class Error extends Vue {
 <style scoped>
 .card {
     background-color: #f64c59;
-    color:white;
+    color: white;
 }
 
 .error {
@@ -29,7 +29,7 @@ export default class Error extends Vue {
     display: none;
 }
 
-.error.error-displaying{
+.error.error-displaying {
     display: block;
     opacity: 1;
 }

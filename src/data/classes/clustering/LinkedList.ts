@@ -46,11 +46,11 @@ class LinkedList<T> implements Iterable <ListNode<T>> {
             this.frontNode = node.nextNode
             this.iteratorStartNode = this.frontNode
         } else if (notRemoved) {
-            if (node.prevNode){
+            if (node.prevNode) {
                 node.prevNode.nextNode = node.nextNode
             }
 
-            if(node.nextNode){
+            if (node.nextNode) {
                 node.nextNode.prevNode = node.prevNode
             }
         }
@@ -60,7 +60,7 @@ class LinkedList<T> implements Iterable <ListNode<T>> {
 
     public concatenate(anotherList: LinkedList<T>): void {
         if (this.size && anotherList.size && anotherList.frontNode) {
-            if(this.backNode){
+            if (this.backNode) {
                 this.backNode.nextNode = anotherList.frontNode
             }
 

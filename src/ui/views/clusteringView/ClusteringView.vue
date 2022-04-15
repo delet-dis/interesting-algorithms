@@ -333,7 +333,7 @@ export default class ClusteringView extends Vue {
 
     private initContainerWidthListener() {
         let container = document.getElementById("container")
-        if(container){
+        if (container) {
             new ResizeObserver(() => this.updateCanvasSize()).observe(container)
         }
     }
