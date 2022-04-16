@@ -131,6 +131,8 @@ export default class LabyrinthView extends Vue {
     private isErrorDisplaying = false
     private isAbleToStart = false
 
+    private isAbleToDrawResult = true
+
     private labyrinth: Labyrinth | null = null
 
     private get labyrinthSizing() {
@@ -207,17 +209,22 @@ export default class LabyrinthView extends Vue {
     }
 
     private async displayLabyrinthPathsCells(solution: LabyrinthSolution) {
+
         let cells = solution.processedCells
 
         for (let i = 0; i < cells.length; i++) {
-            let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cells[i].point.x + `x` + cells[i].point.y)
+            if (this.isAbleToDrawResult) {
+                let documentCell = document.getElementById(CellDisplayType.CELL + `-` + cells[i].point.x + `x` + cells[i].point.y)
 
-            documentCell?.classList.add(CellDisplayType.WRONG_PATH_CELL)
+                documentCell?.classList.add(CellDisplayType.WRONG_PATH_CELL)
 
-            await new Promise(resolve => setTimeout(resolve, 300))
+                await new Promise(resolve => setTimeout(resolve, 300))
+            }
         }
 
-        await this.displayLabyrinthCorrectPathCells(solution.correctPathCells)
+        if(this.isAbleToDrawResult){
+            await this.displayLabyrinthCorrectPathCells(solution.correctPathCells)
+        }
     }
 
     private async displayLabyrinthCorrectPathCells(cells: LabyrinthCell[]) {
@@ -390,6 +397,10 @@ export default class LabyrinthView extends Vue {
         this.initStartButtonOnClickListener()
         this.initClearButtonOnClickListener()
         this.initGenerateButtonOnClickListener()
+    }
+
+    unmounted() {
+        this.isAbleToDrawResult = false
     }
 }
 </script>
