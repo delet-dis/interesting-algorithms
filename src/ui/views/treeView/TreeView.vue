@@ -84,7 +84,7 @@ export default class TreeView extends Vue {
 
     private displayingTree: Tree | null = null
 
-    private testBuildData = "2,Alex,8\n" + "21,Alex,9\n" + "2,Alex,10\n" + "2,Tom,11\n" + "2,Tom,12\n" + "2,Tom,14"
+    private testBuildData = "2,Tom,12\n" + "2,Tom,14\n" + "2,Alex,8\n" + "21,Alex,9\n" + "2,Alex,10\n" + "2,Tom,11"
 
     private showModalForDataLoading() {
         if (this.modal) {
