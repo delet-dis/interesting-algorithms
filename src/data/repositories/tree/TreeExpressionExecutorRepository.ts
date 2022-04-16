@@ -84,7 +84,7 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
 
 
     public countLeafResult(parameters: string[], tree: DisplayingNode): boolean {
-        
+
         if (!parameters)
             return false
 
@@ -102,7 +102,7 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
                         if (result) {
 
                             currentNode = node
-                            
+
                             break
                         }
                     }

@@ -21,19 +21,19 @@ class TreeReducerRepository implements TreeReducerInterface {
 
 
     private tryToRemoveNode(curNode: DisplayingNode): void {
-        
-        
+
+
         if (!curNode.nestedNodes)
             return
-        
-        let numOfLeafs = 0  
+
+        let numOfLeafs = 0
         for (const node of curNode.nestedNodes)  {
             this.tryToRemoveNode(node)
             if(node.data.type == NodeType.LEAF_NODE)
                 numOfLeafs++
         }
-                
-        
+
+
 
         if(numOfLeafs == curNode.nestedNodes.length) {
             let maxNode1: DisplayingNode = this.emptyNode
@@ -50,7 +50,7 @@ class TreeReducerRepository implements TreeReducerInterface {
                 } else if (node.data.counter > maxNode2.data.counter) {
                     maxNode2 = node
                 }
-                    
+
                 lastResult = node.data.result
                 counter += node.data.counter
             }
@@ -60,7 +60,7 @@ class TreeReducerRepository implements TreeReducerInterface {
                 curNode.data.result = maxNode1.data.result
                 curNode.data.counter = counter
                 curNode.nestedNodes = null
-            }            
+            }
         }
 
 
@@ -68,16 +68,16 @@ class TreeReducerRepository implements TreeReducerInterface {
 
     reduceTree(tree: DisplayingNode): DisplayingNode | null {
         const dataSample = DividerRepository.getInstance().checkSample
-        
+
         if (!dataSample)
             return null
 
         for (const params of dataSample) {
-            TreeExpressionExecutorRepository.getInstance().countLeafResult(params, tree)  
-        }    
-        
+            TreeExpressionExecutorRepository.getInstance().countLeafResult(params, tree)
+        }
+
         this.tryToRemoveNode(tree)
-        
+
         return tree
     }
 }
