@@ -39,20 +39,23 @@ class TreeReducerRepository implements TreeReducerInterface {
             let maxNode1: DisplayingNode = this.emptyNode
             let maxNode2: DisplayingNode = this.emptyNode
             let counter = 0
-            let sameResult = true
+            let sameResults = true
             let lastResult = curNode.nestedNodes[0].data.result
             for (const node of curNode.nestedNodes) {
                 if(node.data.result != lastResult)
-                    sameResult = false
-                if (node.data.counter > maxNode1.data.counter)
+                    sameResults = false
+                if (node.data.counter > maxNode1.data.counter) {
+                    maxNode2 = maxNode1
                     maxNode1 = node
-                else if (node.data.counter > maxNode2.data.counter)
+                } else if (node.data.counter > maxNode2.data.counter) {
                     maxNode2 = node
+                }
+                    
                 lastResult = node.data.result
                 counter += node.data.counter
             }
 
-            if (maxNode2.data.counter >= 0 || maxNode1.data.counter / maxNode2.data.counter > 7 || sameResult) {
+            if (maxNode2.data.counter <= 0 || maxNode1.data.counter / maxNode2.data.counter > 7 || sameResults) {
                 curNode.data.type = NodeType.LEAF_NODE
                 curNode.data.result = maxNode1.data.result
                 curNode.data.counter = counter
@@ -70,12 +73,7 @@ class TreeReducerRepository implements TreeReducerInterface {
             return null
 
         for (const params of dataSample) {
-            const result = TreeExpressionExecutorRepository.getInstance().countLeafResult(params, tree)
-            /*if (!result) {
-                console.log("NULL RETURNED")
-                return null 
-            }*/
-                
+            TreeExpressionExecutorRepository.getInstance().countLeafResult(params, tree)  
         }    
         
         this.tryToRemoveNode(tree)
