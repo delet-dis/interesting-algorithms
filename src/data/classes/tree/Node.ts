@@ -155,7 +155,7 @@ class Node {
 
     createNewNodes() {
         if (this.processingElements.length > 1 && !this.processingElements.every(check=>compareArrays(this.processingElements[0],check))) {
-            
+
             this.separateGroups()
 
             for (let i = 0; i < this.nextNodes.length; i++) {
