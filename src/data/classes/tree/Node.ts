@@ -154,7 +154,8 @@ class Node {
     }
 
     createNewNodes() {
-        if (this.processingElements.length > 1) {
+        if (this.processingElements.length > 1 && !this.processingElements.every(check=>compareArrays(this.processingElements[0],check))) {
+
             this.separateGroups()
 
             for (let i = 0; i < this.nextNodes.length; i++) {
@@ -185,5 +186,9 @@ class Node {
         return new DisplayingNode(curNodeData, nestedNodes)
     }
 }
-
+function compareArrays(arr1:string[],arr2:string[]){
+    return(
+    arr1.length === arr2.length &&
+    arr1.every((value, index) => value === arr2[index]))
+}
 export default Node

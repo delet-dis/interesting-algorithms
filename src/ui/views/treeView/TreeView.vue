@@ -84,7 +84,7 @@ export default class TreeView extends Vue {
 
     private displayingTree: Tree | null = null
 
-    private testBuildData = "2,Alex,8\n" + "21,Alex,9\n" + "2,Alex,10\n" + "2,Tom,11\n" + "2,Tom,12\n" + "2,Tom,14"
+    private testBuildData = "2,Tom,12\n" + "2,Tom,14\n" + "2,Alex,8\n" + "21,Alex,9\n" + "2,Alex,10\n" + "2,Tom,11"
 
     private showModalForDataLoading() {
         if (this.modal) {
@@ -129,12 +129,12 @@ export default class TreeView extends Vue {
     }
 
     private submitDataToBuildTree(inputString: string) {
-        this.displayBuildResult(TreeCreatorRepository.getInstance().createTree(inputString))
+        this.displayBuildAndReducingResult(TreeCreatorRepository.getInstance().createTree(inputString))
     }
 
     private submitDataToExecuteQuery(inputString: string) {
         if (this.displayingTreeAsArray) {
-            this.displayQueryExecutingOrReducingResult(TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray))
+            this.displayQueryExecutingResult(TreeExpressionExecutorRepository.getInstance().executeExpressionInTree(inputString, this.displayingTreeAsArray))
         } else {
             this.isErrorDisplaying = true
         }
@@ -142,13 +142,13 @@ export default class TreeView extends Vue {
 
     private submitDataToReduceTree() {
         if (this.displayingTreeAsArray) {
-            this.displayQueryExecutingOrReducingResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
+            this.displayBuildAndReducingResult(TreeReducerRepository.getInstance().reduceTree(this.displayingTreeAsArray))
         } else {
             this.isErrorDisplaying = true
         }
     }
 
-    private displayBuildResult(result: DisplayingNode | null) {
+    private displayBuildAndReducingResult(result: DisplayingNode | null) {
         if (result) {
             this.displayingTreeAsArray = result
 
@@ -160,7 +160,7 @@ export default class TreeView extends Vue {
         }
     }
 
-    private displayQueryExecutingOrReducingResult(result: DisplayingNode | null) {
+    private displayQueryExecutingResult(result: DisplayingNode | null) {
         if (result && this.displayingTree) {
             this.displayingTree.displayingTree = result
         } else {

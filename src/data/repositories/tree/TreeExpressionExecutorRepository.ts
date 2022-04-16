@@ -81,6 +81,37 @@ class TreeExpressionExecutorRepository implements TreeExpressionExecutorInterfac
 
         return newTree
     }
+
+
+    public countLeafResult(parameters: string[], tree: DisplayingNode): boolean {
+
+        if (!parameters)
+            return false
+
+        let currentNode = tree
+        let prevNode = new DisplayingNode(this.emptyData, null)
+
+        while (currentNode.data.type != NodeType.LEAF_NODE) {
+            if (currentNode.nestedNodes) {
+                if(prevNode == currentNode)
+                    return false
+                prevNode = currentNode
+                for (const node of currentNode.nestedNodes) {
+                    if (node.data.responsibleParameter && node.data.condition) {
+                        const result = this.checkCondition(parameters[node.data.responsibleParameter - 1], node.data.condition)
+                        if (result) {
+
+                            currentNode = node
+
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        currentNode.data.counter++
+        return true
+    }
 }
 
 export default TreeExpressionExecutorRepository

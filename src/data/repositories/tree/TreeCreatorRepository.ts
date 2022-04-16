@@ -1,7 +1,7 @@
 import TreeCreatorInterface from "@/data/interfaces/tree/TreeCreatorInterface"
 import DisplayingNode from "@/data/models/tree/DisplayingNode"
 import Node from "@/data/classes/tree/Node";
-import CSVParserRepository from "@/data/repositories/tree/csv/CSVParserRepository";
+import DividerRepository from "@/data/repositories/tree/DividerRepository";
 
 class TreeCreatorRepository implements TreeCreatorInterface {
     private static instance: TreeCreatorRepository
@@ -15,8 +15,9 @@ class TreeCreatorRepository implements TreeCreatorInterface {
     }
 
     createTree(inputData: string): DisplayingNode | null {
+        DividerRepository.getInstance().divideBySamples(inputData)
 
-        const data: string[][] | null = CSVParserRepository.getInstance().parseInputData(inputData)
+        const data: string[][] | null = DividerRepository.getInstance().trainingSample
         if (data != null) {
             const root: Node = new Node(data, 0)
             root.createNewNodes()
