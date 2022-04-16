@@ -17,7 +17,7 @@ class TreeReducerRepository implements TreeReducerInterface {
         return TreeReducerRepository.instance
     }
 
-    private emptyNode = new DisplayingNode(new NodeData(0), null)
+    private emptyNode = new DisplayingNode(new NodeData(0, null, null, null, -1), null)
 
 
     private tryToRemoveNode(curNode: DisplayingNode): void {
@@ -47,11 +47,11 @@ class TreeReducerRepository implements TreeReducerInterface {
                 counter += node.data.counter
             }
 
-            if (maxNode1.data.counter == 0 || maxNode2.data.counter / maxNode1.data.counter < 1/7) {
+            if (maxNode2.data.counter >= 0 || maxNode1.data.counter / maxNode2.data.counter > 7) {
                 curNode.data.type = NodeType.LEAF_NODE
                 curNode.data.result = maxNode1.data.result
                 curNode.data.counter = counter
-                curNode.nestedNodes = []
+                curNode.nestedNodes = null
             }            
         }
 
@@ -66,11 +66,10 @@ class TreeReducerRepository implements TreeReducerInterface {
 
         for (const params of dataSample) {
             const result = TreeExpressionExecutorRepository.getInstance().countLeafResult(params, tree)
-            if (!result) {
+            /*if (!result) {
                 console.log("NULL RETURNED")
                 return null 
-
-            }
+            }*/
                 
         }    
         

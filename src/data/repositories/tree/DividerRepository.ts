@@ -18,7 +18,7 @@ class DividerRepository extends DividerRepositoryBase {
     public divideBySamples(inputData: string) {
         const sample = CSVParserRepository.getInstance().parseInputData(inputData)
         if (sample) {
-            const dividePoint = Math.floor(sample.length * 0.7)
+            const dividePoint = Math.floor(sample.length * 0.5)
             this.trainingSample = sample.slice(0, dividePoint)
             this.checkSample = sample.slice(dividePoint, sample.length)
         }
